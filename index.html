@@ -278,7 +278,7 @@
       const url = location.href;
       const text = `I just scored ${score}/${total} on Ben's Trivia! Play here: ${url}`;
       const encoded = encodeURIComponent(text);
-      const waLink = `https://wa.me/?text=${encoded}`;
+      const waLink = `https://api.whatsapp.com/send?text=${encoded}`;
       shareBtn.href = waLink;
       shareBtn.style.display = "inline-block";
     }
