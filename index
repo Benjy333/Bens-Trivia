@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Trivia Game</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
+    .container { background: #fff; max-width: 500px; margin: 50px auto; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    button { margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; background: #3498db; color: #fff; }
+    button:hover { background: #2980b9; }
+    h1 { color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Trivia Game</h1>
+    <p id="question"></p>
+    <div id="answers"></div>
+    <p id="result"></p>
+    <button id="nextBtn">Next</button>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "What is the capital of Australia?", a: ["Sydney", "Melbourne", "Canberra", "Perth"], correct: 2 },
+      { q: "Which planet is known as the Red Planet?", a: ["Earth", "Venus", "Mars", "Jupiter"], correct: 2 },
+      { q: "What is the largest ocean on Earth?", a: ["Atlantic", "Indian", "Pacific", "Arctic"], correct: 2 },
+      { q: "Who painted the Mona Lisa?", a: ["Van Gogh", "Da Vinci", "Picasso", "Michelangelo"], correct: 1 }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const resultEl = document.getElementById("result");
+    const nextBtn = document.getElementById("nextBtn");
+
+    function showQuestion() {
+      const q = questions[current];
+      questionEl.textContent = q.q;
+      answersEl.innerHTML = "";
+      q.a.forEach((ans, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = ans;
+        btn.onclick = () => checkAnswer(i);
+        answersEl.appendChild(btn);
+      });
+      resultEl.textContent = "";
+      nextBtn.style.display = "none";
+    }
+
+    function checkAnswer(i) {
+      const q = questions[current];
+      if (i === q.correct) {
+        score++;
+        resultEl.textContent = "✅ Correct!";
+      } else {
+        resultEl.textContent = "❌ Wrong! The answer was " + q.a[q.correct] + ".";
+      }
+      nextBtn.style.display = "block";
+    }
+
+    nextBtn.onclick = () => {
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        questionEl.textContent = `Game Over! Your score: ${score}/${questions.length}`;
+        answersEl.innerHTML = "";
+        resultEl.textContent = "";
+        nextBtn.style.display = "none";
+      }
+    };
+
+    showQuestion();
+  </script>
+</body>
+</html>
