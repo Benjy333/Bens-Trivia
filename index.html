@@ -212,9 +212,22 @@
     <p id="result" aria-live="polite"></p>
 
     <div class="actions">
-      <button id="restartBtn" class="ghost" style="display:none">Restart</button>
-      <button id="nextBtn" class="primary" style="display:none">Next</button>
+    <button id="restartBtn" class="ghost" style="display:none">Restart</button>
+    <button id="nextBtn" class="primary" style="display:none">Next</button>
+    <a id="shareBtn" class="whats" href="#" target="_blank" rel="noopener" style="display:none">Share on WhatsApp</a>
     </div>
+
+    Drop this into your <style> section (anywhere with the other button styles):
+
+.whats{
+  border:1.5px solid #25D366;
+  background: rgba(37,211,102,.15);
+  color:#e9f4ff;
+  padding:10px 14px; border-radius:10px; font-weight:700; text-decoration:none;
+  box-shadow:0 0 10px rgba(37,211,102,.7), inset 0 0 10px rgba(37,211,102,.2);
+}
+.whats:hover{ filter:brightness(1.1); }
+    
   </main>
 
   <footer>
@@ -309,13 +322,24 @@
       current = 0; score = 0; scoreEl.textContent = "0"; renderQuestion();
     };
 
-    function endGame(){
-      setProgress(); // 100%
-      qEl.textContent = `Game Over!`;
-      aEl.innerHTML = "";
-      rEl.innerHTML = `You scored <strong>${score}</strong> out of <strong>${questions.length}</strong>.`;
-      nextBtn.style.display = "none";
-    }
+        function setWhatsAppShare(score, total){
+  const url = location.href; // your live page
+  const text = `I just scored ${score}/${total} on Ben's Trivia! Play here: ${url}`;
+  const encoded = encodeURIComponent(text);
+  const waLink = `https://wa.me/?text=${encoded}`; // works on mobile & desktop web
+  const shareBtn = document.getElementById("shareBtn");
+  shareBtn.href = waLink;
+  shareBtn.style.display = "inline-block";
+}
+
+   function endGame(){
+  setProgress(); // 100%
+  qEl.textContent = `Game Over!`;
+  aEl.innerHTML = "";
+  rEl.innerHTML = `You scored <strong>${score}</strong> out of <strong>${questions.length}</strong>.`;
+  nextBtn.style.display = "none";
+  setWhatsAppShare(score, questions.length);   // <-- show share option
+}
 
     // init
     renderQuestion();
