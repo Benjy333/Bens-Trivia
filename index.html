@@ -14,7 +14,6 @@
       --bad:#ff4266;           /* neon pink/red */
     }
 
-    /* Background + general layout */
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -169,7 +168,7 @@
     .no{ color:var(--bad); text-shadow:0 0 10px rgba(255,66,102,.6) }
 
     .actions{
-      display:flex; gap:10px; justify-content:flex-end; margin-top:14px;
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; margin-top:14px;
     }
     .primary{
       border:1.5px solid var(--neon);
@@ -183,6 +182,26 @@
       background:transparent; color:#e9f4ff; padding:10px 12px; border-radius:10px; cursor:pointer;
     }
 
+    /* WhatsApp + Copy buttons */
+    .whats{
+      border:1.5px solid #25D366;
+      background: rgba(37,211,102,.15);
+      color:#e9f4ff;
+      padding:10px 14px; border-radius:10px; font-weight:700; text-decoration:none;
+      box-shadow:0 0 10px rgba(37,211,102,.7), inset 0 0 10px rgba(37,211,102,.2);
+    }
+    .whats:hover{ filter:brightness(1.1); }
+
+    .copy{
+      border:1.5px solid var(--neon-soft);
+      background: rgba(55,161,255,.15);
+      color:#e9f4ff;
+      padding:10px 14px; border-radius:10px; font-weight:700;
+      cursor:pointer;
+      box-shadow:0 0 10px rgba(55,161,255,.6), inset 0 0 10px rgba(55,161,255,.25);
+    }
+    .copy:hover{ filter:brightness(1.15); }
+
     footer{
       margin-top:auto; padding:20px; opacity:.75; font-size:13px; text-align:center;
     }
@@ -194,7 +213,7 @@
 </head>
 <body>
   <header>
-    <!-- Make sure bens-trivia-logo.png is in the repo root -->
+    <!-- Ensure bens-trivia-logo.png exists at repo root -->
     <img class="logo" src="bens-trivia-logo.png" alt="Ben's Trivia neon logo">
   </header>
 
@@ -212,26 +231,15 @@
     <p id="result" aria-live="polite"></p>
 
     <div class="actions">
-    <button id="restartBtn" class="ghost" style="display:none">Restart</button>
-    <button id="nextBtn" class="primary" style="display:none">Next</button>
-    <a id="shareBtn" class="whats" href="#" target="_blank" rel="noopener" style="display:none">Share on WhatsApp</a>
+      <button id="restartBtn" class="ghost" style="display:none">Restart</button>
+      <button id="nextBtn" class="primary" style="display:none">Next</button>
+      <a id="shareBtn" class="whats" href="#" target="_blank" rel="noopener" style="display:none">Share on WhatsApp</a>
+      <button id="copyBtn" class="copy" style="display:none">Copy Game Link</button>
     </div>
-
-    Drop this into your <style> section (anywhere with the other button styles):
-
-.whats{
-  border:1.5px solid #25D366;
-  background: rgba(37,211,102,.15);
-  color:#e9f4ff;
-  padding:10px 14px; border-radius:10px; font-weight:700; text-decoration:none;
-  box-shadow:0 0 10px rgba(37,211,102,.7), inset 0 0 10px rgba(37,211,102,.2);
-}
-.whats:hover{ filter:brightness(1.1); }
-    
   </main>
 
   <footer>
-    Made by Benjy333 · Puzzle No. 1 · Tuesday, 4th of Nov 2025
+    0 Made by Benjy333 · Puzzle No. 1 · Tuesday, 4th of Nov 2025
   </footer>
 
   <script>
@@ -255,15 +263,41 @@
     const qnumEl = document.getElementById("qnum");
     const qtotalEl = document.getElementById("qtotal");
     const progEl = document.getElementById("progress");
+    const shareBtn = document.getElementById("shareBtn");
+    const copyBtn = document.getElementById("copyBtn");
 
     qtotalEl.textContent = questions.length;
 
-    // ------- Rendering -------
+    // ------- Helpers -------
     function setProgress(){
       const pct = (current / questions.length) * 100;
       progEl.style.width = pct + "%";
     }
 
+    function setWhatsAppShare(score, total){
+      const url = location.href;
+      const text = `I just scored ${score}/${total} on Ben's Trivia! Play here: ${url}`;
+      const encoded = encodeURIComponent(text);
+      const waLink = `https://wa.me/?text=${encoded}`;
+      shareBtn.href = waLink;
+      shareBtn.style.display = "inline-block";
+    }
+
+    function setCopyLink(){
+      copyBtn.style.display = "inline-block";
+      copyBtn.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(location.href);
+          const old = copyBtn.textContent;
+          copyBtn.textContent = "✅ Link Copied!";
+          setTimeout(()=> copyBtn.textContent = old, 2500);
+        } catch (e) {
+          alert("Could not copy. Please copy manually: " + location.href);
+        }
+      };
+    }
+
+    // ------- Rendering -------
     function renderQuestion(){
       locked = false;
       const q = questions[current];
@@ -300,7 +334,6 @@
         rEl.innerHTML = `<span class="ok">✅ Correct!</span>`;
       } else {
         btn.classList.add("wrong");
-        // highlight the correct one
         buttons[q.correct].classList.add("correct");
         rEl.innerHTML = `<span class="no">❌ Wrong.</span> The answer was <strong>${q.a[q.correct]}</strong>.`;
       }
@@ -320,26 +353,20 @@
 
     restartBtn.onclick = () => {
       current = 0; score = 0; scoreEl.textContent = "0"; renderQuestion();
+      // Hide share buttons on restart
+      shareBtn.style.display = "none";
+      copyBtn.style.display = "none";
     };
 
-        function setWhatsAppShare(score, total){
-  const url = location.href; // your live page
-  const text = `I just scored ${score}/${total} on Ben's Trivia! Play here: ${url}`;
-  const encoded = encodeURIComponent(text);
-  const waLink = `https://wa.me/?text=${encoded}`; // works on mobile & desktop web
-  const shareBtn = document.getElementById("shareBtn");
-  shareBtn.href = waLink;
-  shareBtn.style.display = "inline-block";
-}
-
-   function endGame(){
-  setProgress(); // 100%
-  qEl.textContent = `Game Over!`;
-  aEl.innerHTML = "";
-  rEl.innerHTML = `You scored <strong>${score}</strong> out of <strong>${questions.length}</strong>.`;
-  nextBtn.style.display = "none";
-  setWhatsAppShare(score, questions.length);   // <-- show share option
-}
+    function endGame(){
+      setProgress(); // 100%
+      qEl.textContent = `Game Over!`;
+      aEl.innerHTML = "";
+      rEl.innerHTML = `You scored <strong>${score}</strong> out of <strong>${questions.length}</strong>.`;
+      nextBtn.style.display = "none";
+      setWhatsAppShare(score, questions.length);
+      setCopyLink();
+    }
 
     // init
     renderQuestion();
