@@ -3,23 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Trivia Game</title>
+  <title>Ben's Trivia</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
-    .container { background: #fff; max-width: 500px; margin: 50px auto; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
-    button { margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; background: #3498db; color: #fff; }
-    button:hover { background: #2980b9; }
-    h1 { color: #333; }
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(180deg, #0a66c2 0%, #cbe2ff 100%);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #004c99;
+      width: 100%;
+      text-align: center;
+      color: white;
+      padding: 20px 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 2em;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      background: #ffffff;
+      width: 90%;
+      max-width: 500px;
+      margin-top: 50px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    button {
+      background-color: #0a66c2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #004c99;
+      transform: scale(1.05);
+    }
+
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    #nextBtn {
+      display: none;
+      margin-top: 20px;
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 15px;
+      color: white;
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <h1>🎯 Ben's Trivia</h1>
+  </header>
+
   <div class="container">
-    <h1>Trivia Game</h1>
-    <p id="question"></p>
+    <h2 id="question"></h2>
     <div id="answers"></div>
     <p id="result"></p>
-    <button id="nextBtn">Next</button>
+    <button id="nextBtn">Next Question</button>
   </div>
+
+  <footer>
+    Made by Benjy333 · Hosted on GitHub Pages
+  </footer>
 
   <script>
     const questions = [
@@ -41,14 +119,15 @@
       const q = questions[current];
       questionEl.textContent = q.q;
       answersEl.innerHTML = "";
+      resultEl.textContent = "";
+      nextBtn.style.display = "none";
+
       q.a.forEach((ans, i) => {
         const btn = document.createElement("button");
         btn.textContent = ans;
         btn.onclick = () => checkAnswer(i);
         answersEl.appendChild(btn);
       });
-      resultEl.textContent = "";
-      nextBtn.style.display = "none";
     }
 
     function checkAnswer(i) {
@@ -56,10 +135,12 @@
       if (i === q.correct) {
         score++;
         resultEl.textContent = "✅ Correct!";
+        resultEl.style.color = "green";
       } else {
-        resultEl.textContent = "❌ Wrong! The answer was " + q.a[q.correct] + ".";
+        resultEl.textContent = `❌ Wrong! The correct answer was ${q.a[q.correct]}.`;
+        resultEl.style.color = "red";
       }
-      nextBtn.style.display = "block";
+      nextBtn.style.display = "inline-block";
     }
 
     nextBtn.onclick = () => {
