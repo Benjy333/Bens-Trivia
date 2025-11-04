@@ -5,101 +5,224 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ben's Trivia</title>
   <style>
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(180deg, #0a66c2 0%, #cbe2ff 100%);
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+    :root{
+      --neon:#37a1ff;          /* primary neon blue */
+      --neon-soft:#96d0ff;     /* softer blue for inner glow */
+      --bg1:#071327;           /* deep navy */
+      --bg2:#001020;           /* darker navy */
+      --good:#38ef7d;          /* neon green */
+      --bad:#ff4266;           /* neon pink/red */
     }
 
-    header {
-      background-color: #004c99;
-      width: 100%;
-      text-align: center;
-      color: white;
-      padding: 20px 0;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* Background + general layout */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Segoe UI", Arial, system-ui, -apple-system, sans-serif;
+      color:#e9f4ff;
+      background:
+        radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
+        radial-gradient(80% 60% at 50% 110%, #05213f 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      min-height:100vh;
     }
 
-    header h1 {
-      font-size: 2em;
-      margin: 0;
-      letter-spacing: 1px;
+    /* Neon header */
+    header{
+      width:100%;
+      padding:24px 16px 8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      isolation:isolate;
+    }
+    header::after{
+      content:"";
+      position:absolute; inset:0 10%;
+      border-top:2px solid var(--neon);
+      filter:drop-shadow(0 0 6px var(--neon)) drop-shadow(0 0 18px var(--neon));
+      opacity:.35;
+      pointer-events:none;
+    }
+    .logo{
+      width:320px; max-width:70vw; display:block;
+      filter:
+        drop-shadow(0 0 2px var(--neon))
+        drop-shadow(0 0 12px var(--neon))
+        drop-shadow(0 0 28px var(--neon-soft));
+      animation:flicker 4.5s infinite ease-in-out;
+    }
+    @keyframes flicker{
+      0%, 100% { opacity:1 }
+      48% { opacity:1 }
+      49% { opacity:.92 }
+      50% { opacity:1 }
+      68% { opacity:1 }
+      69% { opacity:.94 }
+      70% { opacity:1 }
     }
 
-    .container {
-      background: #ffffff;
-      width: 90%;
-      max-width: 500px;
-      margin-top: 50px;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      text-align: center;
+    /* Card container with neon frame */
+    .card{
+      width:min(720px, 92vw);
+      margin:28px auto;
+      padding:28px 22px;
+      background:rgba(8,18,36,.45);
+      border:2px solid rgba(55,161,255,.25);
+      border-radius:16px;
+      backdrop-filter: blur(6px) saturate(130%);
+      box-shadow:
+        0 0 10px rgba(55,161,255,.35),
+        inset 0 0 16px rgba(55,161,255,.15),
+        0 24px 60px rgba(0,0,0,.45);
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      border:2px solid transparent;
+      border-radius:16px;
+      background:
+        linear-gradient(var(--bg1), var(--bg2)) padding-box,
+        radial-gradient(120% 140% at 10% 10%, var(--neon) 0%, transparent 60%),
+        radial-gradient(120% 140% at 90% 90%, var(--neon-soft) 0%, transparent 60%) border-box;
+      mask:
+        linear-gradient(#000 0 0) padding-box,
+        linear-gradient(#000 0 0) border-box;
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events:none;
+      filter: drop-shadow(0 0 16px var(--neon));
+      opacity:.55;
     }
 
-    h2 {
-      color: #333;
+    /* Text + meta row */
+    .meta{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:12px; margin-bottom:10px; opacity:.9; font-size:14px;
+    }
+    .pill{
+      border:1px solid rgba(150,208,255,.4); padding:6px 10px; border-radius:999px;
     }
 
-    button {
-      background-color: #0a66c2;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 20px;
-      margin: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    /* Progress bar */
+    .bar{
+      height:6px; width:100%; background:rgba(55,161,255,.15); border-radius:999px; overflow:hidden;
+      box-shadow: inset 0 0 10px rgba(0,0,0,.35);
+      margin:8px 0 18px;
+    }
+    .bar>span{
+      display:block; height:100%; width:0%;
+      background:linear-gradient(90deg, var(--neon), var(--neon-soft));
+      box-shadow:0 0 10px var(--neon), 0 0 22px var(--neon-soft);
+      transition:width .35s ease;
     }
 
-    button:hover {
-      background-color: #004c99;
-      transform: scale(1.05);
+    /* Question */
+    #question{
+      font-size:24px; margin:8px 0 14px; line-height:1.3;
+      text-shadow:0 0 8px rgba(150,208,255,.35);
     }
 
-    #result {
-      margin-top: 15px;
-      font-weight: bold;
-      font-size: 18px;
+    /* Answers as neon buttons */
+    #answers{
+      display:grid; gap:12px;
+      grid-template-columns:1fr; 
+    }
+    .btn{
+      border:1.5px solid rgba(55,161,255,.6);
+      color:#e9f4ff;
+      background: rgba(15,40,80,.35);
+      padding:12px 14px; border-radius:12px;
+      cursor:pointer; font-size:16px; text-align:left;
+      box-shadow:
+        0 0 0 transparent,
+        inset 0 0 0 rgba(0,0,0,0);
+      transition:transform .1s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    }
+    .btn:hover, .btn:focus{
+      outline:none;
+      transform: translateY(-1px);
+      border-color: var(--neon);
+      background: rgba(15,40,80,.55);
+      box-shadow:
+        0 0 10px rgba(55,161,255,.65),
+        inset 0 0 10px rgba(55,161,255,.25);
+    }
+    .btn.correct{
+      border-color: var(--good);
+      box-shadow: 0 0 12px rgba(56,239,125,.8), inset 0 0 10px rgba(56,239,125,.25);
+    }
+    .btn.wrong{
+      border-color: var(--bad);
+      box-shadow: 0 0 12px rgba(255,66,102,.8), inset 0 0 10px rgba(255,66,102,.25);
     }
 
-    #nextBtn {
-      display: none;
-      margin-top: 20px;
+    /* Result + actions */
+    #result{ min-height:28px; margin-top:8px; font-weight:700 }
+    .ok{ color:var(--good); text-shadow:0 0 10px rgba(56,239,125,.6) }
+    .no{ color:var(--bad); text-shadow:0 0 10px rgba(255,66,102,.6) }
+
+    .actions{
+      display:flex; gap:10px; justify-content:flex-end; margin-top:14px;
+    }
+    .primary{
+      border:1.5px solid var(--neon);
+      background: rgba(10,102,194,.35);
+      color:#fff; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600;
+      box-shadow:0 0 10px rgba(55,161,255,.7);
+    }
+    .primary:hover{ filter:brightness(1.1) }
+    .ghost{
+      border:1.5px solid rgba(150,208,255,.35);
+      background:transparent; color:#e9f4ff; padding:10px 12px; border-radius:10px; cursor:pointer;
     }
 
-    footer {
-      margin-top: auto;
-      padding: 15px;
-      color: white;
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.8;
+    footer{
+      margin-top:auto; padding:20px; opacity:.75; font-size:13px; text-align:center;
+    }
+
+    @media (min-width:700px){
+      #answers{ grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>🎯 Ben's Trivia</h1>
+    <!-- Make sure bens-trivia-logo.png is in the repo root -->
+    <img class="logo" src="bens-trivia-logo.png" alt="Ben's Trivia neon logo">
   </header>
 
-  <div class="container">
-    <h2 id="question"></h2>
-    <div id="answers"></div>
-    <p id="result"></p>
-    <button id="nextBtn">Next Question</button>
-  </div>
+  <main class="card" role="main">
+    <div class="meta">
+      <div class="pill">Question <span id="qnum">1</span> / <span id="qtotal">4</span></div>
+      <div class="pill">Score: <span id="score">0</span></div>
+    </div>
+
+    <div class="bar" aria-hidden="true"><span id="progress"></span></div>
+
+    <h2 id="question">Loading…</h2>
+    <div id="answers" aria-live="polite" aria-label="Answer choices"></div>
+
+    <p id="result" aria-live="polite"></p>
+
+    <div class="actions">
+      <button id="restartBtn" class="ghost" style="display:none">Restart</button>
+      <button id="nextBtn" class="primary" style="display:none">Next</button>
+    </div>
+  </main>
 
   <footer>
-    Made by Benjy333 · Hosted on GitHub Pages
+    Made by Benjy333 · Neon theme by ChatGPT · Hosted on GitHub Pages
   </footer>
 
   <script>
+    // ------- Data -------
     const questions = [
       { q: "What is the capital of Australia?", a: ["Sydney", "Melbourne", "Canberra", "Perth"], correct: 2 },
       { q: "Which planet is known as the Red Planet?", a: ["Earth", "Venus", "Mars", "Jupiter"], correct: 2 },
@@ -107,55 +230,95 @@
       { q: "Who painted the Mona Lisa?", a: ["Van Gogh", "Da Vinci", "Picasso", "Michelangelo"], correct: 1 }
     ];
 
-    let current = 0;
-    let score = 0;
+    // ------- State / elements -------
+    let current = 0, score = 0, locked = false;
 
-    const questionEl = document.getElementById("question");
-    const answersEl = document.getElementById("answers");
-    const resultEl = document.getElementById("result");
+    const qEl = document.getElementById("question");
+    const aEl = document.getElementById("answers");
+    const rEl = document.getElementById("result");
     const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const scoreEl = document.getElementById("score");
+    const qnumEl = document.getElementById("qnum");
+    const qtotalEl = document.getElementById("qtotal");
+    const progEl = document.getElementById("progress");
 
-    function showQuestion() {
+    qtotalEl.textContent = questions.length;
+
+    // ------- Rendering -------
+    function setProgress(){
+      const pct = (current / questions.length) * 100;
+      progEl.style.width = pct + "%";
+    }
+
+    function renderQuestion(){
+      locked = false;
       const q = questions[current];
-      questionEl.textContent = q.q;
-      answersEl.innerHTML = "";
-      resultEl.textContent = "";
+      qnumEl.textContent = current + 1;
+      setProgress();
+
+      qEl.textContent = q.q;
+      aEl.innerHTML = "";
+      rEl.textContent = "";
       nextBtn.style.display = "none";
 
-      q.a.forEach((ans, i) => {
-        const btn = document.createElement("button");
-        btn.textContent = ans;
-        btn.onclick = () => checkAnswer(i);
-        answersEl.appendChild(btn);
+      q.a.forEach((text, i) => {
+        const b = document.createElement("button");
+        b.className = "btn";
+        b.textContent = text;
+        b.setAttribute("aria-label", text);
+        b.onclick = () => checkAnswer(b, i);
+        aEl.appendChild(b);
       });
     }
 
-    function checkAnswer(i) {
+    function checkAnswer(btn, index){
+      if (locked) return;
+      locked = true;
+
       const q = questions[current];
-      if (i === q.correct) {
+      const buttons = Array.from(aEl.querySelectorAll(".btn"));
+      buttons.forEach(b => b.disabled = true);
+
+      if (index === q.correct){
         score++;
-        resultEl.textContent = "✅ Correct!";
-        resultEl.style.color = "green";
+        scoreEl.textContent = score;
+        btn.classList.add("correct");
+        rEl.innerHTML = `<span class="ok">✅ Correct!</span>`;
       } else {
-        resultEl.textContent = `❌ Wrong! The correct answer was ${q.a[q.correct]}.`;
-        resultEl.style.color = "red";
+        btn.classList.add("wrong");
+        // highlight the correct one
+        buttons[q.correct].classList.add("correct");
+        rEl.innerHTML = `<span class="no">❌ Wrong.</span> The answer was <strong>${q.a[q.correct]}</strong>.`;
       }
+
       nextBtn.style.display = "inline-block";
+      restartBtn.style.display = "inline-block";
     }
 
     nextBtn.onclick = () => {
       current++;
       if (current < questions.length) {
-        showQuestion();
+        renderQuestion();
       } else {
-        questionEl.textContent = `Game Over! Your score: ${score}/${questions.length}`;
-        answersEl.innerHTML = "";
-        resultEl.textContent = "";
-        nextBtn.style.display = "none";
+        endGame();
       }
     };
 
-    showQuestion();
+    restartBtn.onclick = () => {
+      current = 0; score = 0; scoreEl.textContent = "0"; renderQuestion();
+    };
+
+    function endGame(){
+      setProgress(); // 100%
+      qEl.textContent = `Game Over!`;
+      aEl.innerHTML = "";
+      rEl.innerHTML = `You scored <strong>${score}</strong> out of <strong>${questions.length}</strong>.`;
+      nextBtn.style.display = "none";
+    }
+
+    // init
+    renderQuestion();
   </script>
 </body>
 </html>
