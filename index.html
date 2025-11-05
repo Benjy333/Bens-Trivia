@@ -2,374 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ben's Trivia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ben's Games — Anagram</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    :root{
-      --neon:#37a1ff;          /* primary neon blue */
-      --neon-soft:#96d0ff;     /* softer blue for inner glow */
-      --bg1:#071327;           /* deep navy */
-      --bg2:#001020;           /* darker navy */
-      --good:#38ef7d;          /* neon green */
-      --bad:#ff4266;           /* neon pink/red */
-    }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: "Segoe UI", Arial, system-ui, -apple-system, sans-serif;
-      color:#e9f4ff;
-      background:
-        radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
-        radial-gradient(80% 60% at 50% 110%, #05213f 0%, transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      min-height:100vh;
-    }
-
-    /* Neon header */
-    header{
-      width:100%;
-      padding:24px 16px 8px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-      isolation:isolate;
-    }
-    header::after{
-      content:"";
-      position:absolute; inset:0 10%;
-      border-top:2px solid var(--neon);
-      filter:drop-shadow(0 0 6px var(--neon)) drop-shadow(0 0 18px var(--neon));
-      opacity:.35;
-      pointer-events:none;
-    }
-    .logo{
-      width:320px; max-width:70vw; display:block;
-      filter:
-        drop-shadow(0 0 2px var(--neon))
-        drop-shadow(0 0 12px var(--neon))
-        drop-shadow(0 0 28px var(--neon-soft));
-      animation:flicker 4.5s infinite ease-in-out;
-    }
-    @keyframes flicker{
-      0%, 100% { opacity:1 }
-      48% { opacity:1 }
-      49% { opacity:.92 }
-      50% { opacity:1 }
-      68% { opacity:1 }
-      69% { opacity:.94 }
-      70% { opacity:1 }
-    }
-
-    /* Card container with neon frame */
-    .card{
-      width:min(720px, 92vw);
-      margin:28px auto;
-      padding:28px 22px;
-      background:rgba(8,18,36,.45);
-      border:2px solid rgba(55,161,255,.25);
-      border-radius:16px;
-      backdrop-filter: blur(6px) saturate(130%);
-      box-shadow:
-        0 0 10px rgba(55,161,255,.35),
-        inset 0 0 16px rgba(55,161,255,.15),
-        0 24px 60px rgba(0,0,0,.45);
-      position:relative;
-    }
-    .card::before{
-      content:"";
-      position:absolute; inset:-2px;
-      border:2px solid transparent;
-      border-radius:16px;
-      background:
-        linear-gradient(var(--bg1), var(--bg2)) padding-box,
-        radial-gradient(120% 140% at 10% 10%, var(--neon) 0%, transparent 60%),
-        radial-gradient(120% 140% at 90% 90%, var(--neon-soft) 0%, transparent 60%) border-box;
-      mask:
-        linear-gradient(#000 0 0) padding-box,
-        linear-gradient(#000 0 0) border-box;
-      -webkit-mask-composite: xor;
-              mask-composite: exclude;
-      pointer-events:none;
-      filter: drop-shadow(0 0 16px var(--neon));
-      opacity:.55;
-    }
-
-    /* Text + meta row */
-    .meta{
-      display:flex; justify-content:space-between; align-items:center;
-      gap:12px; margin-bottom:10px; opacity:.9; font-size:14px;
-    }
-    .pill{
-      border:1px solid rgba(150,208,255,.4); padding:6px 10px; border-radius:999px;
-    }
-
-    /* Progress bar */
-    .bar{
-      height:6px; width:100%; background:rgba(55,161,255,.15); border-radius:999px; overflow:hidden;
-      box-shadow: inset 0 0 10px rgba(0,0,0,.35);
-      margin:8px 0 18px;
-    }
-    .bar>span{
-      display:block; height:100%; width:0%;
-      background:linear-gradient(90deg, var(--neon), var(--neon-soft));
-      box-shadow:0 0 10px var(--neon), 0 0 22px var(--neon-soft);
-      transition:width .35s ease;
-    }
-
-    /* Question */
-    #question{
-      font-size:24px; margin:8px 0 14px; line-height:1.3;
-      text-shadow:0 0 8px rgba(150,208,255,.35);
-    }
-
-    /* Answers as neon buttons */
-    #answers{
-      display:grid; gap:12px;
-      grid-template-columns:1fr; 
-    }
-    .btn{
-      border:1.5px solid rgba(55,161,255,.6);
-      color:#e9f4ff;
-      background: rgba(15,40,80,.35);
-      padding:12px 14px; border-radius:12px;
-      cursor:pointer; font-size:16px; text-align:left;
-      box-shadow:
-        0 0 0 transparent,
-        inset 0 0 0 rgba(0,0,0,0);
-      transition:transform .1s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
-    }
-    .btn:hover, .btn:focus{
-      outline:none;
-      transform: translateY(-1px);
-      border-color: var(--neon);
-      background: rgba(15,40,80,.55);
-      box-shadow:
-        0 0 10px rgba(55,161,255,.65),
-        inset 0 0 10px rgba(55,161,255,.25);
-    }
-    .btn.correct{
-      border-color: var(--good);
-      box-shadow: 0 0 12px rgba(56,239,125,.8), inset 0 0 10px rgba(56,239,125,.25);
-    }
-    .btn.wrong{
-      border-color: var(--bad);
-      box-shadow: 0 0 12px rgba(255,66,102,.8), inset 0 0 10px rgba(255,66,102,.25);
-    }
-
-    /* Result + actions */
-    #result{ min-height:28px; margin-top:8px; font-weight:700 }
-    .ok{ color:var(--good); text-shadow:0 0 10px rgba(56,239,125,.6) }
-    .no{ color:var(--bad); text-shadow:0 0 10px rgba(255,66,102,.6) }
-
-    .actions{
-      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; margin-top:14px;
-    }
-    .primary{
-      border:1.5px solid var(--neon);
-      background: rgba(10,102,194,.35);
-      color:#fff; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600;
-      box-shadow:0 0 10px rgba(55,161,255,.7);
-    }
-    .primary:hover{ filter:brightness(1.1) }
-    .ghost{
-      border:1.5px solid rgba(150,208,255,.35);
-      background:transparent; color:#e9f4ff; padding:10px 12px; border-radius:10px; cursor:pointer;
-    }
-
-    /* WhatsApp + Copy buttons */
-    .whats{
-      border:1.5px solid #25D366;
-      background: rgba(37,211,102,.15);
-      color:#e9f4ff;
-      padding:10px 14px; border-radius:10px; font-weight:700; text-decoration:none;
-      box-shadow:0 0 10px rgba(37,211,102,.7), inset 0 0 10px rgba(37,211,102,.2);
-    }
-    .whats:hover{ filter:brightness(1.1); }
-
-    .copy{
-      border:1.5px solid var(--neon-soft);
-      background: rgba(55,161,255,.15);
-      color:#e9f4ff;
-      padding:10px 14px; border-radius:10px; font-weight:700;
-      cursor:pointer;
-      box-shadow:0 0 10px rgba(55,161,255,.6), inset 0 0 10px rgba(55,161,255,.25);
-    }
-    .copy:hover{ filter:brightness(1.15); }
-
-    footer{
-      margin-top:auto; padding:20px; opacity:.75; font-size:13px; text-align:center;
-    }
-
-    @media (min-width:700px){
-      #answers{ grid-template-columns: 1fr 1fr; }
-    }
+    .page-wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:72px 16px 32px}
+    .game-card{width:min(520px,92vw);background:var(--bg2);border:1px solid var(--neon);border-radius:20px;box-shadow:0 0 24px rgba(55,161,255,.25), inset 0 0 30px rgba(150,208,255,.05);padding:20px}
+    .title{font-size:1.6rem;text-align:center;margin-bottom:10px;text-shadow:0 0 8px var(--neon-soft)}
+    .scramble{font-size:2.2rem;text-align:center;margin:10px 0 20px;letter-spacing:0.1em;font-weight:bold}
+    input[type="text"]{flex:1;background:#021527;border:1px solid var(--neon);border-radius:12px;padding:14px;color:#e9f4ff;font-size:1.05rem}
+    .btn{border:1px solid var(--neon);background:transparent;color:var(--neon);padding:12px 16px;border-radius:12px;cursor:pointer}
+    .btn:hover{background:var(--neon);color:#001}
+    .feedback{text-align:center;margin-top:10px;min-height:24px}
   </style>
 </head>
 <body>
-  <header>
-    <!-- Ensure bens-trivia-logo.png exists at repo root -->
-    <img class="logo" src="bens-trivia-logo.png" alt="Ben's Trivia neon logo">
+  <header class="top-menu">
+    <button id="menu-btn">☰</button>
+    <div class="menu-dropdown" id="menu-dropdown">
+      <a href="index.html">🎯 Ben's Trivia</a>
+      <a href="anagram.html">🔤 Anagram Game</a>
+      <a href="riddle.html">🕵️ Riddle Game</a>
+    </div>
   </header>
 
-  <main class="card" role="main">
-    <div class="meta">
-      <div class="pill">Question <span id="qnum">1</span> / <span id="qtotal">4</span></div>
-      <div class="pill">Score: <span id="score">0</span></div>
-    </div>
-
-    <div class="bar" aria-hidden="true"><span id="progress"></span></div>
-
-    <h2 id="question">Loading…</h2>
-    <div id="answers" aria-live="polite" aria-label="Answer choices"></div>
-
-    <p id="result" aria-live="polite"></p>
-
-    <div class="actions">
-      <button id="restartBtn" class="ghost" style="display:none">Restart</button>
-      <button id="nextBtn" class="primary" style="display:none">Next</button>
-      <a id="shareBtn" class="whats" href="#" target="_blank" rel="noopener" style="display:none">Share on WhatsApp</a>
-      <button id="copyBtn" class="copy" style="display:none">Copy Game Link</button>
+  <main class="page-wrap">
+    <div class="game-card">
+      <h1 class="title">🔤 Anagram Game</h1>
+      <div class="scramble" id="scramble">•••</div>
+      <div style="display:flex;gap:10px">
+        <input id="guess" type="text" placeholder="Type your guess…" />
+        <button class="btn" id="check">Check</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
+        <button class="btn" id="hint">Hint</button>
+        <button class="btn" id="shuffle">Shuffle</button>
+        <button class="btn" id="next">Next</button>
+      </div>
     </div>
   </main>
 
-  <footer>
-    Made by Benjy333 · Puzzle No. 1 · 4th of Nov 2025
-  </footer>
-
   <script>
-    // ------- Data -------
-    const questions = [
-      { q: "What is the capital of Australia?", a: ["Sydney", "Melbourne", "Canberra", "Perth"], correct: 2 },
-      { q: "Which planet is known as the Red Planet?", a: ["Earth", "Venus", "Mars", "Jupiter"], correct: 2 },
-      { q: "What is the largest ocean on Earth?", a: ["Atlantic", "Indian", "Pacific", "Arctic"], correct: 2 },
-      { q: "Who painted the Mona Lisa?", a: ["Van Gogh", "Da Vinci", "Picasso", "Michelangelo"], correct: 1 }
-    ];
-
-    // ------- State / elements -------
-    let current = 0, score = 0, locked = false;
-
-    const qEl = document.getElementById("question");
-    const aEl = document.getElementById("answers");
-    const rEl = document.getElementById("result");
-    const nextBtn = document.getElementById("nextBtn");
-    const restartBtn = document.getElementById("restartBtn");
-    const scoreEl = document.getElementById("score");
-    const qnumEl = document.getElementById("qnum");
-    const qtotalEl = document.getElementById("qtotal");
-    const progEl = document.getElementById("progress");
-    const shareBtn = document.getElementById("shareBtn");
-    const copyBtn = document.getElementById("copyBtn");
-
-    qtotalEl.textContent = questions.length;
-
-    // ------- Helpers -------
-    function setProgress(){
-      const pct = (current / questions.length) * 100;
-      progEl.style.width = pct + "%";
-    }
-
-    function setWhatsAppShare(score, total){
-      const url = location.href;
-      const text = `I just scored ${score}/${total} on Ben's Trivia! Play here: ${url}`;
-      const encoded = encodeURIComponent(text);
-      const waLink = `https://api.whatsapp.com/send?text=${encoded}`;
-      shareBtn.href = waLink;
-      shareBtn.style.display = "inline-block";
-    }
-
-    function setCopyLink(){
-      copyBtn.style.display = "inline-block";
-      copyBtn.onclick = async () => {
-        try {
-          await navigator.clipboard.writeText(location.href);
-          const old = copyBtn.textContent;
-          copyBtn.textContent = "✅ Link Copied!";
-          setTimeout(()=> copyBtn.textContent = old, 2500);
-        } catch (e) {
-          alert("Could not copy. Please copy manually: " + location.href);
-        }
-      };
-    }
-
-    // ------- Rendering -------
-    function renderQuestion(){
-      locked = false;
-      const q = questions[current];
-      qnumEl.textContent = current + 1;
-      setProgress();
-
-      qEl.textContent = q.q;
-      aEl.innerHTML = "";
-      rEl.textContent = "";
-      nextBtn.style.display = "none";
-
-      q.a.forEach((text, i) => {
-        const b = document.createElement("button");
-        b.className = "btn";
-        b.textContent = text;
-        b.setAttribute("aria-label", text);
-        b.onclick = () => checkAnswer(b, i);
-        aEl.appendChild(b);
-      });
-    }
-
-    function checkAnswer(btn, index){
-      if (locked) return;
-      locked = true;
-
-      const q = questions[current];
-      const buttons = Array.from(aEl.querySelectorAll(".btn"));
-      buttons.forEach(b => b.disabled = true);
-
-      if (index === q.correct){
-        score++;
-        scoreEl.textContent = score;
-        btn.classList.add("correct");
-        rEl.innerHTML = `<span class="ok">✅ Correct!</span>`;
-      } else {
-        btn.classList.add("wrong");
-        buttons[q.correct].classList.add("correct");
-        rEl.innerHTML = `<span class="no">❌ Wrong.</span> The answer was <strong>${q.a[q.correct]}</strong>.`;
-      }
-
-      nextBtn.style.display = "inline-block";
-      restartBtn.style.display = "inline-block";
-    }
-
-    nextBtn.onclick = () => {
-      current++;
-      if (current < questions.length) {
-        renderQuestion();
-      } else {
-        endGame();
-      }
-    };
-
-    restartBtn.onclick = () => {
-      current = 0; score = 0; scoreEl.textContent = "0"; renderQuestion();
-      // Hide share buttons on restart
-      shareBtn.style.display = "none";
-      copyBtn.style.display = "none";
-    };
-
-    function endGame(){
-      setProgress(); // 100%
-      qEl.textContent = `Game Over!`;
-      aEl.innerHTML = "";
-      rEl.innerHTML = `You scored <strong>${score}</strong> out of <strong>${questions.length}</strong>.`;
-      nextBtn.style.display = "none";
-      setWhatsAppShare(score, questions.length);
-      setCopyLink();
-    }
-
-    // init
-    renderQuestion();
+    const words = ["river","cloud","planet","signal","neon","trivia","python","energy"];
+    let current="";
+    function shuffleLetters(str){return str.split('').sort(()=>Math.random()-0.5).join('');}
+    function pick(){current=words[Math.floor(Math.random()*words.length)];document.getElementById('scramble').textContent=shuffleLetters(current);document.getElementById('feedback').textContent='';document.getElementById('guess').value='';}
+    document.getElementById('check').onclick=()=>{const g=document.getElementById('guess').value.trim().toLowerCase();document.getElementById('feedback').textContent=g===current?"✅ Correct!":"❌ Try again."};
+    document.getElementById('shuffle').onclick=()=>{document.getElementById('scramble').textContent=shuffleLetters(current)};
+    document.getElementById('next').onclick=pick;
+    document.getElementById('hint').onclick=()=>{document.getElementById('feedback').textContent=`Hint: starts with ${current[0]}`};
+    pick();
+  </script>
+  <script>
+    const btn=document.getElementById('menu-btn');const drop=document.getElementById('menu-dropdown');
+    btn.onclick=()=>drop.style.display=drop.style.display==='block'?'none':'block';
+    document.addEventListener('click',e=>{if(!btn.contains(e.target)&&!drop.contains(e.target))drop.style.display='none'});
   </script>
 </body>
 </html>
