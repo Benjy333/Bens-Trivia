@@ -64,16 +64,17 @@
     document.addEventListener('click', e => { if(!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display='none'; });
 
     // Game
-    const RIDDLES = [
-      {q:"What has to be broken before you can use it?", a:"egg"},
-      {q:"I speak without a mouth and hear without ears. I have nobody, but I come alive with wind.", a:"echo"},
-      {q:"The more of this there is, the less you see. What is it?", a:"darkness"},
-      {q:"What can fill a room but takes up no space?", a:"light"},
-      {q:"What gets wetter the more it dries?", a:"towel"},
-      {q:"What has many keys but can't open a single lock?", a:"piano"},
-      {q:"What runs around the whole yard without moving?", a:"fence"},
-      {q:"What building has the most stories?", a:"library"}
-    ];
+    <script>
+fetch('daily_content.json')
+  .then(r=>r.json())
+  .then(data=>{
+    const start = new Date(data.start_date);
+    const idx = Math.min(Math.floor((Date.now()-start)/86400000), data.riddles.length-1);
+    const R = data.riddles[idx];
+    riddleEl.textContent = R.q;
+    window._answer = R.a.toLowerCase().replace(/[^a-z]/g,'');
+  });
+</script>
 
     let i = 0, revealed = false;
     const riddleEl = document.getElementById('riddle');
