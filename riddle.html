@@ -6,26 +6,14 @@
   <title>Ben's Trivia — Riddles</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .wrap { min-height: 100svh; display: grid; place-items: center; padding: 96px 16px 32px; }
-    .game-card { width: min(640px, 92vw); }
-    .riddle { font-size: clamp(18px, 2.8vw, 22px); line-height: 1.55; text-align: center; margin: 6px 0 14px; }
-    .controls { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
-    .toolbar { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
-    .feedback { min-height: 28px; text-align: center; margin-top: 8px; }
-    input[type="text"] { background:#021527; border:1px solid var(--neon); border-radius:14px; padding:14px 14px; color:#e9f4ff; font-size:1.05rem; }
-    .btn { border:1px solid var(--neon); background:transparent; color:var(--neon); padding:12px 16px; border-radius:14px; cursor:pointer; box-shadow:0 0 14px rgba(55,161,255,.25); transition:.18s; }
-    .btn:hover { background:var(--neon); color:#001; box-shadow:0 0 22px var(--neon); }
-    .site-top { position: fixed; inset: 0 0 auto 0; height: 64px; display:flex; align-items:center; padding: 10px 14px; z-index: 100; }
-    .brand { margin: 0 auto; font-weight: 900; letter-spacing: .06em; font-size: 1.1rem; color: var(--neon-soft); text-shadow: 0 0 10px var(--neon), 0 0 24px var(--neon-soft); }
-    .card { background: var(--bg2); border: 1px solid var(--neon); border-radius: 20px;
-            box-shadow: 0 0 24px rgba(55,161,255,.25), inset 0 0 30px rgba(150,208,255,.05); padding: 22px; }
-    .top-menu { position: fixed; top: 12px; left: 12px; z-index: 120; }
-    #menu-btn { background: rgba(0,0,0,.25); border: 1.5px solid var(--neon); color: var(--neon);
-                font-size: 1.3rem; padding: 6px 12px; border-radius: 12px; cursor: pointer; box-shadow: 0 0 10px var(--neon-soft); }
-    .menu-dropdown { display:none; position:absolute; top:48px; left:0; background: var(--bg2);
-                     border: 1px solid var(--neon); border-radius: 12px; padding: 6px; box-shadow: 0 0 18px var(--neon-soft); min-width: 210px; }
-    .menu-dropdown a { display:block; padding:10px 12px; color: #e9f4ff; text-decoration:none; border-radius:10px; }
-    .menu-dropdown a:hover { background: var(--neon); color:#001; }
+    .logo-wrap{position:fixed;top:6px;width:100%;display:flex;justify-content:center;z-index:95}
+    .logo-img{height:56px;width:auto;filter:drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft))}
+    .wrap{min-height:100svh;display:grid;place-items:center;padding:96px 16px 32px}
+    .game-card{width:min(640px,92vw)}
+    .riddle{font-size:clamp(18px,2.8vw,22px);line-height:1.55;text-align:center;margin:6px 0 14px}
+    .controls{display:grid;grid-template-columns:1fr auto;gap:10px}
+    .toolbar{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+    .feedback{min-height:28px;text-align:center;margin-top:8px}
   </style>
 </head>
 <body>
@@ -38,80 +26,49 @@
       <a href="connections.html">🧩 Connections</a>
     </nav>
   </header>
-
-  <div class="site-top"><h1 class="brand">Ben’s Trivia • Riddles</h1></div>
+  <div class="logo-wrap"><img class="logo-img" src="logo.png" alt="Ben's Trivia logo" /></div>
 
   <main class="wrap">
     <section class="game-card card">
       <div class="riddle" id="riddle">Loading…</div>
       <div class="controls">
-        <input id="guess" type="text" placeholder="Your answer…" autocomplete="off" />
+        <input id="guess" type="text" placeholder="Your answer…" autocomplete="off"/>
         <button class="btn" id="check">Check</button>
       </div>
       <div class="feedback" id="feedback"></div>
       <div class="toolbar">
         <button class="btn" id="reveal">Reveal</button>
-        <button class="btn" id="next">Next</button>
+        <button class="btn" id="next">New riddle</button>
       </div>
     </section>
   </main>
 
+  <footer id="footerText"></footer>
+
   <script>
-    // Menu
-    const btn = document.getElementById('menu-btn');
-    const dropdown = document.getElementById('menu-dropdown');
-    btn.addEventListener('click', () => dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block');
-    document.addEventListener('click', e => { if(!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display='none'; });
+    // Menu + footer
+    const mb=document.getElementById('menu-btn'), md=document.getElementById('menu-dropdown');
+    mb.onclick=()=>md.style.display=md.style.display==='block'?'none':'block';
+    document.addEventListener('click',e=>{if(!mb.contains(e.target)&&!md.contains(e.target))md.style.display='none'});
+    const today=new Date();document.getElementById('footerText').textContent=`Made by Ben · Puzzle No. 1 · ${today.toLocaleDateString(undefined,{weekday:'long'})}, ${today.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}`;
 
     // Game
-    <script>
-fetch('daily_content.json')
-  .then(r=>r.json())
-  .then(data=>{
-    const start = new Date(data.start_date);
-    const idx = Math.min(Math.floor((Date.now()-start)/86400000), data.riddles.length-1);
-    const R = data.riddles[idx];
-    riddleEl.textContent = R.q;
-    window._answer = R.a.toLowerCase().replace(/[^a-z]/g,'');
-  });
-</script>
-
-    let i = 0, revealed = false;
-    const riddleEl = document.getElementById('riddle');
-    const feedback = document.getElementById('feedback');
-    const guess = document.getElementById('guess');
-
-    function show(){
-      riddleEl.textContent = RIDDLES[i].q;
-      feedback.textContent = "";
-      guess.value = "";
-      revealed = false;
-      guess.focus();
+    const rid=document.getElementById('riddle'), guess=document.getElementById('guess'), fb=document.getElementById('feedback');
+    let answer="";
+    async function loadToday(){
+      const data=await (await fetch('daily_content.json')).json();
+      const start=new Date(data.start_date);
+      const idx=Math.min(Math.floor((Date.now()-start)/86400000), data.riddles.length-1);
+      const R=data.riddles[idx];
+      rid.textContent=R.q; answer=(R.a||"").toLowerCase().replace(/[^a-z]/g,''); fb.textContent=""; guess.value=""; guess.focus();
     }
-    function norm(s){ return (s||"").trim().toLowerCase().replace(/[^a-z]/g,""); }
-    function check(){
-      const g = norm(guess.value);
-      const a = norm(RIDDLES[i].a);
-      if(!g) return;
-      if(g === a){
-        feedback.innerHTML = "✅ Correct!";
-        setTimeout(next, 700);
-      } else {
-        feedback.textContent = "❌ Not quite. Try reveal or guess again.";
-      }
-    }
-    function reveal(){
-      revealed = true;
-      feedback.innerHTML = `🗝️ Answer: <strong>${RIDDLES[i].a}</strong>`;
-    }
-    function next(){ i = (i+1) % RIDDLES.length; show(); }
+    function norm(s){return (s||"").trim().toLowerCase().replace(/[^a-z]/g,'');}
+    document.getElementById('check').onclick=()=>{const g=norm(guess.value); if(!g) return; fb.textContent=g===answer?"✅ Correct!":"❌ Not quite. Try reveal or guess again.";};
+    document.getElementById('reveal').onclick=()=>{fb.innerHTML=`🗝️ Answer: <strong>${answer}</strong>`;};
+    document.getElementById('next').onclick=loadToday;
+    guess.addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('check').click(); });
 
-    document.getElementById('check').addEventListener('click', check);
-    document.getElementById('reveal').addEventListener('click', reveal);
-    document.getElementById('next').addEventListener('click', next);
-    guess.addEventListener('keydown', e => { if(e.key === 'Enter') check(); });
-
-    show();
+    loadToday();
   </script>
 </body>
 </html>
