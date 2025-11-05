@@ -1,63 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ben's Games — Anagram</title>
-<link rel="stylesheet" href="style.css" />
-<style>
-.page-wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:72px 16px 32px}
-.game-card{width:min(520px,92vw);background:var(--bg2);border:1px solid var(--neon);border-radius:20px;box-shadow:0 0 24px rgba(55,161,255,.25), inset 0 0 30px rgba(150,208,255,.05);padding:20px}
-.title{font-size:1.6rem;text-align:center;margin-bottom:10px;text-shadow:0 0 8px var(--neon-soft)}
-.scramble{font-size:2.2rem;text-align:center;margin:10px 0 20px;letter-spacing:0.1em;font-weight:bold}
-input[type="text"]{flex:1;background:#021527;border:1px solid var(--neon);border-radius:12px;padding:14px;color:#e9f4ff;font-size:1.05rem}
-.btn{border:1px solid var(--neon);background:transparent;color:var(--neon);padding:12px 16px;border-radius:12px;cursor:pointer}
-.btn:hover{background:var(--neon);color:#001}
-.feedback{text-align:center;margin-top:10px;min-height:24px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ben's Trivia — Anagram</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Only tiny page-specific tweaks; everything else comes from your main neon theme */
+    .wrap { min-height: 100svh; display: grid; place-items: center; padding: 96px 16px 32px; }
+    .game-card { width: min(640px, 92vw); }
+    .scramble { letter-spacing: .12em; font-weight: 800; font-size: clamp(28px, 6vw, 44px); text-align: center; margin: 6px 0 14px; }
+    .controls { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    .toolbar { display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+    .feedback { min-height: 28px; text-align: center; margin-top: 8px; }
+    input[type="text"] { background:#021527; border:1px solid var(--neon); border-radius:14px; padding:14px 14px; color:#e9f4ff; font-size:1.05rem; }
+    .btn { border:1px solid var(--neon); background:transparent; color:var(--neon); padding:12px 16px; border-radius:14px; cursor:pointer; box-shadow:0 0 14px rgba(55,161,255,.25); transition:.18s; }
+    .btn:hover { background:var(--neon); color:#001; box-shadow:0 0 22px var(--neon); }
+    .subtle { color: var(--neon-soft); text-align:center; margin-top: 10px; font-size: .95rem; }
+    /* Top bar */
+    .site-top { position: fixed; inset: 0 0 auto 0; height: 64px; display:flex; align-items:center; padding: 10px 14px; z-index: 100; }
+    .brand { margin: 0 auto; font-weight: 900; letter-spacing: .06em; font-size: 1.1rem; color: var(--neon-soft); text-shadow: 0 0 10px var(--neon), 0 0 24px var(--neon-soft); }
+    .card { background: var(--bg2); border: 1px solid var(--neon); border-radius: 20px;
+            box-shadow: 0 0 24px rgba(55,161,255,.25), inset 0 0 30px rgba(150,208,255,.05); padding: 22px; }
+    /* Menu */
+    .top-menu { position: fixed; top: 12px; left: 12px; z-index: 120; }
+    #menu-btn { background: rgba(0,0,0,.25); border: 1.5px solid var(--neon); color: var(--neon);
+                font-size: 1.3rem; padding: 6px 12px; border-radius: 12px; cursor: pointer; box-shadow: 0 0 10px var(--neon-soft); }
+    .menu-dropdown { display:none; position:absolute; top:48px; left:0; background: var(--bg2);
+                     border: 1px solid var(--neon); border-radius: 12px; padding: 6px; box-shadow: 0 0 18px var(--neon-soft); min-width: 210px; }
+    .menu-dropdown a { display:block; padding:10px 12px; color: #e9f4ff; text-decoration:none; border-radius:10px; }
+    .menu-dropdown a:hover { background: var(--neon); color:#001; }
+  </style>
 </head>
 <body>
-<header class="top-menu">
-<button id="menu-btn">☰</button>
-<div class="menu-dropdown" id="menu-dropdown">
-<a href="index.html">🎯 Ben's Trivia</a>
-<a href="anagram.html">🔤 Anagram Game</a>
-<a href="riddle.html">🕵️ Riddle Game</a>
-</div>
-</header>
+  <!-- Top-left menu -->
+  <header class="top-menu">
+    <button id="menu-btn">☰</button>
+    <nav class="menu-dropdown" id="menu-dropdown">
+      <a href="index.html">🎯 Ben's Trivia</a>
+      <a href="anagram.html">🔤 Anagram Game</a>
+      <a href="riddle.html">🕵️ Riddle Game</a>
+    </nav>
+  </header>
 
+  <!-- Center brand (like your trivia header) -->
+  <div class="site-top"><h1 class="brand">Ben’s Trivia • Anagram</h1></div>
 
-<main class="page-wrap">
-<div class="game-card">
-<h1 class="title">🔤 Anagram Game</h1>
-<div class="scramble" id="scramble">•••</div>
-<div style="display:flex;gap:10px">
-<input id="guess" type="text" placeholder="Type your guess…" />
-<button class="btn" id="check">Check</button>
-</div>
-<div class="feedback" id="feedback"></div>
-<div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
-<button class="btn" id="hint">Hint</button>
-<button class="btn" id="shuffle">Shuffle</button>
-<button class="btn" id="next">Next</button>
-</div>
-</div>
-</main>
+  <main class="wrap">
+    <section class="game-card card">
+      <div class="scramble" id="scramble">•••</div>
+      <div class="controls">
+        <input id="guess" type="text" placeholder="Type your guess…" autocomplete="off" />
+        <button class="btn" id="check">Check</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="toolbar">
+        <button class="btn" id="hint">Hint</button>
+        <button class="btn" id="shuffle">Shuffle</button>
+        <button class="btn" id="next">Next</button>
+      </div>
+      <p class="subtle">Tip: fewer hints = bigger bragging rights ✨</p>
+    </section>
+  </main>
 
+  <script>
+    // Menu
+    const btn = document.getElementById('menu-btn');
+    const dropdown = document.getElementById('menu-dropdown');
+    btn.addEventListener('click', () => dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block');
+    document.addEventListener('click', e => { if(!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display='none'; });
 
-<script>
-const words = ["river","cloud","planet","signal","neon","trivia","python","energy"];
-let current="";
-function shuffleLetters(str){return str.split('').sort(()=>Math.random()-0.5).join('');}
-function pick(){current=words[Math.floor(Math.random()*words.length)];document.getElementById('scramble').textContent=shuffleLetters(current);document.getElementById('feedback').textContent='';document.getElementById('guess').value='';}
-document.getElementById('check').onclick=()=>{const g=document.getElementById('guess').value.trim().toLowerCase();document.getElementById('feedback').textContent=g===current?"✅ Correct!":"❌ Try again."};
-document.getElementById('shuffle').onclick=()=>{document.getElementById('scramble').textContent=shuffleLetters(current)};
-document.getElementById('next').onclick=pick;
-document.getElementById('hint').onclick=()=>{document.getElementById('feedback').textContent=`Hint: starts with ${current[0]}`};
-pick();
-</script>
-<script>
-const btn=document.getElementById('menu-btn');const drop=document.getElementById('menu-dropdown');btn.onclick=()=>drop.style.display=drop.style.display==='block'?'none':'block';document.addEventListener('click',e=>{if(!btn.contains(e.target)&&!drop.contains(e.target))drop.style.display='none'});
-</script>
+    // Game
+    const WORDS = ["river","cloud","planet","signal","neon","trivia","answer","python","sprint","energy","galaxy","diamond","kangaroo","brisbane","puzzle","voltage","matrix","quantum","triangle","asteroid"];
+    let current = "";
+    const scr = document.getElementById('scramble');
+    const guess = document.getElementById('guess');
+    const fb = document.getElementById('feedback');
+
+    function shuffleLetters(str){
+      const arr = str.split('');
+      for(let i=arr.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+      if(arr.join('')===str) return shuffleLetters(str);
+      return arr.join('');
+    }
+    function pick(){
+      current = WORDS[Math.floor(Math.random()*WORDS.length)];
+      scr.textContent = shuffleLetters(current);
+      fb.textContent=''; guess.value='';
+      guess.focus();
+    }
+    function check(){
+      const g = (guess.value||"").trim().toLowerCase();
+      fb.textContent = g===current ? "✅ Correct!" : "❌ Try again.";
+      if(g===current) setTimeout(pick, 700);
+    }
+    document.getElementById('check').addEventListener('click', check);
+    document.getElementById('next').addEventListener('click', pick);
+    document.getElementById('shuffle').addEventListener('click', ()=>{ if(current) scr.textContent = shuffleLetters(current); });
+    document.getElementById('hint').addEventListener('click', ()=>{ if(current) fb.textContent = `Hint: starts with “${current[0].toUpperCase()}”`; });
+    guess.addEventListener('keydown', e => { if(e.key === 'Enter') check(); });
+
+    pick();
+  </script>
 </body>
 </html>
