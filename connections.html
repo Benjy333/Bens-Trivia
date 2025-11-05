@@ -6,75 +6,28 @@
   <title>Ben’s Games — Connections</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .wrap { min-height: 100svh; display: grid; place-items: center; padding: 96px 16px 32px; }
-    .logo-wrap { position: fixed; top: 6px; width: 100%; display:flex; justify-content:center; z-index: 95; }
-    .logo-img  { height: 56px; width: auto; filter: drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft)); }
-
-    /* Board */
-    .board { display:grid; grid-template-columns: repeat(4, min(140px, 22vw)); gap:10px; justify-content:center; }
-    .tile {
-      user-select:none; text-align:center; padding:16px; border-radius:14px;
-      border:1.5px solid var(--neon); background:#021527; color:var(--text);
-      cursor:pointer; transition:transform .12s ease, box-shadow .12s ease, background .2s ease, color .2s ease;
-      box-shadow:0 0 10px rgba(55,161,255,.18);
-    }
-    .tile:hover { transform: translateY(-1px); }
-    .tile.selected { outline: 2px solid var(--neon); box-shadow:0 0 20px var(--neon-soft); }
-
-    /* Locked groups */
-    .locked { display:grid; gap:12px; margin-bottom:12px; }
-    .group-row { display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; align-items:center; }
-    .group-head {
-      grid-column: 1/-1;
-      text-align:left; font-weight:800; letter-spacing:.02em;
-      border-radius:12px; padding:10px 12px; margin-bottom:4px;
-    }
-
-    /* Category colors */
-    .c0 { background:#f7e06e; color:#001; border-color:#f7e06e; }
-    .c1 { background:#a4d4ae; color:#001; border-color:#a4d4ae; }
-    .c2 { background:#8ec9ff; color:#001; border-color:#8ec9ff; }
-    .c3 { background:#d7a4ff; color:#001; border-color:#d7a4ff; }
-
-    .controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
-    .top { display:flex; justify-content:space-between; align-items:center; color:var(--neon-soft); margin-bottom:10px; }
-    .strike { color: var(--bad); font-weight:700; }
-
-    /* Celebration modal */
-    .modal {
-      position: fixed; inset:0; display:none; place-items:center; z-index: 300;
-      background: rgba(0,0,0,.5);
-      backdrop-filter: blur(3px);
-      animation: fadeIn .25s ease;
-    }
-    @keyframes fadeIn { from {opacity:0} to {opacity:1} }
-    .modal-card {
-      width:min(560px,92vw);
-      background: var(--bg2); border: 1px solid var(--neon); border-radius: 18px;
-      box-shadow: var(--shadow); padding: 20px;
-      text-align:center;
-    }
-    .emoji-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; font-size: 1.4rem; margin: 8px 0 12px; }
-    .modal h2 { margin: 6px 0 4px; text-shadow: 0 0 10px var(--neon-soft); }
-    .modal .subtle { margin-top: 4px; }
-
-    /* Confetti */
-    .confetti { position: fixed; inset:0; pointer-events:none; z-index: 320; overflow:hidden; }
-    .confetti span {
-      position:absolute; width:8px; height:12px; opacity:.9;
-      animation: fall linear forwards;
-    }
-    @keyframes fall {
-      0% { transform: translateY(-10vh) rotate(0); }
-      100% { transform: translateY(110vh) rotate(540deg); }
-    }
-
-    /* Perfect badge (top right) */
-    .badge { font-size:.95rem; }
+    .logo-wrap{position:fixed;top:6px;width:100%;display:flex;justify-content:center;z-index:95}
+    .logo-img{height:56px;width:auto;filter:drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft))}
+    .wrap{min-height:100svh;display:grid;place-items:center;padding:96px 16px 32px}
+    .board{display:grid;grid-template-columns:repeat(4,min(140px,22vw));gap:10px;justify-content:center}
+    .tile{user-select:none;text-align:center;padding:16px;border-radius:14px;border:1.5px solid var(--neon);background:#021527;color:var(--text);cursor:pointer;transition:transform .12s,box-shadow .12s,background .2s,color .2s;box-shadow:0 0 10px rgba(55,161,255,.18)}
+    .tile:hover{transform:translateY(-1px)} .tile.selected{outline:2px solid var(--neon);box-shadow:0 0 20px var(--neon-soft)}
+    .locked{display:grid;gap:12px;margin-bottom:12px}
+    .group-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:center}
+    .group-head{grid-column:1/-1;text-align:left;font-weight:800;letter-spacing:.02em;border-radius:12px;padding:10px 12px;margin-bottom:4px}
+    .c0{background:#f7e06e;color:#001;border-color:#f7e06e}.c1{background:#a4d4ae;color:#001;border-color:#a4d4ae}.c2{background:#8ec9ff;color:#001;border-color:#8ec9ff}.c3{background:#d7a4ff;color:#001;border-color:#d7a4ff}
+    .controls{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+    .top{display:flex;justify-content:space-between;align-items:center;color:var(--neon-soft);margin-bottom:10px}
+    .strike{color:var(--bad);font-weight:700}
+    .modal{position:fixed;inset:0;display:none;place-items:center;z-index:300;background:rgba(0,0,0,.5);backdrop-filter:blur(3px)}
+    .modal-card{width:min(560px,92vw);background:var(--bg2);border:1px solid var(--neon);border-radius:18px;box-shadow:var(--shadow);padding:20px;text-align:center}
+    .emoji-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:1.4rem;margin:8px 0 12px}
+    .confetti{position:fixed;inset:0;pointer-events:none;z-index:320;overflow:hidden}
+    .confetti span{position:absolute;width:8px;height:12px;opacity:.9;animation:fall linear forwards}
+    @keyframes fall{0%{transform:translateY(-10vh) rotate(0)}100%{transform:translateY(110vh) rotate(540deg)}}
   </style>
 </head>
 <body>
-  <!-- Menu -->
   <header class="top-menu">
     <button id="menu-btn">☰</button>
     <nav class="menu-dropdown" id="menu-dropdown">
@@ -84,22 +37,16 @@
       <a href="connections.html">🧩 Connections</a>
     </nav>
   </header>
-
-  <!-- Image logo -->
-  <div class="logo-wrap">
-    <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
-  </div>
+  <div class="logo-wrap"><img class="logo-img" src="logo.png" alt="Ben's Trivia logo" /></div>
 
   <main class="wrap">
     <section class="game-card card" style="width:min(760px,96vw);">
       <div class="top">
         <div>Strikes: <span id="strikes" class="strike">0/4</span></div>
-        <div id="status" class="badge"></div>
+        <div id="status"></div>
       </div>
-
       <div id="locked" class="locked"></div>
       <div id="board" class="board" aria-live="polite"></div>
-
       <div class="controls">
         <button class="btn" id="shuffleBtn">Shuffle</button>
         <button class="btn" id="deselectBtn">Deselect</button>
@@ -115,8 +62,8 @@
     <div class="modal-card">
       <h2 id="modaltitle">🎉 Perfect!</h2>
       <div id="modalSubtitle" class="subtle"></div>
-      <div id="emojiGrid" class="emoji-grid" aria-label="Result grid"></div>
-      <div style="display:flex; gap:8px; justify-content:center;">
+      <div id="emojiGrid" class="emoji-grid"></div>
+      <div style="display:flex;gap:8px;justify-content:center">
         <button class="btn" id="shareWhats">WhatsApp</button>
         <button class="btn" id="copyBtn">Copy result</button>
         <button class="btn" id="playAgain">Play again</button>
@@ -126,247 +73,100 @@
   <div id="confetti" class="confetti" aria-hidden="true"></div>
 
   <script>
-    // Menu
-    const menuBtn = document.getElementById('menu-btn');
-    const menuDrop = document.getElementById('menu-dropdown');
-    menuBtn.addEventListener('click', () => menuDrop.style.display = menuDrop.style.display === 'block' ? 'none' : 'block');
-    document.addEventListener('click', (e) => { if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) menuDrop.style.display = 'none'; });
+    // Menu + footer
+    const mb=document.getElementById('menu-btn'), md=document.getElementById('menu-dropdown');
+    mb.onclick=()=>md.style.display=md.style.display==='block'?'none':'block';
+    document.addEventListener('click',e=>{if(!mb.contains(e.target)&&!md.contains(e.target))md.style.display='none'});
+    const today=new Date();document.getElementById('footerText').textContent=`Made by Ben · Puzzle No. 1 · ${today.toLocaleDateString(undefined,{weekday:'long'})}, ${today.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}`;
 
-    // ===== PUZZLE DATA (4 categories × 4 items) =====
-    <script>
-fetch('daily_content.json')
-  .then(r=>r.json())
-  .then(data=>{
-    const start = new Date(data.start_date);
-    const idx = Math.min(Math.floor((Date.now()-start)/86400000), data.connections.length-1);
-    const CATS = data.connections[idx].categories;
-    // then build deck from CATS just like before
-    deck = CATS.flatMap((c, ci) => c.items.map(v => ({ v, cat: ci })));
-    resetGame(); // or your existing init that renders the board
-  });
-</script>
-    // Emoji colors mapped to category index (row order)
-    const EMOJI = ["🟨","🟩","🟦","🟪"];
+    // Globals
+    const board=document.getElementById("board"), locked=document.getElementById("locked"), strikesEl=document.getElementById("strikes"), statusEl=document.getElementById("status");
+    const modal=document.getElementById("modal"), emojiGrid=document.getElementById("emojiGrid"), modalSubtitle=document.getElementById("modalSubtitle"), confettiWrap=document.getElementById("confetti");
+    let CATS=[], deck=[], selected=new Set(), strikes=0, solvedOrder=[];
+    const EMOJI=["🟨","🟩","🟦","🟪"];
 
-    // Build deck
-    function makeDeck(){ return CATS.flatMap((c, ci) => c.items.map(v => ({ v, cat: ci }))); }
-    let deck = makeDeck();
+    function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+    function makeDeck(){return CATS.flatMap((c,ci)=>c.items.map(v=>({v,cat:ci})));}
 
-    // Elements
-    const board = document.getElementById("board");
-    const locked = document.getElementById("locked");
-    const strikesEl = document.getElementById("strikes");
-    const statusEl = document.getElementById("status");
-    const modal = document.getElementById("modal");
-    const emojiGrid = document.getElementById("emojiGrid");
-    const modalSubtitle = document.getElementById("modalSubtitle");
-    const confettiWrap = document.getElementById("confetti");
-
-    // State
-    let selected = new Set();
-    let strikes = 0;
-    let solvedOrder = [];   // order of solved category indices
-
-    // Utils
-    function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
     function renderBoard(){
-      board.innerHTML = "";
-      deck.forEach((t,i) => {
-        const d = document.createElement("button");
-        d.className = "tile";
-        d.textContent = t.v;
-        d.dataset.index = i;
-        d.addEventListener("click", () => toggle(i, d));
-        board.appendChild(d);
+      board.innerHTML="";
+      deck.forEach((t,i)=>{
+        const d=document.createElement("button"); d.className="tile"; d.textContent=t.v; d.dataset.index=i;
+        d.onclick=()=>toggle(i,d); board.appendChild(d);
       });
     }
     function toggle(i, el){
-      if (el.classList.contains("disabled")) return;
-      if (selected.has(i)) { selected.delete(i); el.classList.remove("selected"); }
-      else { if (selected.size >= 4) return; selected.add(i); el.classList.add("selected"); }
+      if(el.classList.contains("disabled")) return;
+      if(selected.has(i)){selected.delete(i);el.classList.remove("selected");}
+      else{ if(selected.size>=4) return; selected.add(i); el.classList.add("selected"); }
     }
     function deselect(){
-      selected.forEach(i=>{
-        const el = board.querySelector(`.tile[data-index="${i}"]`);
-        if (el) el.classList.remove("selected");
-      });
+      selected.forEach(i=>{const el=board.querySelector(`.tile[data-index="${i}"]`); if(el) el.classList.remove("selected");});
       selected.clear();
     }
     function submit(){
-      if (selected.size !== 4) { statusEl.textContent = "Select 4 tiles."; return; }
-      const idxs = [...selected];
-      const cats = idxs.map(i => deck[i].cat);
-      const allSame = cats.every(c => c === cats[0]);
-
-      if (allSame) {
-        const catIndex = cats[0];
-        solvedOrder.push(catIndex);
-        lockGroup(catIndex, idxs);
-        statusEl.textContent = "✅ Nice!";
-        if (solvedOrder.length === 4) finish(true);
-      } else {
-        strikes++;
-        strikesEl.textContent = strikes + "/4";
-        statusEl.textContent = "❌ Incorrect group.";
-        if (strikes >= 4) finish(false);
-      }
+      if(selected.size!==4){statusEl.textContent="Select 4 tiles.";return;}
+      const idxs=[...selected]; const cats=idxs.map(i=>deck[i].cat); const ok=cats.every(c=>c===cats[0]);
+      if(ok){const cat=cats[0]; solvedOrder.push(cat); lockGroup(cat, idxs); statusEl.textContent="✅ Nice!"; if(solvedOrder.length===4) finish(true);}
+      else{strikes++; strikesEl.textContent=strikes+"/4"; statusEl.textContent="❌ Incorrect group."; if(strikes>=4) finish(false);}
       deselect();
     }
-
     function lockGroup(catIndex, idxs){
-      // Animate selected tiles briefly
-      idxs.forEach(i=>{
-        const el = board.querySelector(`.tile[data-index="${i}"]`);
-        if (el) {
-          el.style.transform = "scale(1.04)";
-          setTimeout(()=> el.style.transform = "scale(1)", 140);
-        }
-      });
-
-      // Build the locked row UI
-      const head = document.createElement("div");
-      head.className = "group-head c"+catIndex;
-      head.textContent = CATS[catIndex].name;
-
-      const row = document.createElement("div");
-      row.className = "group-row";
-      CATS[catIndex].items.forEach(val=>{
-        const t = document.createElement("div");
-        t.className = "tile c"+catIndex;
-        t.textContent = val;
-        row.appendChild(t);
-      });
-
-      const holder = document.createElement("div");
-      holder.appendChild(head);
-      holder.appendChild(row);
-      locked.appendChild(holder);
-
-      // Remove tiles from deck and rebuild board
-      idxs.sort((a,b)=>b-a).forEach(i=>{ deck[i]._removed = true; });
-      deck = deck.filter(t=>!t._removed);
-      renderBoard();
+      idxs.forEach(i=>{const el=board.querySelector(`.tile[data-index="${i}"]`); if(el){el.style.transform="scale(1.04)"; setTimeout(()=>el.style.transform="scale(1)",140);}});
+      const head=document.createElement("div"); head.className="group-head c"+catIndex; head.textContent=CATS[catIndex].name;
+      const row=document.createElement("div"); row.className="group-row";
+      CATS[catIndex].items.forEach(v=>{const t=document.createElement("div"); t.className="tile c"+catIndex; t.textContent=v; row.appendChild(t);});
+      const holder=document.createElement("div"); holder.appendChild(head); holder.appendChild(row); locked.appendChild(holder);
+      idxs.sort((a,b)=>b-a).forEach(i=>deck[i]._removed=true); deck=deck.filter(t=>!t._removed); renderBoard();
     }
-
-    function shuffleBoard(){
-      deck = shuffle(deck);
-      renderBoard();
-      deselect();
-      statusEl.textContent = "";
-    }
+    function shuffleBoard(){ deck=shuffle(deck); renderBoard(); deselect(); statusEl.textContent=""; }
 
     function finish(won){
-      // Reveal any leftovers into their categories if lost
-      if (!won && deck.length) {
-        const remainingByCat = new Map();
-        deck.forEach(t => {
-          if (!remainingByCat.has(t.cat)) remainingByCat.set(t.cat, []);
-          remainingByCat.get(t.cat).push(t.v);
+      if(!won && deck.length){
+        const rem=Array.from(new Set(deck.map(t=>t.cat)));
+        rem.forEach(ci=>{
+          const head=document.createElement("div"); head.className="group-head c"+ci; head.textContent=CATS[ci].name+" (revealed)";
+          const row=document.createElement("div"); row.className="group-row";
+          CATS[ci].items.forEach(v=>{const t=document.createElement("div"); t.className="tile c"+ci; t.textContent=v; row.appendChild(t);});
+          const holder=document.createElement("div"); holder.appendChild(head); holder.appendChild(row); locked.appendChild(holder);
         });
-        // Append rows
-        [...remainingByCat.keys()].forEach(ci=>{
-          const head = document.createElement("div");
-          head.className = "group-head c"+ci;
-          head.textContent = CATS[ci].name + " (revealed)";
-          const row = document.createElement("div");
-          row.className = "group-row";
-          CATS[ci].items.forEach(v=>{
-            const t = document.createElement("div");
-            t.className = "tile c"+ci;
-            t.textContent = v;
-            row.appendChild(t);
-          });
-          const holder = document.createElement("div");
-          holder.appendChild(head); holder.appendChild(row);
-          locked.appendChild(holder);
-        });
-        board.innerHTML = "";
+        board.innerHTML="";
       }
-
-      // Build emoji grid (order = solvedOrder, then remaining in category index order)
-      const remainingCats = [0,1,2,3].filter(c => !solvedOrder.includes(c));
-      const order = [...solvedOrder, ...remainingCats];
-      emojiGrid.innerHTML = "";
-      order.forEach(ci=>{
-        for (let i=0;i<4;i++){
-          const cell = document.createElement("div");
-          cell.textContent = EMOJI[ci];
-          emojiGrid.appendChild(cell);
-        }
-      });
-
-      // Subtitle (strikes info)
+      const remaining=[0,1,2,3].filter(c=>!solvedOrder.includes(c));
+      const order=[...solvedOrder,...remaining];
+      emojiGrid.innerHTML="";
+      order.forEach(ci=>{for(let i=0;i<4;i++){const cell=document.createElement("div"); cell.textContent=EMOJI[ci]; emojiGrid.appendChild(cell);}});
       modalSubtitle.textContent = won ? "Perfect! 0 mistakes 🎯" : `Revealed after ${strikes}/4 strikes`;
-
-      // Confetti if won
-      if (won) burstConfetti();
-
-      // Show modal
-      modal.style.display = "grid";
-
-      // Badge in header
-      statusEl.textContent = won ? "🎉 Perfect!" : "😅 Out of strikes";
+      if(won) burstConfetti();
+      modal.style.display="grid";
+      statusEl.textContent=won?"🎉 Perfect!":"😅 Out of strikes";
     }
-
-    // Share helpers
-    function shareText(){
-      const rows = emojiGrid.innerText.trim().split(/\s+/);
-      // Convert 16 emojis back to a 4x4 grid (already rows of 4)
-      const grid = [];
-      for (let i=0;i<rows.length;i+=4) grid.push(rows.slice(i,i+4).join(""));
-      const line = grid.join("\n");
-      const today = new Date();
-      const dayName = today.toLocaleDateString(undefined, { weekday: 'long' });
-      const dateStr = today.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
-      return `Ben's Connections — ${dayName} ${dateStr}\n${line}\n${location.origin}${location.pathname}`;
-    }
-    document.getElementById("shareWhats").addEventListener("click", ()=>{
-      const txt = encodeURIComponent(shareText());
-      window.open(`https://wa.me/?text=${txt}`,'_blank');
-    });
-    document.getElementById("copyBtn").addEventListener("click", async ()=>{
-      try { await navigator.clipboard.writeText(shareText()); alert("Result copied!"); }
-      catch { alert("Copy failed."); }
-    });
-    document.getElementById("playAgain").addEventListener("click", ()=>{
-      modal.style.display = "none";
-      resetGame();
-    });
-
-    // Confetti
     function burstConfetti(){
-      confettiWrap.innerHTML = "";
-      const colors = ["#f7e06e","#a4d4ae","#8ec9ff","#d7a4ff","#37a1ff","#ffffff"];
-      const count = 120;
-      for(let i=0;i<count;i++){
-        const s = document.createElement("span");
-        s.style.left = Math.random()*100 + "vw";
-        s.style.animationDuration = (1.8 + Math.random()*1.5) + "s";
-        s.style.background = colors[Math.floor(Math.random()*colors.length)];
-        s.style.transform = `translateY(-10vh) rotate(${Math.random()*360}deg)`;
-        confettiWrap.appendChild(s);
-      }
-      // clear after a bit
-      setTimeout(()=> confettiWrap.innerHTML = "", 3000);
+      confettiWrap.innerHTML=""; const colors=["#f7e06e","#a4d4ae","#8ec9ff","#d7a4ff","#37a1ff","#ffffff"]; const n=120;
+      for(let i=0;i<n;i++){const s=document.createElement("span"); s.style.left=Math.random()*100+"vw"; s.style.animationDuration=(1.8+Math.random()*1.5)+"s"; s.style.background=colors[Math.floor(Math.random()*colors.length)]; s.style.transform=`translateY(-10vh) rotate(${Math.random()*360}deg)`; confettiWrap.appendChild(s);}
+      setTimeout(()=>confettiWrap.innerHTML="",3000);
     }
+    function shareText(){
+      const rows=emojiGrid.innerText.trim().split(/\s+/); const grid=[]; for(let i=0;i<rows.length;i+=4) grid.push(rows.slice(i,i+4).join(""));
+      const day=new Date(); return `Ben's Connections — ${day.toLocaleDateString(undefined,{weekday:'long'})} ${day.toLocaleDateString(undefined,{day:'numeric',month:'short'})}\n${grid.join("\n")}\n${location.origin}${location.pathname}`;
+    }
+    document.getElementById("shareWhats").onclick=()=>window.open(`https://wa.me/?text=${encodeURIComponent(shareText())}`,'_blank');
+    document.getElementById("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(shareText());alert("Result copied!");}catch{alert("Copy failed.");}};
+    document.getElementById("playAgain").onclick=()=>{modal.style.display="none"; resetGame();};
 
-    // Footer date
-    const footer = document.getElementById('footerText');
-    const today = new Date();
-    const dayName = today.toLocaleDateString(undefined, { weekday: 'long' });
-    const dateStr = today.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-    footer.textContent = `Made by Ben · Puzzle No. 1 · ${dayName}, ${dateStr}`;
-
-    // Init
-    function resetGame(){
-      strikes = 0; solvedOrder = []; selected.clear();
-      deck = shuffle(makeDeck());
-      locked.innerHTML = ""; strikesEl.textContent = "0/4"; statusEl.textContent="";
+    // Load today's puzzle from JSON
+    async function resetGame(){
+      const data=await (await fetch('daily_content.json')).json();
+      const start=new Date(data.start_date);
+      const idx=Math.min(Math.floor((Date.now()-start)/86400000), data.connections.length-1);
+      CATS=data.connections[idx].categories;
+      deck=shuffle(makeDeck());
+      locked.innerHTML=""; strikes=0; solvedOrder=[]; selected.clear(); strikesEl.textContent="0/4"; statusEl.textContent="";
       renderBoard();
     }
-    document.getElementById("submitBtn").addEventListener("click", submit);
-    document.getElementById("deselectBtn").addEventListener("click", deselect);
-    document.getElementById("shuffleBtn").addEventListener("click", shuffleBoard);
+    document.getElementById("submitBtn").onclick=submit;
+    document.getElementById("deselectBtn").onclick=deselect;
+    document.getElementById("shuffleBtn").onclick=shuffleBoard;
     resetGame();
   </script>
 </body>
