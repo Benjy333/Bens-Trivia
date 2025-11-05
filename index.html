@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ben’s Trivia</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Optional glow animation for logo */
+    .logo {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: clamp(30px, 7vw, 52px);
+      color: var(--neon);
+      text-align: center;
+      text-shadow:
+        0 0 8px var(--neon),
+        0 0 20px var(--neon-soft),
+        0 0 40px var(--neon);
+      animation: pulse 2.4s ease-in-out infinite alternate;
+      margin: 0;
+    }
+    @keyframes pulse {
+      from { text-shadow: 0 0 8px var(--neon), 0 0 20px var(--neon-soft); }
+      to   { text-shadow: 0 0 20px var(--neon), 0 0 45px var(--neon-soft); }
+    }
+  </style>
 </head>
 <body>
   <!-- Top-left menu -->
@@ -17,12 +36,12 @@
     </nav>
   </header>
 
-  <!-- Glowing brand bar -->
+  <!-- Neon Logo -->
   <div class="site-top">
-    <h1 class="brand">Ben’s Trivia</h1>
+    <h1 class="logo">Ben’s Trivia</h1>
   </div>
 
-  <!-- Main game area -->
+  <!-- Main Game -->
   <main>
     <section class="game-card card" id="game">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:var(--neon-soft);">
@@ -32,10 +51,7 @@
 
       <h2 id="question" style="margin:10px 0 14px; text-align:center;">Loading…</h2>
 
-      <div id="answers" style="display:grid; gap:10px;">
-        <!-- answer buttons injected here -->
-      </div>
-
+      <div id="answers" style="display:grid; gap:10px;"></div>
       <div class="feedback" id="feedback"></div>
 
       <div class="toolbar" style="display:flex; gap:10px; justify-content:center; margin-top:12px;">
@@ -53,12 +69,10 @@
     </section>
   </main>
 
-  <footer>
-    0 Made by Benjy333 · Puzzle No. 1 · Tuesday, 4th of Nov 2025
-  </footer>
+  <footer id="footerText"></footer>
 
   <script>
-    // ===== Menu =====
+    /* ===== MENU ===== */
     const menuBtn = document.getElementById('menu-btn');
     const menuDrop = document.getElementById('menu-dropdown');
     menuBtn.addEventListener('click', () => {
@@ -70,31 +84,15 @@
       }
     });
 
-    // ===== Trivia data (swap these for your own if you like) =====
+    /* ===== TRIVIA QUESTIONS ===== */
     const QUESTIONS = [
-      {
-        q: "Which city is the capital of Queensland?",
-        answers: ["Brisbane", "Sydney", "Melbourne", "Perth"],
-        correct: 0
-      },
-      {
-        q: "What’s the chemical symbol for water?",
-        answers: ["WO", "H2O", "O2H", "H2"],
-        correct: 1
-      },
-      {
-        q: "Which animal is native to Australia?",
-        answers: ["Kangaroo", "Panda", "Bison", "Moose"],
-        correct: 0
-      },
-      {
-        q: "Which planet is known as the Red Planet?",
-        answers: ["Venus", "Jupiter", "Mars", "Mercury"],
-        correct: 2
-      }
+      { q: "Which city is the capital of Queensland?", answers: ["Brisbane", "Sydney", "Melbourne", "Perth"], correct: 0 },
+      { q: "What’s the chemical symbol for water?", answers: ["WO", "H2O", "O2H", "H2"], correct: 1 },
+      { q: "Which animal is native to Australia?", answers: ["Kangaroo", "Panda", "Bison", "Moose"], correct: 0 },
+      { q: "Which planet is known as the Red Planet?", answers: ["Venus", "Jupiter", "Mars", "Mercury"], correct: 2 }
     ];
 
-    // ===== Game state =====
+    /* ===== GAME STATE ===== */
     const qTotalEl = document.getElementById('qtotal');
     const qNumEl = document.getElementById('qnum');
     const scoreEl = document.getElementById('score');
@@ -107,9 +105,7 @@
 
     qTotalEl.textContent = QUESTIONS.length;
 
-    let idx = 0;
-    let score = 0;
-    let locked = false;
+    let idx = 0, score = 0, locked = false;
 
     function renderQuestion() {
       const item = QUESTIONS[idx];
@@ -148,9 +144,7 @@
           b.style.color = "#001";
           b.style.borderColor = "var(--bad)";
           b.style.boxShadow = "0 0 22px var(--bad)";
-        } else {
-          b.style.opacity = 0.6;
-        }
+        } else b.style.opacity = 0.6;
         b.disabled = true;
       });
 
@@ -168,9 +162,7 @@
       if (idx < QUESTIONS.length - 1) {
         idx++;
         renderQuestion();
-      } else {
-        endGame();
-      }
+      } else endGame();
     }
 
     function endGame() {
@@ -192,7 +184,7 @@
     nextBtn.addEventListener('click', nextQuestion);
     restartBtn.addEventListener('click', restart);
 
-    // ===== Sharing =====
+    /* ===== SHARE ===== */
     function shareText() {
       const pct = Math.round((score / QUESTIONS.length) * 100);
       return `Ben's Trivia — I scored ${score}/${QUESTIONS.length} (${pct}%). Play: ${location.href}`;
@@ -210,7 +202,14 @@
       }
     });
 
-    // Init
+    /* ===== FOOTER DATE ===== */
+    const footer = document.getElementById('footerText');
+    const today = new Date();
+    const dayName = today.toLocaleDateString(undefined, { weekday: 'long' });
+    const dateStr = today.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+    footer.innerHTML = `Made by Ben · Puzzle No. 1 · ${dayName}, ${dateStr}`;
+
+    /* ===== INIT ===== */
     renderQuestion();
   </script>
 </body>
