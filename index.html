@@ -6,23 +6,9 @@
   <title>Ben’s Trivia</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Optional glow animation for logo */
-    .logo {
-      font-family: "Segoe UI", system-ui, sans-serif;
-      font-size: clamp(30px, 7vw, 52px);
-      color: var(--neon);
-      text-align: center;
-      text-shadow:
-        0 0 8px var(--neon),
-        0 0 20px var(--neon-soft),
-        0 0 40px var(--neon);
-      animation: pulse 2.4s ease-in-out infinite alternate;
-      margin: 0;
-    }
-    @keyframes pulse {
-      from { text-shadow: 0 0 8px var(--neon), 0 0 20px var(--neon-soft); }
-      to   { text-shadow: 0 0 20px var(--neon), 0 0 45px var(--neon-soft); }
-    }
+    /* Page-specific tiny tweaks */
+    .logo-wrap { position: fixed; top: 6px; width: 100%; display:flex; justify-content:center; z-index: 95; }
+    .logo-img  { height: 56px; width: auto; filter: drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft)); }
   </style>
 </head>
 <body>
@@ -33,12 +19,13 @@
       <a href="index.html">🎯 Ben's Trivia</a>
       <a href="anagram.html">🔤 Anagram Game</a>
       <a href="riddle.html">🕵️ Riddle Game</a>
+      <a href="connections.html">🧩 Connections</a>
     </nav>
   </header>
 
-  <!-- Neon Logo -->
-  <div class="site-top">
-    <h1 class="logo">Ben’s Trivia</h1>
+  <!-- Image logo -->
+  <div class="logo-wrap">
+    <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
   </div>
 
   <!-- Main Game -->
@@ -79,12 +66,10 @@
       menuDrop.style.display = menuDrop.style.display === 'block' ? 'none' : 'block';
     });
     document.addEventListener('click', (e) => {
-      if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) {
-        menuDrop.style.display = 'none';
-      }
+      if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) menuDrop.style.display = 'none';
     });
 
-    /* ===== TRIVIA QUESTIONS ===== */
+    /* ===== ORIGINAL 4 QUESTIONS ===== */
     const QUESTIONS = [
       { q: "Which city is the capital of Queensland?", answers: ["Brisbane", "Sydney", "Melbourne", "Perth"], correct: 0 },
       { q: "What’s the chemical symbol for water?", answers: ["WO", "H2O", "O2H", "H2"], correct: 1 },
@@ -104,7 +89,6 @@
     const shareWrap = document.getElementById('shareWrap');
 
     qTotalEl.textContent = QUESTIONS.length;
-
     let idx = 0, score = 0, locked = false;
 
     function renderQuestion() {
@@ -158,13 +142,7 @@
       nextBtn.disabled = false;
     }
 
-    function nextQuestion() {
-      if (idx < QUESTIONS.length - 1) {
-        idx++;
-        renderQuestion();
-      } else endGame();
-    }
-
+    function nextQuestion() { idx < QUESTIONS.length - 1 ? (idx++, renderQuestion()) : endGame(); }
     function endGame() {
       questionEl.textContent = "🎉 All done!";
       answersEl.innerHTML = "";
@@ -173,13 +151,7 @@
       restartBtn.style.display = 'inline-block';
       shareWrap.style.display = 'block';
     }
-
-    function restart() {
-      idx = 0;
-      score = 0;
-      scoreEl.textContent = score;
-      renderQuestion();
-    }
+    function restart() { idx = 0; score = 0; scoreEl.textContent = score; renderQuestion(); }
 
     nextBtn.addEventListener('click', nextQuestion);
     restartBtn.addEventListener('click', restart);
@@ -194,12 +166,8 @@
       window.open(`https://wa.me/?text=${txt}`, '_blank');
     });
     document.getElementById('copyLink').addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(shareText());
-        alert('Result copied! Paste into Messenger/Instagram/SMS.');
-      } catch {
-        alert('Copy failed.');
-      }
+      try { await navigator.clipboard.writeText(shareText()); alert('Result copied!'); }
+      catch { alert('Copy failed.'); }
     });
 
     /* ===== FOOTER DATE ===== */
@@ -207,9 +175,9 @@
     const today = new Date();
     const dayName = today.toLocaleDateString(undefined, { weekday: 'long' });
     const dateStr = today.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-    footer.innerHTML = `Made by Ben · Puzzle No. 1 · ${dayName}, ${dateStr}`;
+    footer.textContent = `Made by Ben · Puzzle No. 1 · ${dayName}, ${dateStr}`;
 
-    /* ===== INIT ===== */
+    /* INIT */
     renderQuestion();
   </script>
 </body>
