@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ben’s Games — Connections</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .wrap { min-height: 100svh; display: grid; place-items: center; padding: 96px 16px 32px; }
+    .board { display:grid; grid-template-columns: repeat(4, min(140px, 22vw)); gap:10px; justify-content:center; }
+    .tile {
+      user-select:none; text-align:center; padding:16px; border-radius:14px;
+      border:1.5px solid var(--neon); background:#021527; color:var(--text);
+      cursor:pointer; transition:.15s; box-shadow:0 0 10px rgba(55,161,255,.18);
+    }
+    .tile.selected { outline: 2px solid var(--neon); box-shadow:0 0 20px var(--neon-soft); }
+    .row-locked { display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; }
+    .cat { font-weight:700; margin-bottom:6px; text-align:center; }
+    /* category colors (match Connections vibe) */
+    .c0 { background:#f7e06e; color:#001; border-color:#f7e06e; }
+    .c1 { background:#a4d4ae; color:#001; border-color:#a4d4ae; }
+    .c2 { background:#8ec9ff; color:#001; border-color:#8ec9ff; }
+    .c3 { background:#d7a4ff; color:#001; border-color:#d7a4ff; }
+    .controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+    .top { display:flex; justify-content:space-between; align-items:center; color:var(--neon-soft); margin-bottom:10px; }
+    .strike { color: var(--bad); font-weight:700; }
+    .done { text-align:center; margin-top:12px; }
+    .logo-wrap { position: fixed; top: 6px; width: 100%; display:flex; justify-content:center; z-index: 95; }
+    .logo-img  { height: 56px; width: auto; filter: drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft)); }
+  </style>
+</head>
+<body>
+  <!-- Menu -->
+  <header class="top-menu">
+    <button id="menu-btn">☰</button>
+    <nav class="menu-dropdown" id="menu-dropdown">
+      <a href="index.html">🎯 Ben's Trivia</a>
+      <a href="anagram.html">🔤 Anagram Game</a>
+      <a href="riddle.html">🕵️ Riddle Game</a>
+      <a href="connections.html">🧩 Connections</a>
+    </nav>
+  </header>
+
+  <!-- Image logo -->
+  <div class="logo-wrap">
+    <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
+  </div>
+
+  <main class="wrap">
+    <section class="game-card card" style="width:min(720px,96vw);">
+      <div class="top">
+        <div>Strikes: <span id="strikes" class="strike">0/4</span></div>
+        <div id="status"></div>
+      </div>
+
+      <div id="locked"></div>
+      <div id="board" class="board" aria-live="polite"></div>
+
+      <div class="controls">
+        <button class="btn" id="shuffleBtn">Shuffle</button>
+        <button class="btn" id="deselectBtn">Deselect</button>
+        <button class="btn" id="submitBtn">Submit</button>
+      </div>
+
+      <div id="done" class="done"></div>
+    </section>
+  </main>
+
+  <footer id="footerText"></footer>
+
+  <script>
+    // Menu
+    const menuBtn = document.getElementById('menu-btn');
+    const menuDrop = document.getElementById('menu-dropdown');
+    menuBtn.addEventListener('click', () => menuDrop.style.display = menuDrop.style.display === 'block' ? 'none' : 'block');
+    document.addEventListener('click', (e) => { if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) menuDrop.style.display = 'none'; });
+
+    // ===== CONNECTIONS PUZZLE DATA =====
+    // Four categories; each has 4 items.
+    const CATS = [
+      { name: "Aussie Animals",     items: ["KOALA","EMU","DINGO","WOMBAT"] },
+      { name: "Planets",            items: ["MARS","VENUS","JUPITER","MERCURY"] },
+      { name: "Water Words",        items: ["RIVER","WAVE","CURRENT","TIDE"] },
+      { name: "Programming Terms",  items: ["ARRAY","CLASS","LOOP","OBJECT"] }
+    ];
+
+    // Build deck
+    let deck = CATS.flatMap((c, ci) => c.items.map(v => ({ v, cat: ci })));
+
+    // Utils
+    function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+    function renderBoard(){
+      board.innerHTML = "";
+      deck.forEach((t,i) => {
+        const d = document.createElement("button");
+        d.className = "tile";
+        d.textContent = t.v;
+        d.dataset.index = i;
+        d.addEventListener("click", () => toggle(i, d));
+        board.appendChild(d);
+      });
+    }
+
+    const board = document.getElementById("board");
+    const locked = document.getElementById("locked");
+    const strikesEl = document.getElementById("strikes");
+    const statusEl = document.getElementById("status");
+    const doneEl = document.getElementById("done");
+
+    let selected = new Set();
+    let strikes = 0;
+    let solvedCats = 0;
+
+    function toggle(i, el){
+      if (el.classList.contains("disabled")) return;
+      if (selected.has(i)) { selected.delete(i); el.classList.remove("selected"); }
+      else {
+        if (selected.size >= 4) return;
+        selected.add(i); el.classList.add("selected");
+      }
+    }
+
+    function submit(){
+      if (selected.size !== 4) { statusEl.textContent = "Select 4 tiles."; return; }
+      const idxs = [...selected];
+      const cats = idxs.map(i => deck[i].cat);
+      const allSame = cats.every(c => c === cats[0]);
+
+      if (allSame) {
+        const catIndex = cats[0];
+        lockGroup(catIndex, idxs);
+        statusEl.textContent = "✅ Nice!";
+        if (++solvedCats === 4) finish();
+      } else {
+        strikes++;
+        strikesEl.textContent = strikes + "/4";
+        statusEl.textContent = "❌ Incorrect group.";
+        if (strikes >= 4) revealAll();
+      }
+      // Deselect either way
+      deselect();
+    }
+
+    function lockGroup(catIndex, idxs){
+      // Create a locked row
+      const wrap = document.createElement("div");
+      wrap.className = "row-locked";
+      const cat = document.createElement("div");
+      cat.className = "cat c"+catIndex;
+      cat.textContent = CATS[catIndex].name;
+      wrap.appendChild(cat);
+      for (const i of idxs) {
+        const t = document.createElement("div");
+        t.className = "tile c"+catIndex;
+        t.textContent = deck[i].v;
+        wrap.appendChild(t);
+      }
+      // Remove from deck (mark disabled)
+      idxs.sort((a,b)=>b-a).forEach(i=>{
+        deck[i]._removed = true;
+      });
+      // Rebuild deck for remaining tiles
+      deck = deck.filter(t=>!t._removed);
+      renderBoard();
+      locked.appendChild(wrap);
+    }
+
+    function deselect(){
+      selected.forEach(i=>{
+        const el = board.querySelector(`.tile[data-index="${i}"]`);
+        if (el) el.classList.remove("selected");
+      });
+      selected.clear();
+    }
+
+    function shuffleBoard(){
+      deck = shuffle(deck);
+      renderBoard();
+      deselect();
+      statusEl.textContent = "";
+    }
+
+    function revealAll(){
+      // Auto-solve remaining categories
+      const remainingCats = new Map();
+      deck.forEach(t => {
+        if (!remainingCats.has(t.cat)) remainingCats.set(t.cat, []);
+        remainingCats.get(t.cat).push(t);
+      });
+      for (const [ci, tiles] of remainingCats) {
+        const wrap = document.createElement("div");
+        wrap.className = "row-locked";
+        const cat = document.createElement("div");
+        cat.className = "cat c"+ci;
+        cat.textContent = CATS[ci].name + " (revealed)";
+        wrap.appendChild(cat);
+        tiles.forEach(tt=>{
+          const d = document.createElement("div");
+          d.className = "tile c"+ci;
+          d.textContent = tt.v;
+          wrap.appendChild(d);
+        });
+        locked.appendChild(wrap);
+      }
+      board.innerHTML = "";
+      statusEl.textContent = "😅 Out of strikes — puzzle revealed.";
+      doneEl.innerHTML = shareBlock(false);
+    }
+
+    function finish(){
+      statusEl.textContent = "🎉 Perfect!";
+      doneEl.innerHTML = shareBlock(true);
+    }
+
+    function shareBlock(won){
+      const msg = won ? "I solved Ben’s Connections!" : "Ben’s Connections beat me today.";
+      const text = `${msg} Play: ${location.origin}${location.pathname}`;
+      return `
+        <div class="subtle" style="margin-top:8px;">
+          Share:
+          <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
+            <button class="btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent(text)}','_blank')">WhatsApp</button>
+            <button class="btn" onclick="navigator.clipboard.writeText('${text.replace(/'/g, "\\'")}').then(()=>alert('Copied!'))">Copy result</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Footer date
+    const footer = document.getElementById('footerText');
+    const today = new Date();
+    const dayName = today.toLocaleDateString(undefined, { weekday: 'long' });
+    const dateStr = today.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+    footer.textContent = `Made by Ben · Puzzle No. 1 · ${dayName}, ${dateStr}`;
+
+    // Init
+    document.getElementById("submitBtn").addEventListener("click", submit);
+    document.getElementById("deselectBtn").addEventListener("click", deselect);
+    document.getElementById("shuffleBtn").addEventListener("click", shuffleBoard);
+    deck = shuffle(deck);
+    renderBoard();
+  </script>
+</body>
+</html>
