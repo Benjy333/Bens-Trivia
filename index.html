@@ -6,13 +6,12 @@
   <title>Ben’s Trivia</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Page-specific tiny tweaks */
-    .logo-wrap { position: fixed; top: 6px; width: 100%; display:flex; justify-content:center; z-index: 95; }
-    .logo-img  { height: 56px; width: auto; filter: drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft)); }
+    .logo-wrap{position:fixed;top:6px;width:100%;display:flex;justify-content:center;z-index:95}
+    .logo-img{height:56px;width:auto;filter:drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft))}
   </style>
 </head>
 <body>
-  <!-- Top-left menu -->
+  <!-- Menu -->
   <header class="top-menu">
     <button id="menu-btn">☰</button>
     <nav class="menu-dropdown" id="menu-dropdown">
@@ -23,32 +22,25 @@
     </nav>
   </header>
 
-  <!-- Image logo -->
-  <div class="logo-wrap">
-    <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
-  </div>
+  <!-- Logo -->
+  <div class="logo-wrap"><img class="logo-img" src="logo.png" alt="Ben's Trivia logo" /></div>
 
-  <!-- Main Game -->
   <main>
-    <section class="game-card card" id="game">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:var(--neon-soft);">
+    <section class="game-card card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:var(--neon-soft)">
         <div>Score: <strong id="score">0</strong></div>
         <div>Question: <strong id="qnum">1</strong>/<span id="qtotal">4</span></div>
       </div>
-
-      <h2 id="question" style="margin:10px 0 14px; text-align:center;">Loading…</h2>
-
-      <div id="answers" style="display:grid; gap:10px;"></div>
+      <h2 id="question" style="margin:10px 0 14px;text-align:center">Loading…</h2>
+      <div id="answers" style="display:grid;gap:10px"></div>
       <div class="feedback" id="feedback"></div>
-
-      <div class="toolbar" style="display:flex; gap:10px; justify-content:center; margin-top:12px;">
+      <div class="toolbar" style="display:flex;gap:10px;justify-content:center;margin-top:12px">
         <button class="btn" id="next" disabled>Next</button>
-        <button class="btn" id="restart" style="display:none;">Play again</button>
+        <button class="btn" id="restart" style="display:none">Play again</button>
       </div>
-
-      <div class="subtle" id="shareWrap" style="display:none;">
+      <div class="subtle" id="shareWrap" style="display:none">
         Share your score:
-        <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
           <button class="btn" id="shareWhats">WhatsApp</button>
           <button class="btn" id="copyLink">Copy result</button>
         </div>
@@ -59,135 +51,65 @@
   <footer id="footerText"></footer>
 
   <script>
-    /* ===== MENU ===== */
-    const menuBtn = document.getElementById('menu-btn');
-    const menuDrop = document.getElementById('menu-dropdown');
-    menuBtn.addEventListener('click', () => {
-      menuDrop.style.display = menuDrop.style.display === 'block' ? 'none' : 'block';
-    });
-    document.addEventListener('click', (e) => {
-      if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) menuDrop.style.display = 'none';
-    });
+    // Menu
+    const menuBtn=document.getElementById('menu-btn'), menuDrop=document.getElementById('menu-dropdown');
+    menuBtn.onclick=()=>menuDrop.style.display=menuDrop.style.display==='block'?'none':'block';
+    document.addEventListener('click',e=>{if(!menuBtn.contains(e.target)&&!menuDrop.contains(e.target))menuDrop.style.display='none'});
 
-<script>
-fetch('daily_content.json')
-  .then(r=>r.json())
-  .then(data=>{
-    const start = new Date(data.start_date);
-    const idx = Math.min(Math.floor((Date.now()-start)/86400000), data.trivia_sets.length-1);
-    const QUESTIONS = data.trivia_sets[idx].questions;
+    // Footer date
+    const footer=document.getElementById('footerText');
+    const today=new Date();
+    footer.textContent=`Made by Ben · Puzzle No. 1 · ${today.toLocaleDateString(undefined,{weekday:'long'})}, ${today.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}`;
 
-    // ... keep the rest of your existing Trivia code, just using QUESTIONS ...
-    // (the rest of your script stays the same)
-    qTotalEl.textContent = QUESTIONS.length;
-    renderQuestion = function renderQuestion(){ /* your same function body */ };
-    // then call renderQuestion() after defining everything
-    renderQuestion();
-  });
-</script>
+    // Trivia (daily)
+    (async function(){
+      const data=await (await fetch('daily_content.json')).json();
+      const start=new Date(data.start_date);
+      const dayIndex=Math.min(Math.floor((Date.now()-start)/86400000), data.trivia_sets.length-1);
+      const QUESTIONS=data.trivia_sets[dayIndex].questions;
 
-    /* ===== GAME STATE ===== */
-    const qTotalEl = document.getElementById('qtotal');
-    const qNumEl = document.getElementById('qnum');
-    const scoreEl = document.getElementById('score');
-    const questionEl = document.getElementById('question');
-    const answersEl = document.getElementById('answers');
-    const feedbackEl = document.getElementById('feedback');
-    const nextBtn = document.getElementById('next');
-    const restartBtn = document.getElementById('restart');
-    const shareWrap = document.getElementById('shareWrap');
+      const qTotalEl=document.getElementById('qtotal'), qNumEl=document.getElementById('qnum'), scoreEl=document.getElementById('score');
+      const questionEl=document.getElementById('question'), answersEl=document.getElementById('answers'), feedbackEl=document.getElementById('feedback');
+      const nextBtn=document.getElementById('next'), restartBtn=document.getElementById('restart'), shareWrap=document.getElementById('shareWrap');
 
-    qTotalEl.textContent = QUESTIONS.length;
-    let idx = 0, score = 0, locked = false;
+      qTotalEl.textContent=QUESTIONS.length;
+      let idx=0, score=0, locked=false;
 
-    function renderQuestion() {
-      const item = QUESTIONS[idx];
-      qNumEl.textContent = idx + 1;
-      questionEl.textContent = item.q;
-      feedbackEl.textContent = "";
-      nextBtn.disabled = true;
-      shareWrap.style.display = 'none';
-      restartBtn.style.display = 'none';
-      locked = false;
-
-      answersEl.innerHTML = "";
-      item.answers.forEach((text, i) => {
-        const btn = document.createElement('button');
-        btn.className = "btn";
-        btn.style.width = "100%";
-        btn.textContent = text;
-        btn.addEventListener('click', () => pickAnswer(i));
-        answersEl.appendChild(btn);
-      });
-    }
-
-    function pickAnswer(choice) {
-      if (locked) return;
-      locked = true;
-      const correctIndex = QUESTIONS[idx].correct;
-      const buttons = [...answersEl.querySelectorAll('button')];
-      buttons.forEach((b, i) => {
-        if (i === correctIndex) {
-          b.style.background = "var(--good)";
-          b.style.color = "#001";
-          b.style.borderColor = "var(--good)";
-          b.style.boxShadow = "0 0 22px var(--good)";
-        } else if (i === choice) {
-          b.style.background = "var(--bad)";
-          b.style.color = "#001";
-          b.style.borderColor = "var(--bad)";
-          b.style.boxShadow = "0 0 22px var(--bad)";
-        } else b.style.opacity = 0.6;
-        b.disabled = true;
-      });
-
-      if (choice === correctIndex) {
-        score++;
-        scoreEl.textContent = score;
-        feedbackEl.textContent = "✅ Correct!";
-      } else {
-        feedbackEl.textContent = "❌ Not quite.";
+      function renderQuestion(){
+        const item=QUESTIONS[idx];
+        qNumEl.textContent=idx+1;
+        questionEl.textContent=item.q;
+        feedbackEl.textContent=""; nextBtn.disabled=true; shareWrap.style.display='none'; restartBtn.style.display='none'; locked=false;
+        answersEl.innerHTML="";
+        item.choices.forEach((text,i)=>{
+          const b=document.createElement('button'); b.className='btn'; b.style.width='100%'; b.textContent=text;
+          b.onclick=()=>pickAnswer(i); answersEl.appendChild(b);
+        });
       }
-      nextBtn.disabled = false;
-    }
+      function pickAnswer(choice){
+        if(locked) return; locked=true;
+        const correct=QUESTIONS[idx].answer;
+        [...answersEl.querySelectorAll('button')].forEach((b,i)=>{
+          if(i===correct){b.style.background='var(--good)';b.style.color='#001';b.style.borderColor='var(--good)';b.style.boxShadow='0 0 22px var(--good)';}
+          else if(i===choice){b.style.background='var(--bad)';b.style.color='#001';b.style.borderColor='var(--bad)';b.style.boxShadow='0 0 22px var(--bad)';}
+          else b.style.opacity=.6;
+          b.disabled=true;
+        });
+        if(choice===correct){score++;scoreEl.textContent=score;feedbackEl.textContent='✅ Correct!';}
+        else{feedbackEl.textContent='❌ Not quite.';}
+        nextBtn.disabled=false;
+      }
+      function nextQuestion(){ if(idx<QUESTIONS.length-1){idx++;renderQuestion();} else endGame(); }
+      function endGame(){ questionEl.textContent='🎉 All done!'; answersEl.innerHTML=''; feedbackEl.innerHTML=`Final score: <strong>${score}</strong> / ${QUESTIONS.length}`; nextBtn.disabled=true; restartBtn.style.display='inline-block'; shareWrap.style.display='block'; }
+      function restart(){ idx=0; score=0; scoreEl.textContent=score; renderQuestion(); }
+      nextBtn.onclick=nextQuestion; restartBtn.onclick=restart;
 
-    function nextQuestion() { idx < QUESTIONS.length - 1 ? (idx++, renderQuestion()) : endGame(); }
-    function endGame() {
-      questionEl.textContent = "🎉 All done!";
-      answersEl.innerHTML = "";
-      feedbackEl.innerHTML = `Final score: <strong>${score}</strong> / ${QUESTIONS.length}`;
-      nextBtn.disabled = true;
-      restartBtn.style.display = 'inline-block';
-      shareWrap.style.display = 'block';
-    }
-    function restart() { idx = 0; score = 0; scoreEl.textContent = score; renderQuestion(); }
+      function shareText(){ const pct=Math.round((score/QUESTIONS.length)*100); return `Ben's Trivia — I scored ${score}/${QUESTIONS.length} (${pct}%). Play: ${location.href}`; }
+      document.getElementById('shareWhats').onclick=()=>window.open(`https://wa.me/?text=${encodeURIComponent(shareText())}`,'_blank');
+      document.getElementById('copyLink').onclick=async()=>{try{await navigator.clipboard.writeText(shareText());alert('Result copied!');}catch{alert('Copy failed.');}};
 
-    nextBtn.addEventListener('click', nextQuestion);
-    restartBtn.addEventListener('click', restart);
-
-    /* ===== SHARE ===== */
-    function shareText() {
-      const pct = Math.round((score / QUESTIONS.length) * 100);
-      return `Ben's Trivia — I scored ${score}/${QUESTIONS.length} (${pct}%). Play: ${location.href}`;
-    }
-    document.getElementById('shareWhats').addEventListener('click', () => {
-      const txt = encodeURIComponent(shareText());
-      window.open(`https://wa.me/?text=${txt}`, '_blank');
-    });
-    document.getElementById('copyLink').addEventListener('click', async () => {
-      try { await navigator.clipboard.writeText(shareText()); alert('Result copied!'); }
-      catch { alert('Copy failed.'); }
-    });
-
-    /* ===== FOOTER DATE ===== */
-    const footer = document.getElementById('footerText');
-    const today = new Date();
-    const dayName = today.toLocaleDateString(undefined, { weekday: 'long' });
-    const dateStr = today.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-    footer.textContent = `Made by Ben · Puzzle No. 1 · ${dayName}, ${dateStr}`;
-
-    /* INIT */
-    renderQuestion();
+      renderQuestion();
+    })();
   </script>
 </body>
 </html>
