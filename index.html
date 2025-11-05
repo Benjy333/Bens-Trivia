@@ -1,63 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ben's Games — Anagram</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ben’s Trivia</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .page-wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:72px 16px 32px}
-    .game-card{width:min(520px,92vw);background:var(--bg2);border:1px solid var(--neon);border-radius:20px;box-shadow:0 0 24px rgba(55,161,255,.25), inset 0 0 30px rgba(150,208,255,.05);padding:20px}
-    .title{font-size:1.6rem;text-align:center;margin-bottom:10px;text-shadow:0 0 8px var(--neon-soft)}
-    .scramble{font-size:2.2rem;text-align:center;margin:10px 0 20px;letter-spacing:0.1em;font-weight:bold}
-    input[type="text"]{flex:1;background:#021527;border:1px solid var(--neon);border-radius:12px;padding:14px;color:#e9f4ff;font-size:1.05rem}
-    .btn{border:1px solid var(--neon);background:transparent;color:var(--neon);padding:12px 16px;border-radius:12px;cursor:pointer}
-    .btn:hover{background:var(--neon);color:#001}
-    .feedback{text-align:center;margin-top:10px;min-height:24px}
-  </style>
 </head>
 <body>
+  <!-- Top-left menu -->
   <header class="top-menu">
     <button id="menu-btn">☰</button>
-    <div class="menu-dropdown" id="menu-dropdown">
+    <nav class="menu-dropdown" id="menu-dropdown">
       <a href="index.html">🎯 Ben's Trivia</a>
       <a href="anagram.html">🔤 Anagram Game</a>
       <a href="riddle.html">🕵️ Riddle Game</a>
-    </div>
+    </nav>
   </header>
 
-  <main class="page-wrap">
-    <div class="game-card">
-      <h1 class="title">🔤 Anagram Game</h1>
-      <div class="scramble" id="scramble">•••</div>
-      <div style="display:flex;gap:10px">
-        <input id="guess" type="text" placeholder="Type your guess…" />
-        <button class="btn" id="check">Check</button>
+  <!-- Glowing brand bar -->
+  <div class="site-top">
+    <h1 class="brand">Ben’s Trivia</h1>
+  </div>
+
+  <!-- Main game area -->
+  <main>
+    <section class="game-card card" id="game">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:var(--neon-soft);">
+        <div>Score: <strong id="score">0</strong></div>
+        <div>Question: <strong id="qnum">1</strong>/<span id="qtotal">4</span></div>
       </div>
+
+      <h2 id="question" style="margin:10px 0 14px; text-align:center;">Loading…</h2>
+
+      <div id="answers" style="display:grid; gap:10px;">
+        <!-- answer buttons injected here -->
+      </div>
+
       <div class="feedback" id="feedback"></div>
-      <div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
-        <button class="btn" id="hint">Hint</button>
-        <button class="btn" id="shuffle">Shuffle</button>
-        <button class="btn" id="next">Next</button>
+
+      <div class="toolbar" style="display:flex; gap:10px; justify-content:center; margin-top:12px;">
+        <button class="btn" id="next" disabled>Next</button>
+        <button class="btn" id="restart" style="display:none;">Play again</button>
       </div>
-    </div>
+
+      <div class="subtle" id="shareWrap" style="display:none;">
+        Share your score:
+        <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
+          <button class="btn" id="shareWhats">WhatsApp</button>
+          <button class="btn" id="copyLink">Copy result</button>
+        </div>
+      </div>
+    </section>
   </main>
 
+  <footer>
+    0 Made by Benjy333 · Puzzle No. 1 · Tuesday, 4th of Nov 2025
+  </footer>
+
   <script>
-    const words = ["river","cloud","planet","signal","neon","trivia","python","energy"];
-    let current="";
-    function shuffleLetters(str){return str.split('').sort(()=>Math.random()-0.5).join('');}
-    function pick(){current=words[Math.floor(Math.random()*words.length)];document.getElementById('scramble').textContent=shuffleLetters(current);document.getElementById('feedback').textContent='';document.getElementById('guess').value='';}
-    document.getElementById('check').onclick=()=>{const g=document.getElementById('guess').value.trim().toLowerCase();document.getElementById('feedback').textContent=g===current?"✅ Correct!":"❌ Try again."};
-    document.getElementById('shuffle').onclick=()=>{document.getElementById('scramble').textContent=shuffleLetters(current)};
-    document.getElementById('next').onclick=pick;
-    document.getElementById('hint').onclick=()=>{document.getElementById('feedback').textContent=`Hint: starts with ${current[0]}`};
-    pick();
-  </script>
-  <script>
-    const btn=document.getElementById('menu-btn');const drop=document.getElementById('menu-dropdown');
-    btn.onclick=()=>drop.style.display=drop.style.display==='block'?'none':'block';
-    document.addEventListener('click',e=>{if(!btn.contains(e.target)&&!drop.contains(e.target))drop.style.display='none'});
+    // ===== Menu =====
+    const menuBtn = document.getElementById('menu-btn');
+    const menuDrop = document.getElementById('menu-dropdown');
+    menuBtn.addEventListener('click', () => {
+      menuDrop.style.display = menuDrop.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', (e) => {
+      if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) {
+        menuDrop.style.display = 'none';
+      }
+    });
+
+    // ===== Trivia data (swap these for your own if you like) =====
+    const QUESTIONS = [
+      {
+        q: "Which city is the capital of Queensland?",
+        answers: ["Brisbane", "Sydney", "Melbourne", "Perth"],
+        correct: 0
+      },
+      {
+        q: "What’s the chemical symbol for water?",
+        answers: ["WO", "H2O", "O2H", "H2"],
+        correct: 1
+      },
+      {
+        q: "Which animal is native to Australia?",
+        answers: ["Kangaroo", "Panda", "Bison", "Moose"],
+        correct: 0
+      },
+      {
+        q: "Which planet is known as the Red Planet?",
+        answers: ["Venus", "Jupiter", "Mars", "Mercury"],
+        correct: 2
+      }
+    ];
+
+    // ===== Game state =====
+    const qTotalEl = document.getElementById('qtotal');
+    const qNumEl = document.getElementById('qnum');
+    const scoreEl = document.getElementById('score');
+    const questionEl = document.getElementById('question');
+    const answersEl = document.getElementById('answers');
+    const feedbackEl = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next');
+    const restartBtn = document.getElementById('restart');
+    const shareWrap = document.getElementById('shareWrap');
+
+    qTotalEl.textContent = QUESTIONS.length;
+
+    let idx = 0;
+    let score = 0;
+    let locked = false;
+
+    function renderQuestion() {
+      const item = QUESTIONS[idx];
+      qNumEl.textContent = idx + 1;
+      questionEl.textContent = item.q;
+      feedbackEl.textContent = "";
+      nextBtn.disabled = true;
+      shareWrap.style.display = 'none';
+      restartBtn.style.display = 'none';
+      locked = false;
+
+      answersEl.innerHTML = "";
+      item.answers.forEach((text, i) => {
+        const btn = document.createElement('button');
+        btn.className = "btn";
+        btn.style.width = "100%";
+        btn.textContent = text;
+        btn.addEventListener('click', () => pickAnswer(i));
+        answersEl.appendChild(btn);
+      });
+    }
+
+    function pickAnswer(choice) {
+      if (locked) return;
+      locked = true;
+      const correctIndex = QUESTIONS[idx].correct;
+      const buttons = [...answersEl.querySelectorAll('button')];
+      buttons.forEach((b, i) => {
+        if (i === correctIndex) {
+          b.style.background = "var(--good)";
+          b.style.color = "#001";
+          b.style.borderColor = "var(--good)";
+          b.style.boxShadow = "0 0 22px var(--good)";
+        } else if (i === choice) {
+          b.style.background = "var(--bad)";
+          b.style.color = "#001";
+          b.style.borderColor = "var(--bad)";
+          b.style.boxShadow = "0 0 22px var(--bad)";
+        } else {
+          b.style.opacity = 0.6;
+        }
+        b.disabled = true;
+      });
+
+      if (choice === correctIndex) {
+        score++;
+        scoreEl.textContent = score;
+        feedbackEl.textContent = "✅ Correct!";
+      } else {
+        feedbackEl.textContent = "❌ Not quite.";
+      }
+      nextBtn.disabled = false;
+    }
+
+    function nextQuestion() {
+      if (idx < QUESTIONS.length - 1) {
+        idx++;
+        renderQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      questionEl.textContent = "🎉 All done!";
+      answersEl.innerHTML = "";
+      feedbackEl.innerHTML = `Final score: <strong>${score}</strong> / ${QUESTIONS.length}`;
+      nextBtn.disabled = true;
+      restartBtn.style.display = 'inline-block';
+      shareWrap.style.display = 'block';
+    }
+
+    function restart() {
+      idx = 0;
+      score = 0;
+      scoreEl.textContent = score;
+      renderQuestion();
+    }
+
+    nextBtn.addEventListener('click', nextQuestion);
+    restartBtn.addEventListener('click', restart);
+
+    // ===== Sharing =====
+    function shareText() {
+      const pct = Math.round((score / QUESTIONS.length) * 100);
+      return `Ben's Trivia — I scored ${score}/${QUESTIONS.length} (${pct}%). Play: ${location.href}`;
+    }
+    document.getElementById('shareWhats').addEventListener('click', () => {
+      const txt = encodeURIComponent(shareText());
+      window.open(`https://wa.me/?text=${txt}`, '_blank');
+    });
+    document.getElementById('copyLink').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(shareText());
+        alert('Result copied! Paste into Messenger/Instagram/SMS.');
+      } catch {
+        alert('Copy failed.');
+      }
+    });
+
+    // Init
+    renderQuestion();
   </script>
 </body>
 </html>
