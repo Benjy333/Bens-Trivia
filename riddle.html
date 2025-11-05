@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ben's Games — Riddle</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+.page-wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:72px 16px 32px}
+.game-card{width:min(520px,92vw);background:var(--bg2);border:1px solid var(--neon);border-radius:20px;box-shadow:0 0 24px rgba(55,161,255,.25), inset 0 0 30px rgba(150,208,255,.05);padding:20px}
+.title{font-size:1.6rem;text-align:center;margin-bottom:10px;text-shadow:0 0 8px var(--neon-soft)}
+.riddle{font-size:1.1rem;text-align:center;margin-bottom:20px}
+input[type="text"]{flex:1;background:#021527;border:1px solid var(--neon);border-radius:12px;padding:14px;color:#e9f4ff;font-size:1.05rem}
+.btn{border:1px solid var(--neon);background:transparent;color:var(--neon);padding:12px 16px;border-radius:12px;cursor:pointer}
+.btn:hover{background:var(--neon);color:#001}
+.feedback{text-align:center;margin-top:10px;min-height:24px}
+</style>
+</head>
+<body>
+<header class="top-menu">
+<button id="menu-btn">☰</button>
+<div class="menu-dropdown" id="menu-dropdown">
+<a href="index.html">🎯 Ben's Trivia</a>
+<a href="anagram.html">🔤 Anagram Game</a>
+<a href="riddle.html">🕵️ Riddle Game</a>
+</div>
+</header>
+
+
+<main class="page-wrap">
+<div class="game-card">
+<h1 class="title">🕵️ Riddle Game</h1>
+<div class="riddle" id="riddle"></div>
+<div style="display:flex;gap:10px">
+<input id="guess" type="text" placeholder="Your answer…" />
+<button class="btn" id="check">Check</button>
+</div>
+<div class="feedback" id="feedback"></div>
+<div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
+<button class="btn" id="reveal">Reveal</button>
+<button class="btn" id="next">Next</button>
+</div>
+</div>
+</main>
+
+
+<script>
+const riddles=[{q:"What has to be broken before you can use it?",a:"egg"},{q:"The more you take, the more you leave behind. What am I?",a:"footsteps"},{q:"What has many keys but can't open locks?",a:"piano"}];
+let idx=0;
+function show(){document.getElementById('riddle').textContent=riddles[idx].q;document.getElementById('feedback').textContent='';document.getElementById('guess').value='';}
+document.getElementById('check').onclick=()=>{const g=document.getElementById('guess').value.trim().toLowerCase();document.getElementById('feedback').textContent=g===riddles[idx].a?"✅ Correct!":"❌ Try again."};
+document.getElementById('reveal').onclick=()=>{document.getElementById('feedback').textContent=`Answer: ${riddles[idx].a}`};
+document.getElementById('next').onclick=()=>{idx=(idx+1)%riddles.length;show()};
+show();
+</script>
+<script>
+const btn=document.getElementById('menu-btn');const drop=document.getElementById('menu-dropdown');btn.onclick=()=>drop.style.display=drop.style.display==='block'?'none':'block';document.addEventListener('click',e=>{if(!btn.contains(e.target)&&!drop.contains(e.target))drop.style.display='none'});
+</script>
+</body>
+</html>
