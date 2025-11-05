@@ -161,4 +161,9 @@ footer {
   .card, .game-card { padding: 20px 14px; border-radius: 16px; }
   .brand { font-size: 1rem; }
   #menu-btn { font-size: 1.2rem; padding: 4px 10px; }
+
+  /* --- small polish for logo on phones --- */
+@media (max-width: 420px) {
+  .logo-img { height: 48px; }
+  
 }
