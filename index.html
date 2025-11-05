@@ -69,12 +69,22 @@
       if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) menuDrop.style.display = 'none';
     });
 
-    /* ===== ORIGINAL 4 QUESTIONS ===== */
-    const QUESTIONS = [
-      { q: "Which city is the capital of Queensland?", answers: ["Brisbane", "Sydney", "Melbourne", "Perth"], correct: 0 },
-      { q: "What’s the chemical symbol for water?", answers: ["WO", "H2O", "O2H", "H2"], correct: 1 },
-      { q: "Which animal is native to Australia?", answers: ["Kangaroo", "Panda", "Bison", "Moose"], correct: 0 },
-      { q: "Which planet is known as the Red Planet?", answers: ["Venus", "Jupiter", "Mars", "Mercury"], correct: 2 }
+<script>
+fetch('daily_content.json')
+  .then(r=>r.json())
+  .then(data=>{
+    const start = new Date(data.start_date);
+    const idx = Math.min(Math.floor((Date.now()-start)/86400000), data.trivia_sets.length-1);
+    const QUESTIONS = data.trivia_sets[idx].questions;
+
+    // ... keep the rest of your existing Trivia code, just using QUESTIONS ...
+    // (the rest of your script stays the same)
+    qTotalEl.textContent = QUESTIONS.length;
+    renderQuestion = function renderQuestion(){ /* your same function body */ };
+    // then call renderQuestion() after defining everything
+    renderQuestion();
+  });
+</script>
     ];
 
     /* ===== GAME STATE ===== */
