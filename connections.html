@@ -7,26 +7,70 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .wrap { min-height: 100svh; display: grid; place-items: center; padding: 96px 16px 32px; }
+    .logo-wrap { position: fixed; top: 6px; width: 100%; display:flex; justify-content:center; z-index: 95; }
+    .logo-img  { height: 56px; width: auto; filter: drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft)); }
+
+    /* Board */
     .board { display:grid; grid-template-columns: repeat(4, min(140px, 22vw)); gap:10px; justify-content:center; }
     .tile {
       user-select:none; text-align:center; padding:16px; border-radius:14px;
       border:1.5px solid var(--neon); background:#021527; color:var(--text);
-      cursor:pointer; transition:.15s; box-shadow:0 0 10px rgba(55,161,255,.18);
+      cursor:pointer; transition:transform .12s ease, box-shadow .12s ease, background .2s ease, color .2s ease;
+      box-shadow:0 0 10px rgba(55,161,255,.18);
     }
+    .tile:hover { transform: translateY(-1px); }
     .tile.selected { outline: 2px solid var(--neon); box-shadow:0 0 20px var(--neon-soft); }
-    .row-locked { display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; }
-    .cat { font-weight:700; margin-bottom:6px; text-align:center; }
-    /* category colors (match Connections vibe) */
+
+    /* Locked groups */
+    .locked { display:grid; gap:12px; margin-bottom:12px; }
+    .group-row { display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; align-items:center; }
+    .group-head {
+      grid-column: 1/-1;
+      text-align:left; font-weight:800; letter-spacing:.02em;
+      border-radius:12px; padding:10px 12px; margin-bottom:4px;
+    }
+
+    /* Category colors */
     .c0 { background:#f7e06e; color:#001; border-color:#f7e06e; }
     .c1 { background:#a4d4ae; color:#001; border-color:#a4d4ae; }
     .c2 { background:#8ec9ff; color:#001; border-color:#8ec9ff; }
     .c3 { background:#d7a4ff; color:#001; border-color:#d7a4ff; }
+
     .controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
     .top { display:flex; justify-content:space-between; align-items:center; color:var(--neon-soft); margin-bottom:10px; }
     .strike { color: var(--bad); font-weight:700; }
-    .done { text-align:center; margin-top:12px; }
-    .logo-wrap { position: fixed; top: 6px; width: 100%; display:flex; justify-content:center; z-index: 95; }
-    .logo-img  { height: 56px; width: auto; filter: drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft)); }
+
+    /* Celebration modal */
+    .modal {
+      position: fixed; inset:0; display:none; place-items:center; z-index: 300;
+      background: rgba(0,0,0,.5);
+      backdrop-filter: blur(3px);
+      animation: fadeIn .25s ease;
+    }
+    @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+    .modal-card {
+      width:min(560px,92vw);
+      background: var(--bg2); border: 1px solid var(--neon); border-radius: 18px;
+      box-shadow: var(--shadow); padding: 20px;
+      text-align:center;
+    }
+    .emoji-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; font-size: 1.4rem; margin: 8px 0 12px; }
+    .modal h2 { margin: 6px 0 4px; text-shadow: 0 0 10px var(--neon-soft); }
+    .modal .subtle { margin-top: 4px; }
+
+    /* Confetti */
+    .confetti { position: fixed; inset:0; pointer-events:none; z-index: 320; overflow:hidden; }
+    .confetti span {
+      position:absolute; width:8px; height:12px; opacity:.9;
+      animation: fall linear forwards;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0); }
+      100% { transform: translateY(110vh) rotate(540deg); }
+    }
+
+    /* Perfect badge (top right) */
+    .badge { font-size:.95rem; }
   </style>
 </head>
 <body>
@@ -47,13 +91,13 @@
   </div>
 
   <main class="wrap">
-    <section class="game-card card" style="width:min(720px,96vw);">
+    <section class="game-card card" style="width:min(760px,96vw);">
       <div class="top">
         <div>Strikes: <span id="strikes" class="strike">0/4</span></div>
-        <div id="status"></div>
+        <div id="status" class="badge"></div>
       </div>
 
-      <div id="locked"></div>
+      <div id="locked" class="locked"></div>
       <div id="board" class="board" aria-live="polite"></div>
 
       <div class="controls">
@@ -61,12 +105,25 @@
         <button class="btn" id="deselectBtn">Deselect</button>
         <button class="btn" id="submitBtn">Submit</button>
       </div>
-
-      <div id="done" class="done"></div>
     </section>
   </main>
 
   <footer id="footerText"></footer>
+
+  <!-- Celebration modal -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle">
+    <div class="modal-card">
+      <h2 id="modaltitle">🎉 Perfect!</h2>
+      <div id="modalSubtitle" class="subtle"></div>
+      <div id="emojiGrid" class="emoji-grid" aria-label="Result grid"></div>
+      <div style="display:flex; gap:8px; justify-content:center;">
+        <button class="btn" id="shareWhats">WhatsApp</button>
+        <button class="btn" id="copyBtn">Copy result</button>
+        <button class="btn" id="playAgain">Play again</button>
+      </div>
+    </div>
+  </div>
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
 
   <script>
     // Menu
@@ -75,17 +132,34 @@
     menuBtn.addEventListener('click', () => menuDrop.style.display = menuDrop.style.display === 'block' ? 'none' : 'block');
     document.addEventListener('click', (e) => { if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) menuDrop.style.display = 'none'; });
 
-    // ===== CONNECTIONS PUZZLE DATA =====
-    // Four categories; each has 4 items.
+    // ===== PUZZLE DATA (4 categories × 4 items) =====
     const CATS = [
       { name: "Aussie Animals",     items: ["KOALA","EMU","DINGO","WOMBAT"] },
       { name: "Planets",            items: ["MARS","VENUS","JUPITER","MERCURY"] },
       { name: "Water Words",        items: ["RIVER","WAVE","CURRENT","TIDE"] },
       { name: "Programming Terms",  items: ["ARRAY","CLASS","LOOP","OBJECT"] }
     ];
+    // Emoji colors mapped to category index (row order)
+    const EMOJI = ["🟨","🟩","🟦","🟪"];
 
     // Build deck
-    let deck = CATS.flatMap((c, ci) => c.items.map(v => ({ v, cat: ci })));
+    function makeDeck(){ return CATS.flatMap((c, ci) => c.items.map(v => ({ v, cat: ci }))); }
+    let deck = makeDeck();
+
+    // Elements
+    const board = document.getElementById("board");
+    const locked = document.getElementById("locked");
+    const strikesEl = document.getElementById("strikes");
+    const statusEl = document.getElementById("status");
+    const modal = document.getElementById("modal");
+    const emojiGrid = document.getElementById("emojiGrid");
+    const modalSubtitle = document.getElementById("modalSubtitle");
+    const confettiWrap = document.getElementById("confetti");
+
+    // State
+    let selected = new Set();
+    let strikes = 0;
+    let solvedOrder = [];   // order of solved category indices
 
     // Utils
     function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
@@ -100,26 +174,18 @@
         board.appendChild(d);
       });
     }
-
-    const board = document.getElementById("board");
-    const locked = document.getElementById("locked");
-    const strikesEl = document.getElementById("strikes");
-    const statusEl = document.getElementById("status");
-    const doneEl = document.getElementById("done");
-
-    let selected = new Set();
-    let strikes = 0;
-    let solvedCats = 0;
-
     function toggle(i, el){
       if (el.classList.contains("disabled")) return;
       if (selected.has(i)) { selected.delete(i); el.classList.remove("selected"); }
-      else {
-        if (selected.size >= 4) return;
-        selected.add(i); el.classList.add("selected");
-      }
+      else { if (selected.size >= 4) return; selected.add(i); el.classList.add("selected"); }
     }
-
+    function deselect(){
+      selected.forEach(i=>{
+        const el = board.querySelector(`.tile[data-index="${i}"]`);
+        if (el) el.classList.remove("selected");
+      });
+      selected.clear();
+    }
     function submit(){
       if (selected.size !== 4) { statusEl.textContent = "Select 4 tiles."; return; }
       const idxs = [...selected];
@@ -128,49 +194,52 @@
 
       if (allSame) {
         const catIndex = cats[0];
+        solvedOrder.push(catIndex);
         lockGroup(catIndex, idxs);
         statusEl.textContent = "✅ Nice!";
-        if (++solvedCats === 4) finish();
+        if (solvedOrder.length === 4) finish(true);
       } else {
         strikes++;
         strikesEl.textContent = strikes + "/4";
         statusEl.textContent = "❌ Incorrect group.";
-        if (strikes >= 4) revealAll();
+        if (strikes >= 4) finish(false);
       }
-      // Deselect either way
       deselect();
     }
 
     function lockGroup(catIndex, idxs){
-      // Create a locked row
-      const wrap = document.createElement("div");
-      wrap.className = "row-locked";
-      const cat = document.createElement("div");
-      cat.className = "cat c"+catIndex;
-      cat.textContent = CATS[catIndex].name;
-      wrap.appendChild(cat);
-      for (const i of idxs) {
+      // Animate selected tiles briefly
+      idxs.forEach(i=>{
+        const el = board.querySelector(`.tile[data-index="${i}"]`);
+        if (el) {
+          el.style.transform = "scale(1.04)";
+          setTimeout(()=> el.style.transform = "scale(1)", 140);
+        }
+      });
+
+      // Build the locked row UI
+      const head = document.createElement("div");
+      head.className = "group-head c"+catIndex;
+      head.textContent = CATS[catIndex].name;
+
+      const row = document.createElement("div");
+      row.className = "group-row";
+      CATS[catIndex].items.forEach(val=>{
         const t = document.createElement("div");
         t.className = "tile c"+catIndex;
-        t.textContent = deck[i].v;
-        wrap.appendChild(t);
-      }
-      // Remove from deck (mark disabled)
-      idxs.sort((a,b)=>b-a).forEach(i=>{
-        deck[i]._removed = true;
+        t.textContent = val;
+        row.appendChild(t);
       });
-      // Rebuild deck for remaining tiles
+
+      const holder = document.createElement("div");
+      holder.appendChild(head);
+      holder.appendChild(row);
+      locked.appendChild(holder);
+
+      // Remove tiles from deck and rebuild board
+      idxs.sort((a,b)=>b-a).forEach(i=>{ deck[i]._removed = true; });
       deck = deck.filter(t=>!t._removed);
       renderBoard();
-      locked.appendChild(wrap);
-    }
-
-    function deselect(){
-      selected.forEach(i=>{
-        const el = board.querySelector(`.tile[data-index="${i}"]`);
-        if (el) el.classList.remove("selected");
-      });
-      selected.clear();
     }
 
     function shuffleBoard(){
@@ -180,50 +249,99 @@
       statusEl.textContent = "";
     }
 
-    function revealAll(){
-      // Auto-solve remaining categories
-      const remainingCats = new Map();
-      deck.forEach(t => {
-        if (!remainingCats.has(t.cat)) remainingCats.set(t.cat, []);
-        remainingCats.get(t.cat).push(t);
-      });
-      for (const [ci, tiles] of remainingCats) {
-        const wrap = document.createElement("div");
-        wrap.className = "row-locked";
-        const cat = document.createElement("div");
-        cat.className = "cat c"+ci;
-        cat.textContent = CATS[ci].name + " (revealed)";
-        wrap.appendChild(cat);
-        tiles.forEach(tt=>{
-          const d = document.createElement("div");
-          d.className = "tile c"+ci;
-          d.textContent = tt.v;
-          wrap.appendChild(d);
+    function finish(won){
+      // Reveal any leftovers into their categories if lost
+      if (!won && deck.length) {
+        const remainingByCat = new Map();
+        deck.forEach(t => {
+          if (!remainingByCat.has(t.cat)) remainingByCat.set(t.cat, []);
+          remainingByCat.get(t.cat).push(t.v);
         });
-        locked.appendChild(wrap);
+        // Append rows
+        [...remainingByCat.keys()].forEach(ci=>{
+          const head = document.createElement("div");
+          head.className = "group-head c"+ci;
+          head.textContent = CATS[ci].name + " (revealed)";
+          const row = document.createElement("div");
+          row.className = "group-row";
+          CATS[ci].items.forEach(v=>{
+            const t = document.createElement("div");
+            t.className = "tile c"+ci;
+            t.textContent = v;
+            row.appendChild(t);
+          });
+          const holder = document.createElement("div");
+          holder.appendChild(head); holder.appendChild(row);
+          locked.appendChild(holder);
+        });
+        board.innerHTML = "";
       }
-      board.innerHTML = "";
-      statusEl.textContent = "😅 Out of strikes — puzzle revealed.";
-      doneEl.innerHTML = shareBlock(false);
+
+      // Build emoji grid (order = solvedOrder, then remaining in category index order)
+      const remainingCats = [0,1,2,3].filter(c => !solvedOrder.includes(c));
+      const order = [...solvedOrder, ...remainingCats];
+      emojiGrid.innerHTML = "";
+      order.forEach(ci=>{
+        for (let i=0;i<4;i++){
+          const cell = document.createElement("div");
+          cell.textContent = EMOJI[ci];
+          emojiGrid.appendChild(cell);
+        }
+      });
+
+      // Subtitle (strikes info)
+      modalSubtitle.textContent = won ? "Perfect! 0 mistakes 🎯" : `Revealed after ${strikes}/4 strikes`;
+
+      // Confetti if won
+      if (won) burstConfetti();
+
+      // Show modal
+      modal.style.display = "grid";
+
+      // Badge in header
+      statusEl.textContent = won ? "🎉 Perfect!" : "😅 Out of strikes";
     }
 
-    function finish(){
-      statusEl.textContent = "🎉 Perfect!";
-      doneEl.innerHTML = shareBlock(true);
+    // Share helpers
+    function shareText(){
+      const rows = emojiGrid.innerText.trim().split(/\s+/);
+      // Convert 16 emojis back to a 4x4 grid (already rows of 4)
+      const grid = [];
+      for (let i=0;i<rows.length;i+=4) grid.push(rows.slice(i,i+4).join(""));
+      const line = grid.join("\n");
+      const today = new Date();
+      const dayName = today.toLocaleDateString(undefined, { weekday: 'long' });
+      const dateStr = today.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+      return `Ben's Connections — ${dayName} ${dateStr}\n${line}\n${location.origin}${location.pathname}`;
     }
+    document.getElementById("shareWhats").addEventListener("click", ()=>{
+      const txt = encodeURIComponent(shareText());
+      window.open(`https://wa.me/?text=${txt}`,'_blank');
+    });
+    document.getElementById("copyBtn").addEventListener("click", async ()=>{
+      try { await navigator.clipboard.writeText(shareText()); alert("Result copied!"); }
+      catch { alert("Copy failed."); }
+    });
+    document.getElementById("playAgain").addEventListener("click", ()=>{
+      modal.style.display = "none";
+      resetGame();
+    });
 
-    function shareBlock(won){
-      const msg = won ? "I solved Ben’s Connections!" : "Ben’s Connections beat me today.";
-      const text = `${msg} Play: ${location.origin}${location.pathname}`;
-      return `
-        <div class="subtle" style="margin-top:8px;">
-          Share:
-          <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
-            <button class="btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent(text)}','_blank')">WhatsApp</button>
-            <button class="btn" onclick="navigator.clipboard.writeText('${text.replace(/'/g, "\\'")}').then(()=>alert('Copied!'))">Copy result</button>
-          </div>
-        </div>
-      `;
+    // Confetti
+    function burstConfetti(){
+      confettiWrap.innerHTML = "";
+      const colors = ["#f7e06e","#a4d4ae","#8ec9ff","#d7a4ff","#37a1ff","#ffffff"];
+      const count = 120;
+      for(let i=0;i<count;i++){
+        const s = document.createElement("span");
+        s.style.left = Math.random()*100 + "vw";
+        s.style.animationDuration = (1.8 + Math.random()*1.5) + "s";
+        s.style.background = colors[Math.floor(Math.random()*colors.length)];
+        s.style.transform = `translateY(-10vh) rotate(${Math.random()*360}deg)`;
+        confettiWrap.appendChild(s);
+      }
+      // clear after a bit
+      setTimeout(()=> confettiWrap.innerHTML = "", 3000);
     }
 
     // Footer date
@@ -234,11 +352,16 @@
     footer.textContent = `Made by Ben · Puzzle No. 1 · ${dayName}, ${dateStr}`;
 
     // Init
+    function resetGame(){
+      strikes = 0; solvedOrder = []; selected.clear();
+      deck = shuffle(makeDeck());
+      locked.innerHTML = ""; strikesEl.textContent = "0/4"; statusEl.textContent="";
+      renderBoard();
+    }
     document.getElementById("submitBtn").addEventListener("click", submit);
     document.getElementById("deselectBtn").addEventListener("click", deselect);
     document.getElementById("shuffleBtn").addEventListener("click", shuffleBoard);
-    deck = shuffle(deck);
-    renderBoard();
+    resetGame();
   </script>
 </body>
 </html>
