@@ -1,60 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ben's Games — Riddle</title>
-<link rel="stylesheet" href="style.css" />
-<style>
-.page-wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:72px 16px 32px}
-.game-card{width:min(520px,92vw);background:var(--bg2);border:1px solid var(--neon);border-radius:20px;box-shadow:0 0 24px rgba(55,161,255,.25), inset 0 0 30px rgba(150,208,255,.05);padding:20px}
-.title{font-size:1.6rem;text-align:center;margin-bottom:10px;text-shadow:0 0 8px var(--neon-soft)}
-.riddle{font-size:1.1rem;text-align:center;margin-bottom:20px}
-input[type="text"]{flex:1;background:#021527;border:1px solid var(--neon);border-radius:12px;padding:14px;color:#e9f4ff;font-size:1.05rem}
-.btn{border:1px solid var(--neon);background:transparent;color:var(--neon);padding:12px 16px;border-radius:12px;cursor:pointer}
-.btn:hover{background:var(--neon);color:#001}
-.feedback{text-align:center;margin-top:10px;min-height:24px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ben's Trivia — Riddles</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .wrap { min-height: 100svh; display: grid; place-items: center; padding: 96px 16px 32px; }
+    .game-card { width: min(640px, 92vw); }
+    .riddle { font-size: clamp(18px, 2.8vw, 22px); line-height: 1.55; text-align: center; margin: 6px 0 14px; }
+    .controls { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    .toolbar { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+    .feedback { min-height: 28px; text-align: center; margin-top: 8px; }
+    input[type="text"] { background:#021527; border:1px solid var(--neon); border-radius:14px; padding:14px 14px; color:#e9f4ff; font-size:1.05rem; }
+    .btn { border:1px solid var(--neon); background:transparent; color:var(--neon); padding:12px 16px; border-radius:14px; cursor:pointer; box-shadow:0 0 14px rgba(55,161,255,.25); transition:.18s; }
+    .btn:hover { background:var(--neon); color:#001; box-shadow:0 0 22px var(--neon); }
+    .site-top { position: fixed; inset: 0 0 auto 0; height: 64px; display:flex; align-items:center; padding: 10px 14px; z-index: 100; }
+    .brand { margin: 0 auto; font-weight: 900; letter-spacing: .06em; font-size: 1.1rem; color: var(--neon-soft); text-shadow: 0 0 10px var(--neon), 0 0 24px var(--neon-soft); }
+    .card { background: var(--bg2); border: 1px solid var(--neon); border-radius: 20px;
+            box-shadow: 0 0 24px rgba(55,161,255,.25), inset 0 0 30px rgba(150,208,255,.05); padding: 22px; }
+    .top-menu { position: fixed; top: 12px; left: 12px; z-index: 120; }
+    #menu-btn { background: rgba(0,0,0,.25); border: 1.5px solid var(--neon); color: var(--neon);
+                font-size: 1.3rem; padding: 6px 12px; border-radius: 12px; cursor: pointer; box-shadow: 0 0 10px var(--neon-soft); }
+    .menu-dropdown { display:none; position:absolute; top:48px; left:0; background: var(--bg2);
+                     border: 1px solid var(--neon); border-radius: 12px; padding: 6px; box-shadow: 0 0 18px var(--neon-soft); min-width: 210px; }
+    .menu-dropdown a { display:block; padding:10px 12px; color: #e9f4ff; text-decoration:none; border-radius:10px; }
+    .menu-dropdown a:hover { background: var(--neon); color:#001; }
+  </style>
 </head>
 <body>
-<header class="top-menu">
-<button id="menu-btn">☰</button>
-<div class="menu-dropdown" id="menu-dropdown">
-<a href="index.html">🎯 Ben's Trivia</a>
-<a href="anagram.html">🔤 Anagram Game</a>
-<a href="riddle.html">🕵️ Riddle Game</a>
-</div>
-</header>
+  <header class="top-menu">
+    <button id="menu-btn">☰</button>
+    <nav class="menu-dropdown" id="menu-dropdown">
+      <a href="index.html">🎯 Ben's Trivia</a>
+      <a href="anagram.html">🔤 Anagram Game</a>
+      <a href="riddle.html">🕵️ Riddle Game</a>
+    </nav>
+  </header>
 
+  <div class="site-top"><h1 class="brand">Ben’s Trivia • Riddles</h1></div>
 
-<main class="page-wrap">
-<div class="game-card">
-<h1 class="title">🕵️ Riddle Game</h1>
-<div class="riddle" id="riddle"></div>
-<div style="display:flex;gap:10px">
-<input id="guess" type="text" placeholder="Your answer…" />
-<button class="btn" id="check">Check</button>
-</div>
-<div class="feedback" id="feedback"></div>
-<div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
-<button class="btn" id="reveal">Reveal</button>
-<button class="btn" id="next">Next</button>
-</div>
-</div>
-</main>
+  <main class="wrap">
+    <section class="game-card card">
+      <div class="riddle" id="riddle">Loading…</div>
+      <div class="controls">
+        <input id="guess" type="text" placeholder="Your answer…" autocomplete="off" />
+        <button class="btn" id="check">Check</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="toolbar">
+        <button class="btn" id="reveal">Reveal</button>
+        <button class="btn" id="next">Next</button>
+      </div>
+    </section>
+  </main>
 
+  <script>
+    // Menu
+    const btn = document.getElementById('menu-btn');
+    const dropdown = document.getElementById('menu-dropdown');
+    btn.addEventListener('click', () => dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block');
+    document.addEventListener('click', e => { if(!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display='none'; });
 
-<script>
-const riddles=[{q:"What has to be broken before you can use it?",a:"egg"},{q:"The more you take, the more you leave behind. What am I?",a:"footsteps"},{q:"What has many keys but can't open locks?",a:"piano"}];
-let idx=0;
-function show(){document.getElementById('riddle').textContent=riddles[idx].q;document.getElementById('feedback').textContent='';document.getElementById('guess').value='';}
-document.getElementById('check').onclick=()=>{const g=document.getElementById('guess').value.trim().toLowerCase();document.getElementById('feedback').textContent=g===riddles[idx].a?"✅ Correct!":"❌ Try again."};
-document.getElementById('reveal').onclick=()=>{document.getElementById('feedback').textContent=`Answer: ${riddles[idx].a}`};
-document.getElementById('next').onclick=()=>{idx=(idx+1)%riddles.length;show()};
-show();
-</script>
-<script>
-const btn=document.getElementById('menu-btn');const drop=document.getElementById('menu-dropdown');btn.onclick=()=>drop.style.display=drop.style.display==='block'?'none':'block';document.addEventListener('click',e=>{if(!btn.contains(e.target)&&!drop.contains(e.target))drop.style.display='none'});
-</script>
+    // Game
+    const RIDDLES = [
+      {q:"What has to be broken before you can use it?", a:"egg"},
+      {q:"I speak without a mouth and hear without ears. I have nobody, but I come alive with wind.", a:"echo"},
+      {q:"The more of this there is, the less you see. What is it?", a:"darkness"},
+      {q:"What can fill a room but takes up no space?", a:"light"},
+      {q:"What gets wetter the more it dries?", a:"towel"},
+      {q:"What has many keys but can't open a single lock?", a:"piano"},
+      {q:"What runs around the whole yard without moving?", a:"fence"},
+      {q:"What building has the most stories?", a:"library"}
+    ];
+
+    let i = 0, revealed = false;
+    const riddleEl = document.getElementById('riddle');
+    const feedback = document.getElementById('feedback');
+    const guess = document.getElementById('guess');
+
+    function show(){
+      riddleEl.textContent = RIDDLES[i].q;
+      feedback.textContent = "";
+      guess.value = "";
+      revealed = false;
+      guess.focus();
+    }
+    function norm(s){ return (s||"").trim().toLowerCase().replace(/[^a-z]/g,""); }
+    function check(){
+      const g = norm(guess.value);
+      const a = norm(RIDDLES[i].a);
+      if(!g) return;
+      if(g === a){
+        feedback.innerHTML = "✅ Correct!";
+        setTimeout(next, 700);
+      } else {
+        feedback.textContent = "❌ Not quite. Try reveal or guess again.";
+      }
+    }
+    function reveal(){
+      revealed = true;
+      feedback.innerHTML = `🗝️ Answer: <strong>${RIDDLES[i].a}</strong>`;
+    }
+    function next(){ i = (i+1) % RIDDLES.length; show(); }
+
+    document.getElementById('check').addEventListener('click', check);
+    document.getElementById('reveal').addEventListener('click', reveal);
+    document.getElementById('next').addEventListener('click', next);
+    guess.addEventListener('keydown', e => { if(e.key === 'Enter') check(); });
+
+    show();
+  </script>
 </body>
 </html>
