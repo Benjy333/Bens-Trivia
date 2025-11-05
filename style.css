@@ -1,0 +1,164 @@
+:root {
+  --neon: #37a1ff;          /* primary neon blue */
+  --neon-soft: #96d0ff;     /* softer blue for glow */
+  --bg1: #071327;           /* deep navy background */
+  --bg2: #001020;           /* darker navy for cards */
+  --good: #38ef7d;          /* neon green */
+  --bad: #ff4266;           /* neon pink/red */
+  --text: #e9f4ff;
+  --radius: 20px;
+  --shadow: 0 0 25px rgba(55,161,255,.25), inset 0 0 20px rgba(150,208,255,.05);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background:
+    radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
+    radial-gradient(80% 60% at 50% 120%, #041022 0%, transparent 60%),
+    linear-gradient(var(--bg1), var(--bg2));
+  color: var(--text);
+  min-height: 100svh;
+  overflow-x: hidden;
+}
+
+/* ========= LAYOUT ========= */
+main {
+  display: grid;
+  place-items: center;
+  padding: 100px 16px 48px;
+}
+
+.card, .game-card {
+  background: var(--bg2);
+  border: 1px solid var(--neon);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px 20px;
+  max-width: 640px;
+  width: 100%;
+}
+
+/* ========= BUTTONS & INPUTS ========= */
+button, .btn {
+  background: transparent;
+  border: 1.5px solid var(--neon);
+  color: var(--neon);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: .18s;
+  box-shadow: 0 0 10px rgba(55,161,255,.25);
+}
+button:hover, .btn:hover {
+  background: var(--neon);
+  color: #000;
+  box-shadow: 0 0 22px var(--neon);
+}
+
+input[type="text"], input[type="number"], input[type="email"] {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--neon);
+  background: #021527;
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+}
+input:focus {
+  box-shadow: 0 0 10px var(--neon);
+}
+
+/* ========= HEADER / BRAND ========= */
+.site-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+  background: transparent;
+}
+.brand {
+  color: var(--neon-soft);
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-shadow: 0 0 10px var(--neon), 0 0 24px var(--neon-soft);
+  margin: 0;
+}
+
+/* ========= MENU ========= */
+.top-menu {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 120;
+}
+#menu-btn {
+  background: rgba(0,0,0,.25);
+  border: 1.5px solid var(--neon);
+  color: var(--neon);
+  font-size: 1.3rem;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--neon-soft);
+  transition: .18s;
+}
+#menu-btn:hover {
+  background: var(--neon);
+  color: #001;
+}
+.menu-dropdown {
+  display: none;
+  position: absolute;
+  top: 48px;
+  left: 0;
+  background: var(--bg2);
+  border: 1px solid var(--neon);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 0 18px var(--neon-soft);
+  min-width: 210px;
+}
+.menu-dropdown a {
+  display: block;
+  padding: 10px 12px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+.menu-dropdown a:hover {
+  background: var(--neon);
+  color: #001;
+}
+
+/* ========= TEXT & MISC ========= */
+h1, h2, h3 { text-shadow: 0 0 10px var(--neon-soft); }
+p { line-height: 1.5; }
+.feedback { min-height: 28px; text-align: center; }
+.subtle { color: var(--neon-soft); text-align: center; font-size: .95rem; margin-top: 12px; }
+
+/* ========= FOOTER ========= */
+footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 0.85rem;
+  color: var(--neon-soft);
+}
+
+/* ========= RESPONSIVE ========= */
+@media (max-width: 420px) {
+  .card, .game-card { padding: 20px 14px; border-radius: 16px; }
+  .brand { font-size: 1rem; }
+  #menu-btn { font-size: 1.2rem; padding: 4px 10px; }
+}
