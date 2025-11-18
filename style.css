@@ -34,7 +34,7 @@ body {
   z-index: 95;
 }
 .logo-img {
-  height: 140px;   /* make it as large as you want */
+  height: 280px;   /* make it as large as you want */
   width: auto;
   filter: drop-shadow(0 0 12px var(--neon))
           drop-shadow(0 0 30px var(--neon-soft));
