@@ -14,6 +14,7 @@
 html, body { height: 100%; margin: 0; }
 
 body {
+  padding-top: 180px;  /* logo height (140px) + 40px buffer */
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   background:
     radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
@@ -32,13 +33,12 @@ body {
   justify-content: center;
   z-index: 95;
 }
-
 .logo-img {
-  height: 120px;          /* 👈 change this number to make logo bigger/smaller */
+  height: 140px;   /* make it as large as you want */
   width: auto;
-  filter:
-    drop-shadow(0 0 12px var(--neon))
-    drop-shadow(0 0 30px var(--neon-soft));
+  filter: drop-shadow(0 0 12px var(--neon))
+          drop-shadow(0 0 30px var(--neon-soft));
+
 }
 
 /* Slightly smaller on very small screens */
@@ -181,12 +181,12 @@ footer {
 
 /* ========= RESPONSIVE ========= */
 @media (max-width: 420px) {
-  .card, .game-card { padding: 20px 14px; border-radius: 16px; }
+  .card, .game-card { padding: 40px 28px; border-radius: 32px; }
   .brand { font-size: 1rem; }
   #menu-btn { font-size: 1.2rem; padding: 4px 10px; }
 
   /* --- small polish for logo on phones --- */
 @media (max-width: 420px) {
-  .logo-img { height: 48px; }
+  .logo-img { height: 96px; }
   
 }
