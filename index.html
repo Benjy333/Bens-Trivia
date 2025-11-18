@@ -5,27 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ben’s Trivia</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .logo-wrap{
-      position:fixed;
-      top:6px;
-      width:100%;
-      display:flex;
-      justify-content:center;
-      z-index:95;
-    }
-    .logo-img{
-      height:90px; /* 🔥 made larger */
-      width:auto;
-      filter:drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft));
-    }
-
-    @media (max-width:480px){
-      .logo-img{
-        height:72px; /* a bit smaller on small screens so it fits nicely */
-      }
-    }
-  </style>
 </head>
 <body>
   <!-- Menu -->
@@ -39,7 +18,7 @@
     </nav>
   </header>
 
-  <!-- Logo -->
+  <!-- Logo (size controlled in style.css) -->
   <div class="logo-wrap">
     <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
   </div>
@@ -81,9 +60,10 @@
       }
     });
 
-    // Footer base date (we'll update puzzle number once we know it)
     const footer = document.getElementById('footerText');
     const today  = new Date();
+
+    // Set temporary footer text, then update after we know puzzle number
     footer.textContent = `Made by Ben · Loading puzzle… · ${
       today.toLocaleDateString(undefined, {
         weekday: 'long',
@@ -93,20 +73,18 @@
       })
     }`;
 
-    // Trivia (daily)
+    // Trivia (daily) from JSON
     (async function(){
       const res  = await fetch('daily_content.json');
       const data = await res.json();
 
       const start    = new Date(data.start_date);
       const diffDays = Math.floor((Date.now() - start) / 86400000);
-      const dayIndex = Math.max(0, diffDays); // never negative
-
-      // Use last available set if we've gone past the JSON length
+      const dayIndex = Math.max(0, diffDays);
       const useIndex = Math.min(dayIndex, data.trivia_sets.length - 1);
       const QUESTIONS = data.trivia_sets[useIndex].questions;
 
-      // 🔢 Update footer with the correct puzzle number
+      // ✅ Update footer with correct puzzle number
       footer.textContent = `Made by Ben · Puzzle No. ${dayIndex + 1} · ${
         today.toLocaleDateString(undefined, {
           weekday: 'long',
@@ -128,16 +106,16 @@
 
       qTotalEl.textContent = QUESTIONS.length;
 
-      let idx = 0;
+      let idx   = 0;
       let score = 0;
       let locked = false;
 
       function renderQuestion() {
         const item = QUESTIONS[idx];
-        qNumEl.textContent = idx + 1;
+        qNumEl.textContent    = idx + 1;
         questionEl.textContent = item.q;
         feedbackEl.textContent = "";
-        nextBtn.disabled = true;
+        nextBtn.disabled       = true;
         shareWrap.style.display = 'none';
         restartBtn.style.display = 'none';
         locked = false;
@@ -145,10 +123,10 @@
         answersEl.innerHTML = "";
         item.choices.forEach((text, i) => {
           const b = document.createElement('button');
-          b.className = 'btn';
+          b.className   = 'btn';
           b.style.width = '100%';
           b.textContent = text;
-          b.onclick = () => pickAnswer(i);
+          b.onclick     = () => pickAnswer(i);
           answersEl.appendChild(b);
         });
       }
@@ -201,7 +179,7 @@
           `Final score: <strong>${score}</strong> / ${QUESTIONS.length}`;
         nextBtn.disabled = true;
         restartBtn.style.display = 'inline-block';
-        shareWrap.style.display = 'block';
+        shareWrap.style.display  = 'block';
       }
 
       function restart() {
@@ -211,7 +189,7 @@
         renderQuestion();
       }
 
-      nextBtn.onclick = nextQuestion;
+      nextBtn.onclick    = nextQuestion;
       restartBtn.onclick = restart;
 
       function shareText() {
