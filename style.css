@@ -34,7 +34,7 @@ body {
   z-index: 95;
 }
 .logo-img {
-  height: 280px;   /* make it as large as you want */
+  height: 360px;   /* make it as large as you want */
   width: auto;
   filter: drop-shadow(0 0 12px var(--neon))
           drop-shadow(0 0 30px var(--neon-soft));
@@ -44,7 +44,7 @@ body {
 /* Slightly smaller on very small screens */
 @media (max-width: 480px) {
   .logo-img {
-    height: 90px;
+    height: 180px;
   }
 }
 /* ========= LAYOUT ========= */
@@ -187,6 +187,6 @@ footer {
 
   /* --- small polish for logo on phones --- */
 @media (max-width: 420px) {
-  .logo-img { height: 96px; }
+  .logo-img { height: 180px; }
   
 }
