@@ -23,7 +23,30 @@ body {
   min-height: 100svh;
   overflow-x: hidden;
 }
+/* Global logo styling for all games */
+.logo-wrap {
+  position: fixed;
+  top: 6px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 95;
+}
 
+.logo-img {
+  height: 120px;          /* 👈 change this number to make logo bigger/smaller */
+  width: auto;
+  filter:
+    drop-shadow(0 0 12px var(--neon))
+    drop-shadow(0 0 30px var(--neon-soft));
+}
+
+/* Slightly smaller on very small screens */
+@media (max-width: 480px) {
+  .logo-img {
+    height: 90px;
+  }
+}
 /* ========= LAYOUT ========= */
 main {
   display: grid;
