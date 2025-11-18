@@ -6,8 +6,25 @@
   <title>Ben’s Trivia</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .logo-wrap{position:fixed;top:6px;width:100%;display:flex;justify-content:center;z-index:95}
-    .logo-img{height:56px;width:auto;filter:drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft))}
+    .logo-wrap{
+      position:fixed;
+      top:6px;
+      width:100%;
+      display:flex;
+      justify-content:center;
+      z-index:95;
+    }
+    .logo-img{
+      height:90px; /* 🔥 made larger */
+      width:auto;
+      filter:drop-shadow(0 0 12px var(--neon)) drop-shadow(0 0 30px var(--neon-soft));
+    }
+
+    @media (max-width:480px){
+      .logo-img{
+        height:72px; /* a bit smaller on small screens so it fits nicely */
+      }
+    }
   </style>
 </head>
 <body>
@@ -23,7 +40,9 @@
   </header>
 
   <!-- Logo -->
-  <div class="logo-wrap"><img class="logo-img" src="logo.png" alt="Ben's Trivia logo" /></div>
+  <div class="logo-wrap">
+    <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
+  </div>
 
   <main>
     <section class="game-card card">
@@ -52,61 +71,165 @@
 
   <script>
     // Menu
-    const menuBtn=document.getElementById('menu-btn'), menuDrop=document.getElementById('menu-dropdown');
-    menuBtn.onclick=()=>menuDrop.style.display=menuDrop.style.display==='block'?'none':'block';
-    document.addEventListener('click',e=>{if(!menuBtn.contains(e.target)&&!menuDrop.contains(e.target))menuDrop.style.display='none'});
+    const menuBtn = document.getElementById('menu-btn'),
+          menuDrop = document.getElementById('menu-dropdown');
+    menuBtn.onclick = () =>
+      menuDrop.style.display = menuDrop.style.display === 'block' ? 'none' : 'block';
+    document.addEventListener('click', e => {
+      if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) {
+        menuDrop.style.display = 'none';
+      }
+    });
 
-    // Footer date
-    const footer=document.getElementById('footerText');
-    const today=new Date();
-    footer.textContent=`Made by Ben · Puzzle No. 1 · ${today.toLocaleDateString(undefined,{weekday:'long'})}, ${today.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}`;
+    // Footer base date (we'll update puzzle number once we know it)
+    const footer = document.getElementById('footerText');
+    const today  = new Date();
+    footer.textContent = `Made by Ben · Loading puzzle… · ${
+      today.toLocaleDateString(undefined, {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      })
+    }`;
 
     // Trivia (daily)
     (async function(){
-      const data=await (await fetch('daily_content.json')).json();
-      const start=new Date(data.start_date);
-      const dayIndex=Math.min(Math.floor((Date.now()-start)/86400000), data.trivia_sets.length-1);
-      const QUESTIONS=data.trivia_sets[dayIndex].questions;
+      const res  = await fetch('daily_content.json');
+      const data = await res.json();
 
-      const qTotalEl=document.getElementById('qtotal'), qNumEl=document.getElementById('qnum'), scoreEl=document.getElementById('score');
-      const questionEl=document.getElementById('question'), answersEl=document.getElementById('answers'), feedbackEl=document.getElementById('feedback');
-      const nextBtn=document.getElementById('next'), restartBtn=document.getElementById('restart'), shareWrap=document.getElementById('shareWrap');
+      const start    = new Date(data.start_date);
+      const diffDays = Math.floor((Date.now() - start) / 86400000);
+      const dayIndex = Math.max(0, diffDays); // never negative
 
-      qTotalEl.textContent=QUESTIONS.length;
-      let idx=0, score=0, locked=false;
+      // Use last available set if we've gone past the JSON length
+      const useIndex = Math.min(dayIndex, data.trivia_sets.length - 1);
+      const QUESTIONS = data.trivia_sets[useIndex].questions;
 
-      function renderQuestion(){
-        const item=QUESTIONS[idx];
-        qNumEl.textContent=idx+1;
-        questionEl.textContent=item.q;
-        feedbackEl.textContent=""; nextBtn.disabled=true; shareWrap.style.display='none'; restartBtn.style.display='none'; locked=false;
-        answersEl.innerHTML="";
-        item.choices.forEach((text,i)=>{
-          const b=document.createElement('button'); b.className='btn'; b.style.width='100%'; b.textContent=text;
-          b.onclick=()=>pickAnswer(i); answersEl.appendChild(b);
+      // 🔢 Update footer with the correct puzzle number
+      footer.textContent = `Made by Ben · Puzzle No. ${dayIndex + 1} · ${
+        today.toLocaleDateString(undefined, {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        })
+      }`;
+
+      const qTotalEl   = document.getElementById('qtotal'),
+            qNumEl     = document.getElementById('qnum'),
+            scoreEl    = document.getElementById('score'),
+            questionEl = document.getElementById('question'),
+            answersEl  = document.getElementById('answers'),
+            feedbackEl = document.getElementById('feedback'),
+            nextBtn    = document.getElementById('next'),
+            restartBtn = document.getElementById('restart'),
+            shareWrap  = document.getElementById('shareWrap');
+
+      qTotalEl.textContent = QUESTIONS.length;
+
+      let idx = 0;
+      let score = 0;
+      let locked = false;
+
+      function renderQuestion() {
+        const item = QUESTIONS[idx];
+        qNumEl.textContent = idx + 1;
+        questionEl.textContent = item.q;
+        feedbackEl.textContent = "";
+        nextBtn.disabled = true;
+        shareWrap.style.display = 'none';
+        restartBtn.style.display = 'none';
+        locked = false;
+
+        answersEl.innerHTML = "";
+        item.choices.forEach((text, i) => {
+          const b = document.createElement('button');
+          b.className = 'btn';
+          b.style.width = '100%';
+          b.textContent = text;
+          b.onclick = () => pickAnswer(i);
+          answersEl.appendChild(b);
         });
       }
-      function pickAnswer(choice){
-        if(locked) return; locked=true;
-        const correct=QUESTIONS[idx].answer;
-        [...answersEl.querySelectorAll('button')].forEach((b,i)=>{
-          if(i===correct){b.style.background='var(--good)';b.style.color='#001';b.style.borderColor='var(--good)';b.style.boxShadow='0 0 22px var(--good)';}
-          else if(i===choice){b.style.background='var(--bad)';b.style.color='#001';b.style.borderColor='var(--bad)';b.style.boxShadow='0 0 22px var(--bad)';}
-          else b.style.opacity=.6;
-          b.disabled=true;
-        });
-        if(choice===correct){score++;scoreEl.textContent=score;feedbackEl.textContent='✅ Correct!';}
-        else{feedbackEl.textContent='❌ Not quite.';}
-        nextBtn.disabled=false;
-      }
-      function nextQuestion(){ if(idx<QUESTIONS.length-1){idx++;renderQuestion();} else endGame(); }
-      function endGame(){ questionEl.textContent='🎉 All done!'; answersEl.innerHTML=''; feedbackEl.innerHTML=`Final score: <strong>${score}</strong> / ${QUESTIONS.length}`; nextBtn.disabled=true; restartBtn.style.display='inline-block'; shareWrap.style.display='block'; }
-      function restart(){ idx=0; score=0; scoreEl.textContent=score; renderQuestion(); }
-      nextBtn.onclick=nextQuestion; restartBtn.onclick=restart;
 
-      function shareText(){ const pct=Math.round((score/QUESTIONS.length)*100); return `Ben's Trivia — I scored ${score}/${QUESTIONS.length} (${pct}%). Play: ${location.href}`; }
-      document.getElementById('shareWhats').onclick=()=>window.open(`https://wa.me/?text=${encodeURIComponent(shareText())}`,'_blank');
-      document.getElementById('copyLink').onclick=async()=>{try{await navigator.clipboard.writeText(shareText());alert('Result copied!');}catch{alert('Copy failed.');}};
+      function pickAnswer(choice) {
+        if (locked) return;
+        locked = true;
+
+        const correct = QUESTIONS[idx].answer;
+        [...answersEl.querySelectorAll('button')].forEach((b, i) => {
+          if (i === correct) {
+            b.style.background   = 'var(--good)';
+            b.style.color        = '#001';
+            b.style.borderColor  = 'var(--good)';
+            b.style.boxShadow    = '0 0 22px var(--good)';
+          } else if (i === choice) {
+            b.style.background   = 'var(--bad)';
+            b.style.color        = '#001';
+            b.style.borderColor  = 'var(--bad)';
+            b.style.boxShadow    = '0 0 22px var(--bad)';
+          } else {
+            b.style.opacity = .6;
+          }
+          b.disabled = true;
+        });
+
+        if (choice === correct) {
+          score++;
+          scoreEl.textContent = score;
+          feedbackEl.textContent = '✅ Correct!';
+        } else {
+          feedbackEl.textContent = '❌ Not quite.';
+        }
+        nextBtn.disabled = false;
+      }
+
+      function nextQuestion() {
+        if (idx < QUESTIONS.length - 1) {
+          idx++;
+          renderQuestion();
+        } else {
+          endGame();
+        }
+      }
+
+      function endGame() {
+        questionEl.textContent = '🎉 All done!';
+        answersEl.innerHTML = '';
+        feedbackEl.innerHTML =
+          `Final score: <strong>${score}</strong> / ${QUESTIONS.length}`;
+        nextBtn.disabled = true;
+        restartBtn.style.display = 'inline-block';
+        shareWrap.style.display = 'block';
+      }
+
+      function restart() {
+        idx = 0;
+        score = 0;
+        scoreEl.textContent = score;
+        renderQuestion();
+      }
+
+      nextBtn.onclick = nextQuestion;
+      restartBtn.onclick = restart;
+
+      function shareText() {
+        const pct = Math.round((score / QUESTIONS.length) * 100);
+        return `Ben's Trivia — I scored ${score}/${QUESTIONS.length} (${pct}%). Play: ${location.href}`;
+      }
+
+      document.getElementById('shareWhats').onclick = () =>
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareText())}`,'_blank');
+
+      document.getElementById('copyLink').onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(shareText());
+          alert('Result copied!');
+        } catch {
+          alert('Copy failed.');
+        }
+      };
 
       renderQuestion();
     })();
