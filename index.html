@@ -3,26 +3,33 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ben’s Trivia</title>
+  <title>Ben’s Trivia — Daily Trivia</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Menu -->
-  <header class="top-menu">
-    <button id="menu-btn">☰</button>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-row1">
+      <div class="header-left">
+        <button id="menu-btn">☰</button>
+        <div class="logo-wrap">
+          <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
+        </div>
+      </div>
+      <!-- no how-to icon on this page -->
+    </div>
+    <div class="header-row2">
+      <h1 id="page-title" class="page-title"></h1>
+    </div>
+
     <nav class="menu-dropdown" id="menu-dropdown">
-      <a href="index.html">🎯 Ben's Trivia</a>
+      <a href="index.html">🎯 Daily Trivia</a>
       <a href="anagram.html">🔤 Anagram Game</a>
       <a href="riddle.html">🕵️ Riddle Game</a>
       <a href="connections.html">🧩 Connections</a>
-      <a href="big-fat-sunday-quiz.html"> 🍻 Big Fat Sunday Quiz </a>
+      <a href="big-fat-sunday-quiz.html">🍻 Big Fat Sunday Quiz</a>
     </nav>
   </header>
-
-  <!-- Logo (size controlled in style.css) -->
-  <div class="logo-wrap">
-    <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
-  </div>
 
   <main>
     <section class="game-card card">
@@ -50,9 +57,9 @@
   <footer id="footerText"></footer>
 
   <script>
-    // Menu
-    const menuBtn = document.getElementById('menu-btn'),
-          menuDrop = document.getElementById('menu-dropdown');
+    // ----- MENU -----
+    const menuBtn = document.getElementById('menu-btn');
+    const menuDrop = document.getElementById('menu-dropdown');
     menuBtn.onclick = () =>
       menuDrop.style.display = menuDrop.style.display === 'block' ? 'none' : 'block';
     document.addEventListener('click', e => {
@@ -64,20 +71,25 @@
     const footer = document.getElementById('footerText');
     const today  = new Date();
 
-    // Set temporary footer text, then update after we know puzzle number
-    footer.textContent = `Made by Ben · Loading puzzle… · ${
+    // Header title: Daily Trivia — Sunday, 23 November
+    const pageTitleEl = document.getElementById('page-title');
+    pageTitleEl.textContent =
+      'Daily Trivia — ' +
       today.toLocaleDateString(undefined, {
         weekday: 'long',
         day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      })
-    }`;
+        month: 'long'
+      });
 
-    // Trivia (daily) from JSON
+    // ----- Trivia (daily) from JSON -----
     (async function(){
       const res  = await fetch('daily_content.json');
       const data = await res.json();
+
+      // EASY TO UPDATE MONTHLY:
+      // On the 1st of each month, you can replace the trivia_sets
+      // inside daily_content.json with new questions.
+      // Keep the same structure so this logic still works.
 
       const start    = new Date(data.start_date);
       const diffDays = Math.floor((Date.now() - start) / 86400000);
@@ -85,8 +97,10 @@
       const useIndex = Math.min(dayIndex, data.trivia_sets.length - 1);
       const QUESTIONS = data.trivia_sets[useIndex].questions;
 
-      // ✅ Update footer with correct puzzle number
-      footer.textContent = `Made by Ben · Puzzle No. ${dayIndex + 1} · ${
+      // Shared daily puzzle number (also used by Anagram, Riddle, Connections)
+      const puzzleNumber = dayIndex + 1;
+
+      footer.textContent = `Made by Ben · Puzzle No. ${puzzleNumber} · ${
         today.toLocaleDateString(undefined, {
           weekday: 'long',
           day: 'numeric',
