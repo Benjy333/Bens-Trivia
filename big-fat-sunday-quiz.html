@@ -976,34 +976,41 @@
       }
     });
 
-    // ------------------------------
-    // SHARING
-    // ------------------------------
-    const shareWhatsAppBtn = document.getElementById("share-whatsapp");
-    const copyResultBtn = document.getElementById("copy-result");
+// ------------------------------
+// SHARING
+// ------------------------------
+const shareWhatsAppBtn = document.getElementById("share-whatsapp");
+const copyResultBtn = document.getElementById("copy-result");
 
-    function buildShareText() {
-      const total = currentQuiz.questions.length;
-      const base = `I just played "The Big Fat Sunday Quiz" on Ben's Trivia and so far I've got ${lastScore}/${total} (${lastPercent}%) correct!`;
-      const link = window.location.href;
-      return `${base} Try to beat my score: ${link}`;
-    }
+function buildShareText() {
+  const total = currentQuiz.questions.length;
+  const baseLines = [
+    `I just played "The Big Fat Sunday Quiz" on Ben's Trivia!`,
+    ``,
+    `My score: ${lastScore}/${total} (${lastPercent}%)`,
+    ``,
+    `Try to beat my score:`,
+    window.location.href
+  ];
 
-    shareWhatsAppBtn.addEventListener("click", () => {
-      const text = buildShareText();
-      const url = "https://wa.me/?text=" + encodeURIComponent(text);
-      window.open(url, "_blank");
-    });
+  return baseLines.join("\n");
+}
 
-    copyResultBtn.addEventListener("click", async () => {
-      const text = buildShareText();
-      try {
-        await navigator.clipboard.writeText(text);
-        shareStatus.textContent = "Copied! Paste into Messenger, Instagram, SMS, etc.";
-      } catch (err) {
-        shareStatus.textContent = "Couldn't copy automatically – select and copy manually.";
-      }
-    });
+shareWhatsAppBtn.addEventListener("click", () => {
+  const text = buildShareText();
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
+});
+
+copyResultBtn.addEventListener("click", async () => {
+  const text = buildShareText();
+  try {
+    await navigator.clipboard.writeText(text);
+    shareStatus.textContent = "Copied! Paste into Messenger, Instagram, SMS, etc.";
+  } catch (err) {
+    shareStatus.textContent = "Couldn't copy automatically – select and copy manually.";
+  }
+});
   </script>
 </body>
 </html>
