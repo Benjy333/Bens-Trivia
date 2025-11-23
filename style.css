@@ -14,7 +14,7 @@
 html, body { height: 100%; margin: 0; }
 
 body {
-  padding-top: 180px;  /* logo height (140px) + 40px buffer */
+  padding-top: 380px;  /* logo height (140px) + 40px buffer */
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   background:
     radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
