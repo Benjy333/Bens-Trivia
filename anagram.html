@@ -6,28 +6,57 @@
   <title>Ben's Trivia — Anagram</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .game-card{width:min(640px,92vw)}
-    .scramble{letter-spacing:.12em;font-weight:800;font-size:clamp(28px,6vw,44px);text-align:center;margin:6px 0 14px}
-    .controls{display:grid;grid-template-columns:1fr auto;gap:10px}
-    .toolbar{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-    .feedback{min-height:28px;text-align:center;margin-top:8px}
+    .game-card { width: min(640px,92vw); }
+    .scramble {
+      letter-spacing:.12em;
+      font-weight:800;
+      font-size:clamp(28px,6vw,44px);
+      text-align:center;
+      margin:6px 0 14px;
+    }
+    .controls {
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+    }
+    .toolbar {
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    .feedback {
+      min-height:28px;
+      text-align:center;
+      margin-top:8px;
+    }
   </style>
 </head>
 <body>
-  <div class="logo-wrap">
-  <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
-</div>
-  <header class="top-menu">
-    <button id="menu-btn">☰</button>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-row1">
+      <div class="header-left">
+        <button id="menu-btn">☰</button>
+        <div class="logo-wrap">
+          <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
+        </div>
+      </div>
+      <!-- no how-to icon here -->
+    </div>
+    <div class="header-row2">
+      <h1 id="page-title" class="page-title"></h1>
+    </div>
+
     <nav class="menu-dropdown" id="menu-dropdown">
-      <a href="index.html">🎯 Ben's Trivia</a>
+      <a href="index.html">🎯 Daily Trivia</a>
       <a href="anagram.html">🔤 Anagram Game</a>
       <a href="riddle.html">🕵️ Riddle Game</a>
       <a href="connections.html">🧩 Connections</a>
-       <a href="big-fat-sunday-quiz.html"> 🍻 Big Fat Sunday Quiz </a>
+      <a href="big-fat-sunday-quiz.html">🍻 Big Fat Sunday Quiz</a>
     </nav>
   </header>
-  <div class="logo-wrap"><img class="logo-img" src="logo.png" alt="Ben's Trivia logo" /></div>
 
   <main class="wrap">
     <section class="game-card card">
@@ -48,29 +77,83 @@
   <footer id="footerText"></footer>
 
   <script>
-    // Menu + footer
-    const mb=document.getElementById('menu-btn'), md=document.getElementById('menu-dropdown');
+    // ----- MENU + HEADER TITLE -----
+    const mb=document.getElementById('menu-btn'),
+          md=document.getElementById('menu-dropdown');
     mb.onclick=()=>md.style.display=md.style.display==='block'?'none':'block';
-    document.addEventListener('click',e=>{if(!mb.contains(e.target)&&!md.contains(e.target))md.style.display='none'});
-    const today=new Date();document.getElementById('footerText').textContent=`Made by Ben · Puzzle No. 1 · ${today.toLocaleDateString(undefined,{weekday:'long'})}, ${today.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}`;
+    document.addEventListener('click',e=>{
+      if(!mb.contains(e.target)&&!md.contains(e.target))md.style.display='none';
+    });
 
-    // Game
-    const scr=document.getElementById('scramble'), guess=document.getElementById('guess'), fb=document.getElementById('feedback');
+    const today=new Date();
+    const pageTitleEl = document.getElementById('page-title');
+    pageTitleEl.textContent =
+      'Anagram — ' +
+      today.toLocaleDateString(undefined,{
+        weekday:'long',
+        day:'numeric',
+        month:'long'
+      });
+
+    const footerEl = document.getElementById('footerText');
+
+    // ----- GAME -----
+    const scr=document.getElementById('scramble'),
+          guess=document.getElementById('guess'),
+          fb=document.getElementById('feedback');
     let current="";
-    function shuffleLetters(str){const a=str.split('');for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} if(a.join('')===str) return shuffleLetters(str); return a.join('');}
+
+    function shuffleLetters(str){
+      const a=str.split('');
+      for(let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      if(a.join('')===str) return shuffleLetters(str);
+      return a.join('');
+    }
+
     async function loadToday(){
       const data=await (await fetch('daily_content.json')).json();
       const start=new Date(data.start_date);
-      const idx=Math.min(Math.floor((Date.now()-start)/86400000), data.anagrams.length-1);
+      const diffDays=Math.floor((Date.now()-start)/86400000);
+      const idx=Math.min(Math.max(0, diffDays), data.anagrams.length-1);
+
+      // Shared daily puzzle number
+      const puzzleNumber = diffDays + 1;
+      footerEl.textContent = `Made by Ben · Puzzle No. ${puzzleNumber} · ${
+        today.toLocaleDateString(undefined,{
+          weekday:'long',
+          day:'numeric',
+          month:'short',
+          year:'numeric'
+        })
+      }`;
+
       current=data.anagrams[idx].toLowerCase();
-      scr.textContent=shuffleLetters(current); fb.textContent=""; guess.value=""; guess.focus();
+      scr.textContent=shuffleLetters(current);
+      fb.textContent="";
+      guess.value="";
+      guess.focus();
     }
-    function check(){const g=(guess.value||"").trim().toLowerCase(); fb.textContent=g===current?"✅ Correct!":"❌ Try again.";}
+
+    function check(){
+      const g=(guess.value||"").trim().toLowerCase();
+      if(!g) return;
+      fb.textContent=g===current?"✅ Correct!":"❌ Try again.";
+    }
+
     document.getElementById('check').onclick=check;
-    document.getElementById('shuffle').onclick=()=>{ if(current) scr.textContent=shuffleLetters(current); };
-    document.getElementById('hint').onclick=()=>{ if(current) fb.textContent=`Hint: starts with “${current[0].toUpperCase()}”`; };
+    document.getElementById('shuffle').onclick=()=>{
+      if(current) scr.textContent=shuffleLetters(current);
+    };
+    document.getElementById('hint').onclick=()=>{
+      if(current) fb.textContent=`Hint: starts with “${current[0].toUpperCase()}”`;
+    };
     document.getElementById('next').onclick=loadToday;
-    guess.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+    guess.addEventListener('keydown',e=>{
+      if(e.key==='Enter') check();
+    });
 
     loadToday();
   </script>
