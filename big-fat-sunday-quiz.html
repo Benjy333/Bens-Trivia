@@ -5,22 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Big Fat Sunday Quiz</title>
 
-  <!-- Global styling to match your main site -->
+  <!-- Global styling -->
   <link rel="stylesheet" href="style.css" />
-  
- <div class="logo-wrap">
-  <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
-</div>
-  
+
   <style>
-    /* PAGE-SPECIFIC STYLES ONLY – rest comes from style.css */
-
     body {
-
-      <div class="site-logo-wrap">
-  <img src="logo.png" class="site-logo-img" alt="Ben's Trivia Logo">
-</div>
-      
       margin: 0;
       min-height: 100vh;
       font-family: "Segoe UI", Arial, system-ui, -apple-system, sans-serif;
@@ -29,30 +18,34 @@
         radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
         radial-gradient(80% 60% at 50% 110%, #000814 0%, transparent 60%),
         linear-gradient(#071327, #001020);
-      padding-top: 72px; /* space for logo/menu */
+      padding-top: 140px; /* Space for logo + menu */
     }
 
-    .logo-wrap {
-      position: fixed;
-      top: 6px;
+    /* --- LOGO AT TOP --- */
+    .site-logo-wrap {
       width: 100%;
-      display: flex;
-      justify-content: center;
-      z-index: 95;
+      text-align: center;
+      position: fixed;
+      top: 4px;
+      left: 0;
+      z-index: 200;
       pointer-events: none;
     }
-    .logo-img {
-      height: 72px; /* slightly larger logo */
+
+    .site-logo-img {
+      height: 90px;
       width: auto;
+      pointer-events: auto;
       filter:
         drop-shadow(0 0 12px var(--neon))
-        drop-shadow(0 0 30px var(--neon-soft));
-      pointer-events: auto;
+        drop-shadow(0 0 28px var(--neon-soft));
     }
 
+
+    /* --- MENU BAR --- */
     .top-menu {
       position: fixed;
-      top: 0;
+      top: 100px; /* BELOW THE LOGO */
       left: 0;
       right: 0;
       height: 56px;
@@ -62,7 +55,7 @@
       padding: 0 12px;
       background: linear-gradient(90deg, #020713dd, #041831dd);
       backdrop-filter: blur(12px);
-      z-index: 96;
+      z-index: 150;
       border-bottom: 1px solid rgba(150, 208, 255, 0.25);
     }
 
@@ -107,6 +100,7 @@
       background: rgba(55, 161, 255, 0.18);
     }
 
+    /* --- PAGE STYLES --- */
     .page-wrap {
       max-width: 960px;
       margin: 0 auto;
@@ -143,6 +137,7 @@
       color: var(--neon-soft);
     }
 
+    /* --- QUESTIONS --- */
     .quiz-container {
       display: flex;
       flex-direction: column;
@@ -155,9 +150,8 @@
       border-radius: 16px;
       padding: 14px 14px 10px;
       border: 1px solid rgba(150, 208, 255, 0.35);
-      box-shadow:
-        0 0 22px rgba(0, 0, 0, 0.7),
-        0 0 18px rgba(55, 161, 255, 0.22);
+      box-shadow: 0 0 22px rgba(0, 0, 0, 0.7),
+                  0 0 18px rgba(55, 161, 255, 0.22);
     }
 
     .question-header {
@@ -200,7 +194,7 @@
       gap: 6px;
       cursor: pointer;
       background: rgba(3, 15, 34, 0.8);
-      transition: transform 0.06s ease-out, box-shadow 0.06s ease-out, border-color 0.08s;
+      transition: 0.06s ease-out;
     }
 
     .option-label:hover {
@@ -209,19 +203,9 @@
       border-color: var(--neon-soft);
     }
 
-    .option-label input {
-      accent-color: var(--neon);
-    }
-
-    .option-label.correct {
-      border-color: var(--good);
-      box-shadow: 0 0 14px rgba(56, 239, 125, 0.7);
-    }
-
-    .option-label.chosen-wrong {
-      border-color: var(--bad);
-      box-shadow: 0 0 14px rgba(255, 66, 102, 0.7);
-    }
+    .option-label input { accent-color: var(--neon); }
+    .option-label.correct { border-color: var(--good); box-shadow: 0 0 14px rgba(56, 239, 125, 0.7); }
+    .option-label.chosen-wrong { border-color: var(--bad); box-shadow: 0 0 14px rgba(255, 66, 102, 0.7); }
 
     .btn-question {
       margin-top: 10px;
@@ -234,30 +218,16 @@
       cursor: pointer;
     }
 
-    .btn-question:active {
-      transform: translateY(1px);
-    }
-
     .feedback {
       margin-top: 6px;
       font-size: 13px;
       min-height: 16px;
     }
 
-    .feedback.correct {
-      color: var(--good);
-    }
+    .feedback.correct { color: var(--good); }
+    .feedback.incorrect { color: var(--bad); }
 
-    .feedback.incorrect {
-      color: var(--bad);
-    }
-
-    .controls {
-      text-align: center;
-      margin-top: 16px;
-      margin-bottom: 10px;
-    }
-
+    /* --- PROGRESS BAR --- */
     .progress-wrap {
       max-width: 480px;
       margin: 0 auto 10px;
@@ -287,51 +257,9 @@
       width: 0%;
       border-radius: 999px;
       background: linear-gradient(90deg, var(--neon-soft), var(--good));
-      box-shadow:
-        0 0 14px rgba(55, 161, 255, 0.7),
-        0 0 24px rgba(56, 239, 125, 0.7);
+      box-shadow: 0 0 14px rgba(55, 161, 255, 0.7),
+                  0 0 24px rgba(56, 239, 125, 0.7);
       transition: width 0.15s ease-out;
-    }
-
-    .btn-utility {
-      margin-top: 10px;
-      margin-bottom: 4px;
-    }
-
-    .score-box {
-      text-align: center;
-      margin-top: 8px;
-      font-size: 20px;
-      min-height: 28px;
-    }
-
-    .score-box .percent {
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--good);
-      text-shadow:
-        0 0 12px var(--good),
-        0 0 24px rgba(56, 239, 125, 0.6);
-    }
-
-    .score-box .raw {
-      font-size: 14px;
-      opacity: 0.9;
-    }
-
-    .share-panel {
-      margin-top: 12px;
-      text-align: center;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .share-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
     }
 
     .btn-secondary {
@@ -342,11 +270,10 @@
       color: #e9f4ff;
       font-size: 13px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
-    .btn-secondary:active {
-      transform: translateY(1px);
-    }
+    .btn-secondary:active { transform: translateY(1px); }
 
     footer {
       margin-top: 32px;
@@ -355,29 +282,19 @@
       font-size: 13px;
       opacity: 0.8;
     }
-
-    footer .footer-main {
-      margin-bottom: 2px;
-    }
-
-    footer .footer-meta {
-      font-size: 12px;
-      opacity: 0.85;
-    }
   </style>
 </head>
+
 <body>
 
-  <!-- LOGO -->
-  <div class="logo-wrap">
-    <!-- Update src to match your actual logo file -->
-    <img class="logo-img" src="logo.png" alt="Ben's Trivia Logo" />
+  <!-- 🌟 GLOWING LOGO AT TOP -->
+  <div class="site-logo-wrap">
+    <img src="bens-trivia-logo.svg" class="site-logo-img" alt="Ben's Trivia Logo">
   </div>
 
-  <!-- TOP MENU -->
+  <!-- MENU -->
   <header class="top-menu">
-
-    <button id="menu-btn" aria-label="Open menu">☰</button>
+    <button id="menu-btn">☰</button>
     <nav class="menu-dropdown" id="menu-dropdown">
       <a href="index.html">🎯 Ben's Trivia</a>
       <a href="anagram.html">🔤 Anagram Game</a>
@@ -387,57 +304,52 @@
     </nav>
   </header>
 
-  <main class="page-wrap">
-    <h1 class="page-title">The Big Fat Sunday Quiz</h1>
-    <p class="page-subtitle">25 questions. One fresh quiz every Sunday. Big bragging rights.</p>
 
-    <div class="quiz-meta">
-      <div><strong id="quiz-title"></strong></div>
-      <div id="quiz-week-info"></div>
+  <!-- PAGE START -->
+  <main class="page-wrap">
+
+    <h1 class="page-title">The Big Fat Sunday Quiz</h1>
+    <p class="page-subtitle">25 questions. New quiz every Sunday.</p>
+
+    <div id="quiz-meta" class="quiz-meta">
+      <strong id="quiz-title"></strong><br>
+      <span id="quiz-week-info"></span>
     </div>
 
-    <section class="quiz-container" id="quiz-container">
-      <!-- Questions injected here -->
-    </section>
+    <div class="quiz-container" id="quiz-container"></div>
 
-    <div class="controls">
-      <div class="progress-wrap">
-        <div class="progress-label">
-          <span>Progress</span>
-          <span id="progress-text">0 / 25 answered</span>
-        </div>
-        <div class="progress-bar-outer">
-          <div class="progress-bar-inner" id="progress-bar"></div>
-        </div>
+    <!-- PROGRESS BAR -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progress</span>
+        <span id="progress-text">0 / 25 answered</span>
       </div>
-
-      <button class="btn-secondary btn-utility" id="jump-unanswered">
-        Show first unanswered question
-      </button>
-
-      <div class="score-box" id="score-box">
-        <!-- Score updates as you check questions -->
+      <div class="progress-bar-outer">
+        <div id="progress-bar" class="progress-bar-inner"></div>
       </div>
+    </div>
 
-      <div class="share-panel" id="share-panel">
-        <div style="font-size: 13px; opacity: 0.9; margin-bottom: 4px;">
-          Share your score with your mates:
-        </div>
-        <div class="share-buttons">
-          <button class="btn-secondary" id="share-whatsapp">Share via WhatsApp</button>
-          <button class="btn-secondary" id="copy-result">Copy result text</button>
-        </div>
-        <div id="share-status" style="font-size: 11px; opacity: 0.9; margin-top: 4px;"></div>
+    <button class="btn-secondary" id="jump-unanswered">Show first unanswered question</button>
+
+    <div class="score-box" id="score-box"></div>
+
+    <div class="share-panel" id="share-panel" style="display:none;">
+      <div class="share-buttons">
+        <button class="btn-secondary" id="share-whatsapp">Share via WhatsApp</button>
+        <button class="btn-secondary" id="copy-result">Copy result</button>
       </div>
+      <div id="share-status" style="font-size:11px; opacity:0.8; margin-top:6px;"></div>
     </div>
 
     <footer>
-      <div class="footer-main">
-        Made by <strong>Benjy333</strong> · The Big Fat Sunday Quiz
-      </div>
-      <div class="footer-meta" id="footer-meta"></div>
+      Made by <strong>Benjy333</strong> • Updated Weekly  
+      <div id="footer-meta"></div>
     </footer>
+
   </main>
+
+
+
 
   <script>
     // ------------------------------
