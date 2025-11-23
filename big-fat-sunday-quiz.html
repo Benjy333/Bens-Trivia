@@ -18,34 +18,31 @@
         radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
         radial-gradient(80% 60% at 50% 110%, #000814 0%, transparent 60%),
         linear-gradient(#071327, #001020);
-      padding-top: 140px; /* Space for logo + menu */
+      padding-top: 24px; /* small breathing room at top */
     }
 
     /* --- LOGO AT TOP --- */
     .site-logo-wrap {
       width: 100%;
       text-align: center;
-      position: fixed;
-      top: 4px;
-      left: 0;
-      z-index: 200;
-      pointer-events: none;
+      position: relative;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      z-index: 1;
     }
 
     .site-logo-img {
-      height: 90px;
+      height: 80px;
       width: auto;
-      pointer-events: auto;
       filter:
         drop-shadow(0 0 12px var(--neon))
         drop-shadow(0 0 28px var(--neon-soft));
     }
 
-
     /* --- MENU BAR --- */
     .top-menu {
-      position: fixed;
-      top: 100px; /* BELOW THE LOGO */
+      position: sticky;   /* sticks under the logo when you scroll */
+      top: 0;
       left: 0;
       right: 0;
       height: 56px;
@@ -55,7 +52,7 @@
       padding: 0 12px;
       background: linear-gradient(90deg, #020713dd, #041831dd);
       backdrop-filter: blur(12px);
-      z-index: 150;
+      z-index: 100;
       border-bottom: 1px solid rgba(150, 208, 255, 0.25);
     }
 
@@ -87,6 +84,7 @@
       min-width: 200px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(16px);
+      z-index: 200;
     }
     .menu-dropdown a {
       padding: 8px 14px;
@@ -109,7 +107,7 @@
 
     .page-title {
       text-align: center;
-      margin-top: 12px;
+      margin-top: 16px;
       margin-bottom: 8px;
       font-size: 32px;
       letter-spacing: 0.04em;
@@ -287,9 +285,9 @@
 
 <body>
 
-
-    <div class="logo-wrap">
-    <img class="logo-img" src="logo.png" alt="Ben's Trivia logo" />
+  <!-- 🌟 GLOWING LOGO AT TOP -->
+  <div class="site-logo-wrap">
+    <img src="bens-trivia-logo.svg" class="site-logo-img" alt="Ben's Trivia Logo">
   </div>
 
   <!-- MENU -->
@@ -303,7 +301,6 @@
       <a href="big-fat-sunday-quiz.html"> 🍻 Big Fat Sunday Quiz </a>
     </nav>
   </header>
-
 
   <!-- PAGE START -->
   <main class="page-wrap">
@@ -347,9 +344,6 @@
     </footer>
 
   </main>
-
-
-
 
   <script>
     // ------------------------------
@@ -607,7 +601,7 @@
     function getMostRecentSunday(date) {
       const d = new Date(date);
       const day = d.getDay(); // 0 = Sunday
-      const diff = day; // days since Sunday
+      const diff = day;
       d.setDate(d.getDate() - diff);
       return d;
     }
@@ -620,7 +614,7 @@
 
     const today = new Date();
     const weekOfYear = getWeekOfYear(today);
-    const quizIndex = (weekOfYear - 1) % quizSets.length; // rotate through 4 quizzes
+    const quizIndex = (weekOfYear - 1) % quizSets.length;
     const currentQuiz = quizSets[quizIndex];
 
     const recentSunday = getMostRecentSunday(today);
@@ -729,7 +723,6 @@
       const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
       const feedbackEl = document.getElementById(`feedback-${qIndex}`);
 
-      // reset visual styles for this question
       const labels = document.querySelectorAll(`label.option-label[data-q="${qIndex}"]`);
       labels.forEach(label => {
         label.classList.remove("correct", "chosen-wrong");
@@ -754,7 +747,6 @@
         feedbackEl.classList.remove("correct");
       }
 
-      // highlight correct & chosen wrong
       labels.forEach(label => {
         const opt = Number(label.dataset.opt);
         if (opt === correctIndex) {
@@ -764,7 +756,6 @@
         }
       });
 
-      // Update state
       questionStates[qIndex].checked = true;
       questionStates[qIndex].correct = (chosenIndex === correctIndex);
 
@@ -774,7 +765,6 @@
     function updateScoreAndProgress() {
       const total = currentQuiz.questions.length;
 
-      // Score
       let correct = 0;
       questionStates.forEach(s => {
         if (s.correct) correct++;
@@ -795,7 +785,6 @@
         sharePanel.style.display = "none";
       }
 
-      // Progress (questions checked)
       let answered = 0;
       questionStates.forEach(s => { if (s.checked) answered++; });
       const progressPercent = Math.round((answered / total) * 100);
@@ -804,7 +793,6 @@
       progressBarEl.style.width = progressPercent + "%";
     }
 
-    // initialise score/progress display
     updateScoreAndProgress();
 
     // ------------------------------
