@@ -351,7 +351,7 @@
   <!-- PAGE CONTENT -->
   <main>
     <section class="game-card card quiz-shell">
-      <p class="page-subtitle">25 questions. New quiz every Sunday.</p>
+      <p class="page-subtitle">25 questions. One big quiz.</p>
 
       <div id="quiz-meta" class="quiz-meta">
         <strong id="quiz-title"></strong><br>
@@ -421,419 +421,144 @@
     });
 
     // ------------------------------
-    // QUIZ DATA
+    // SINGLE QUIZ DATA
     //
     // 👉 To change questions each month:
-    //    - Replace the quizSets array below with new weekly sets.
-    //    - No other code changes needed.
+    //    - Edit currentQuiz.questions below.
+    //    - Keep the same structure (q, options, correctIndex).
     // ------------------------------
-    const quizSets = [
-      
-      {
-        title: "Week 1 – Movies, TV & Pop Culture",
-        questions: [
-          { q: "Who plays Iron Man in the Marvel Cinematic Universe?",
-            options: ["Chris Evans", "Chris Hemsworth", "Robert Downey Jr", "Mark Ruffalo"], correctIndex: 2 },
-          { q: "Which movie features a DeLorean time machine?",
-            options: ["Back to the Future", "The Terminator", "Star Wars", "Blade Runner"], correctIndex: 0 },
-          { q: "What is the name of the wizarding school in Harry Potter?",
-            options: ["Beauxbatons", "Durmstrang", "Hogwarts", "Ilvermorny"], correctIndex: 2 },
-          { q: "Which TV series is set in the fictional land of Westeros?",
-            options: ["The Witcher", "Game of Thrones", "Vikings", "The Crown"], correctIndex: 1 },
-          { q: "Who directed 'Jurassic Park' (1993)?",
-            options: ["James Cameron", "Steven Spielberg", "George Lucas", "Ridley Scott"], correctIndex: 1 },
-          { q: "Which animated film features the character Buzz Lightyear?",
-            options: ["Toy Story", "Shrek", "Finding Nemo", "Frozen"], correctIndex: 0 },
-          { q: "Which singer is known as the 'King of Pop'?",
-            options: ["Prince", "Elvis Presley", "Michael Jackson", "Freddie Mercury"], correctIndex: 2 },
-          { q: "In Star Wars, what is the name of Han Solo’s ship?",
-            options: ["Star Destroyer", "Millennium Falcon", "X-wing", "TIE Fighter"], correctIndex: 1 },
-          { q: "Which TV show is set in the town of Springfield?",
-            options: ["Family Guy", "The Simpsons", "South Park", "Futurama"], correctIndex: 1 },
-          { q: "Who voices Shrek in the Shrek movies?",
-            options: ["Eddie Murphy", "Adam Sandler", "Mike Myers", "Jim Carrey"], correctIndex: 2 },
-          { q: "Which film won Best Picture at the Oscars for 1998?",
-            options: ["Titanic", "The Matrix", "Braveheart", "Shakespeare in Love"], correctIndex: 3 },
-          { q: "What is the name of the kingdom in Disney’s 'Frozen'?",
-            options: ["Arendelle", "Corona", "Agrabah", "DunBroch"], correctIndex: 0 },
-          { q: "Which actress played Katniss Everdeen in 'The Hunger Games'?",
-            options: ["Jennifer Lawrence", "Emma Stone", "Scarlett Johansson", "Anne Hathaway"], correctIndex: 0 },
-          { q: "Which TV series features the character Walter White?",
-            options: ["Breaking Bad", "Better Call Saul", "Ozark", "Mad Men"], correctIndex: 0 },
-          { q: "In 'Friends', what is the name of Ross’s sister?",
-            options: ["Rachel", "Phoebe", "Monica", "Janice"], correctIndex: 2 },
-          { q: "Which film features the line 'You can't handle the truth!'?",
-            options: ["A Few Good Men", "Top Gun", "Die Hard", "The Godfather"], correctIndex: 0 },
-          { q: "Who directed 'Avatar'?",
-            options: ["Christopher Nolan", "James Cameron", "Peter Jackson", "J.J. Abrams"], correctIndex: 1 },
-          { q: "Which superhero is also known as the 'Caped Crusader'?",
-            options: ["Superman", "Spider-Man", "Batman", "The Flash"], correctIndex: 2 },
-          { q: "What is the name of the talking snowman in 'Frozen'?",
-            options: ["Sven", "Kristoff", "Olaf", "Hans"], correctIndex: 2 },
-          { q: "Which band released the album 'Abbey Road'?",
-            options: ["The Beatles", "The Rolling Stones", "Pink Floyd", "Queen"], correctIndex: 0 },
-          { q: "Which TV show centres on a paper company in Scranton?",
-            options: ["Parks and Recreation", "The Office (US)", "Brooklyn Nine-Nine", "30 Rock"], correctIndex: 1 },
-          { q: "In the Marvel films, what is Thor’s hammer called?",
-            options: ["Gungnir", "Stormbreaker", "Mjolnir", "Aegis"], correctIndex: 2 },
-          { q: "Which film features a theme park full of cloned dinosaurs?",
-            options: ["Jurassic Park", "King Kong", "Avatar", "Jumanji"], correctIndex: 0 },
-          { q: "Which singer released 'Shape of You'?",
-            options: ["Ed Sheeran", "Justin Bieber", "Bruno Mars", "Shawn Mendes"], correctIndex: 0 },
-          { q: "Which Pixar film is about a rat who loves to cook?",
-            options: ["Ratatouille", "WALL·E", "Up", "Inside Out"], correctIndex: 0 }
-        ]
-      },
-      {
-        title: "Week 2 – Sport Special",
-        questions: [
-          { q: "How many points is a try worth in rugby union?",
-            options: ["3", "4", "5", "6"], correctIndex: 2 },
-          { q: "In tennis, what is the score when both players have 40?",
-            options: ["Deuce", "Love", "Advantage", "Tie"], correctIndex: 0 },
-          { q: "How many players are on a basketball team on the court?",
-            options: ["4", "5", "6", "7"], correctIndex: 1 },
-          { q: "Which country hosts the Tour de France?",
-            options: ["Italy", "France", "Spain", "Belgium"], correctIndex: 1 },
-          { q: "In soccer, what card does a player receive before being sent off?",
-            options: ["Blue card", "Yellow card", "Black card", "Purple card"], correctIndex: 1 },
-          { q: "Which country won the 2003 Rugby World Cup?",
-            options: ["Australia", "New Zealand", "South Africa", "England"], correctIndex: 3 },
-          { q: "Which athlete is known as 'The Lightning Bolt'?",
-            options: ["Mo Farah", "Usain Bolt", "Michael Johnson", "Carl Lewis"], correctIndex: 1 },
-          { q: "In golf, what do you call a score of one under par on a hole?",
-            options: ["Eagle", "Birdie", "Bogey", "Albatross"], correctIndex: 1 },
-          { q: "How long is an Olympic swimming pool?",
-            options: ["25 metres", "33 metres", "50 metres", "100 metres"], correctIndex: 2 },
-          { q: "Which sport uses a puck?",
-            options: ["Ice hockey", "Cricket", "Baseball", "Rugby"], correctIndex: 0 },
-          { q: "What is the maximum break in snooker?",
-            options: ["147", "155", "167", "180"], correctIndex: 0 },
-          { q: "Which nation traditionally hosts the Ashes with England?",
-            options: ["India", "Australia", "West Indies", "New Zealand"], correctIndex: 1 },
-          { q: "Which footballer is nicknamed 'CR7'?",
-            options: ["Cristiano Ronaldo", "Lionel Messi", "Neymar", "Kylian Mbappé"], correctIndex: 0 },
-          { q: "In which sport would you perform a 'slam dunk'?",
-            options: ["Rugby", "Basketball", "Tennis", "Volleyball"], correctIndex: 1 },
-          { q: "How many rings are there on the Olympic flag?",
-            options: ["4", "5", "6", "7"], correctIndex: 1 },
-          { q: "Which country hosted the 2000 Summer Olympics?",
-            options: ["Greece", "China", "Australia", "Canada"], correctIndex: 2 },
-          { q: "What is the distance of a marathon?",
-            options: ["21.1 km", "35 km", "40 km", "42.195 km"], correctIndex: 3 },
-          { q: "In cricket, how many balls are in an over?",
-            options: ["4", "5", "6", "8"], correctIndex: 2 },
-          { q: "Which court surface is Wimbledon played on?",
-            options: ["Clay", "Grass", "Hard", "Carpet"], correctIndex: 1 },
-          { q: "Which country is famous for the sport of sumo wrestling?",
-            options: ["China", "South Korea", "Japan", "Thailand"], correctIndex: 2 },
-          { q: "In rugby league, how many tackles are in a set?",
-            options: ["4", "5", "6", "7"], correctIndex: 2 },
-          { q: "Which team sport is played at the Super Bowl?",
-            options: ["Baseball", "American football", "Basketball", "Ice hockey"], correctIndex: 1 },
-          { q: "Which tennis tournament is played at Roland-Garros?",
-            options: ["Wimbledon", "US Open", "Australian Open", "French Open"], correctIndex: 3 },
-          { q: "Which sport features the positions 'prop' and 'hooker'?",
-            options: ["Rugby", "Football", "Basketball", "Baseball"], correctIndex: 0 },
-          { q: "Which country has won the most FIFA World Cups (men’s)?",
-            options: ["Germany", "Italy", "Argentina", "Brazil"], correctIndex: 3 }
-        ]
-      },
-
-      {
-        title: "Week 3 – General Knowledge ",
-        questions: [
-        
-          {
-            q: "Which language has the most native speakers?",
-            options: ["English", "Spanish", "Mandarin Chinese", "Hindi"],
-            correctIndex: 2
-          },
-          {
-            q: "What is the hardest natural substance on Earth?",
-            options: ["Diamond", "Iron", "Quartz", "Granite"],
-            correctIndex: 0
-          },
-          {
-            q: "Which country hosted the 2016 Summer Olympics?",
-            options: ["China", "Brazil", "United Kingdom", "Russia"],
-            correctIndex: 1
-          },
-          {
-            q: "What is the smallest prime number?",
-            options: ["0", "1", "2", "3"],
-            correctIndex: 2
-          },
-          {
-            q: "Which movie features a DeLorean time machine?",
-            options: ["Back to the Future", "The Terminator", "Star Wars", "Blade Runner"],
-            correctIndex: 0
-          },
-          {
-            q: "Who directed 'Jurassic Park' (1993)?",
-            options: ["James Cameron", "Steven Spielberg", "George Lucas", "Ridley Scott"],
-            correctIndex: 1
-          },
-          {
-            q: "Which film features the line 'You can't handle the truth!'?",
-            options: ["A Few Good Men", "Top Gun", "Die Hard", "The Godfather"],
-            correctIndex: 0
-          },
-          {
-            q: "In the Marvel films, what is Thor’s hammer called?",
-            options: ["Gungnir", "Stormbreaker", "Mjolnir", "Aegis"],
-            correctIndex: 2
-          },
-          {
-            q: "How many points is a try worth in rugby union?",
-            options: ["3", "4", "5", "6"],
-            correctIndex: 2
-          },
-          {
-            q: "In tennis, what is the score when both players have 40?",
-            options: ["Deuce", "Love", "Advantage", "Tie"],
-            correctIndex: 0
-          },
-          {
-            q: "Which country won the 2003 Rugby World Cup?",
-            options: ["Australia", "New Zealand", "South Africa", "England"],
-            correctIndex: 3
-          },
-          {
-            q: "In golf, what do you call a score of one under par on a hole?",
-            options: ["Eagle", "Birdie", "Bogey", "Albatross"],
-            correctIndex: 1
-          },
-          {
-            q: "What is the maximum break in snooker?",
-            options: ["147", "155", "167", "180"],
-            correctIndex: 0
-          },
-          {
-            q: "Which of these is NOT a colour on the Olympic rings?",
-            options: ["Blue", "Red", "Purple", "Green"],
-            correctIndex: 2
-          },
-          {
-            q: "If I was to do a Fosbury flop, which sport would I be doing in the Olympics?",
-            options: ["Pole vault", "High jump", "Gymnastics floor", "Diving"],
-            correctIndex: 1
-          },
-          {
-            q: "Which country has won the most FIFA World Cups (men’s)?",
-            options: ["Germany", "Italy", "Argentina", "Brazil"],
-            correctIndex: 3
-          },
-          {
-            q: "Who developed the theory of relativity?",
-            options: ["Isaac Newton", "Albert Einstein", "Nikola Tesla", "Galileo Galilei"],
-            correctIndex: 1
-          },
-          {
-            q: "What is the main gas found in the air we breathe?",
-            options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
-            correctIndex: 2
-          },
-          {
-            q: "Which country is famous for the landmark Machu Picchu?",
-            options: ["Peru", "Chile", "Mexico", "Guatemala"],
-            correctIndex: 0
-          },
-          {
-            q: "Which city hosted the first modern Olympic Games (1896)?",
-            options: ["Paris", "Rome", "Athens", "London"],
-            correctIndex: 2
-          },
-          {
-            q: "What is the largest internal organ in the human body?",
-            options: ["Heart", "Liver", "Lungs", "Kidneys"],
-            correctIndex: 1
-          },
-          {
-            q: "Which planet is closest to the Sun?",
-            options: ["Venus", "Mercury", "Earth", "Mars"],
-            correctIndex: 1
-          },
-          {
-            q: "What does a sphygmomanometer measure?",
-            options: ["Blood sugar", "Blood pressure", "Lung capacity", "Heart rate"],
-            correctIndex: 1
-          },
-          {
-            q: "Which is Shakespeare's longest play?",
-            options: ["Macbeth", "King Lear", "Hamlet", "Othello"],
-            correctIndex: 2
-          },
-            {
-            q: "The day before two days after the day before tomorrow is Saturday. What day is it today?",
-            options: ["Thursday", "Friday", "Saturday", "Sunday"],
-            correctIndex: 1
-          }
-        ]
-      },
-             title: "Week 4 – General Knowledge ",
-        questions: [
-        
-          {
-            q: "Which language has the most native speakers?",
-            options: ["English", "Spanish", "Mandarin Chinese", "Hindi"],
-            correctIndex: 2
-          },
-          {
-            q: "What is the hardest natural substance on Earth?",
-            options: ["Diamond", "Iron", "Quartz", "Granite"],
-            correctIndex: 0
-          },
-          {
-            q: "Which country hosted the 2016 Summer Olympics?",
-            options: ["China", "Brazil", "United Kingdom", "Russia"],
-            correctIndex: 1
-          },
-          {
-            q: "What is the smallest prime number?",
-            options: ["0", "1", "2", "3"],
-            correctIndex: 2
-          },
-          {
-            q: "Which movie features a DeLorean time machine?",
-            options: ["Back to the Future", "The Terminator", "Star Wars", "Blade Runner"],
-            correctIndex: 0
-          },
-          {
-            q: "Who directed 'Jurassic Park' (1993)?",
-            options: ["James Cameron", "Steven Spielberg", "George Lucas", "Ridley Scott"],
-            correctIndex: 1
-          },
-          {
-            q: "Which film features the line 'You can't handle the truth!'?",
-            options: ["A Few Good Men", "Top Gun", "Die Hard", "The Godfather"],
-            correctIndex: 0
-          },
-          {
-            q: "In the Marvel films, what is Thor’s hammer called?",
-            options: ["Gungnir", "Stormbreaker", "Mjolnir", "Aegis"],
-            correctIndex: 2
-          },
-          {
-            q: "How many points is a try worth in rugby union?",
-            options: ["3", "4", "5", "6"],
-            correctIndex: 2
-          },
-          {
-            q: "In tennis, what is the score when both players have 40?",
-            options: ["Deuce", "Love", "Advantage", "Tie"],
-            correctIndex: 0
-          },
-          {
-            q: "Which country won the 2003 Rugby World Cup?",
-            options: ["Australia", "New Zealand", "South Africa", "England"],
-            correctIndex: 3
-          },
-          {
-            q: "In golf, what do you call a score of one under par on a hole?",
-            options: ["Eagle", "Birdie", "Bogey", "Albatross"],
-            correctIndex: 1
-          },
-          {
-            q: "What is the maximum break in snooker?",
-            options: ["147", "155", "167", "180"],
-            correctIndex: 0
-          },
-          {
-            q: "Which of these is NOT a colour on the Olympic rings?",
-            options: ["Blue", "Red", "Purple", "Green"],
-            correctIndex: 2
-          },
-          {
-            q: "If I was to do a Fosbury flop, which sport would I be doing in the Olympics?",
-            options: ["Pole vault", "High jump", "Gymnastics floor", "Diving"],
-            correctIndex: 1
-          },
-          {
-            q: "Which country has won the most FIFA World Cups (men’s)?",
-            options: ["Germany", "Italy", "Argentina", "Brazil"],
-            correctIndex: 3
-          },
-          {
-            q: "Who developed the theory of relativity?",
-            options: ["Isaac Newton", "Albert Einstein", "Nikola Tesla", "Galileo Galilei"],
-            correctIndex: 1
-          },
-          {
-            q: "What is the main gas found in the air we breathe?",
-            options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
-            correctIndex: 2
-          },
-          {
-            q: "Which country is famous for the landmark Machu Picchu?",
-            options: ["Peru", "Chile", "Mexico", "Guatemala"],
-            correctIndex: 0
-          },
-          {
-            q: "Which city hosted the first modern Olympic Games (1896)?",
-            options: ["Paris", "Rome", "Athens", "London"],
-            correctIndex: 2
-          },
-          {
-            q: "What is the largest internal organ in the human body?",
-            options: ["Heart", "Liver", "Lungs", "Kidneys"],
-            correctIndex: 1
-          },
-          {
-            q: "Which planet is closest to the Sun?",
-            options: ["Venus", "Mercury", "Earth", "Mars"],
-            correctIndex: 1
-          },
-          {
-            q: "What does a sphygmomanometer measure?",
-            options: ["Blood sugar", "Blood pressure", "Lung capacity", "Heart rate"],
-            correctIndex: 1
-          },
-          {
-            q: "Which is Shakespeare's longest play?",
-            options: ["Macbeth", "King Lear", "Hamlet", "Othello"],
-            correctIndex: 2
-          },
-            {
-            q: "The day before two days after the day before tomorrow is Saturday. What day is it today?",
-            options: ["Thursday", "Friday", "Saturday", "Sunday"],
-            correctIndex: 1
-          }
-       
-    ];
-
-    // ------------------------------
-    // WEEK CALC + QUIZ SELECTION
-    // ------------------------------
-    function getWeekOfYear(date) {
-      const tempDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-      const dayNum = tempDate.getUTCDay() || 7;
-      tempDate.setUTCDate(tempDate.getUTCDate() + 4 - dayNum);
-      const yearStart = new Date(Date.UTC(tempDate.getUTCFullYear(), 0, 1));
-      return Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
-    }
-
-    function getMostRecentSunday(date) {
-      const d = new Date(date);
-      const day = d.getDay(); // 0 = Sunday
-      const diff = day;
-      d.setDate(d.getDate() - diff);
-      return d;
-    }
-
-    function formatNiceDate(date) {
-      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-      return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-    }
+    const currentQuiz = {
+      title: "General Knowledge – Big Fat Sunday Quiz",
+      questions: [
+        {
+          q: "Which language has the most native speakers?",
+          options: ["English", "Spanish", "Mandarin Chinese", "Hindi"],
+          correctIndex: 2
+        },
+        {
+          q: "What is the hardest natural substance on Earth?",
+          options: ["Diamond", "Iron", "Quartz", "Granite"],
+          correctIndex: 0
+        },
+        {
+          q: "Which country hosted the 2016 Summer Olympics?",
+          options: ["China", "Brazil", "United Kingdom", "Russia"],
+          correctIndex: 1
+        },
+        {
+          q: "What is the smallest prime number?",
+          options: ["0", "1", "2", "3"],
+          correctIndex: 2
+        },
+        {
+          q: "Which movie features a DeLorean time machine?",
+          options: ["Back to the Future", "The Terminator", "Star Wars", "Blade Runner"],
+          correctIndex: 0
+        },
+        {
+          q: "Who directed 'Jurassic Park' (1993)?",
+          options: ["James Cameron", "Steven Spielberg", "George Lucas", "Ridley Scott"],
+          correctIndex: 1
+        },
+        {
+          q: "Which film features the line 'You can't handle the truth!'?",
+          options: ["A Few Good Men", "Top Gun", "Die Hard", "The Godfather"],
+          correctIndex: 0
+        },
+        {
+          q: "In the Marvel films, what is Thor’s hammer called?",
+          options: ["Gungnir", "Stormbreaker", "Mjolnir", "Aegis"],
+          correctIndex: 2
+        },
+        {
+          q: "How many points is a try worth in rugby union?",
+          options: ["3", "4", "5", "6"],
+          correctIndex: 2
+        },
+        {
+          q: "In tennis, what is the score when both players have 40?",
+          options: ["Deuce", "Love", "Advantage", "Tie"],
+          correctIndex: 0
+        },
+        {
+          q: "Which country won the 2003 Rugby World Cup?",
+          options: ["Australia", "New Zealand", "South Africa", "England"],
+          correctIndex: 3
+        },
+        {
+          q: "In golf, what do you call a score of one under par on a hole?",
+          options: ["Eagle", "Birdie", "Bogey", "Albatross"],
+          correctIndex: 1
+        },
+        {
+          q: "What is the maximum break in snooker?",
+          options: ["147", "155", "167", "180"],
+          correctIndex: 0
+        },
+        {
+          q: "Which of these is NOT a colour on the Olympic rings?",
+          options: ["Blue", "Red", "Purple", "Green"],
+          correctIndex: 2
+        },
+        {
+          q: "If I was to do a Fosbury flop, which sport would I be doing in the Olympics?",
+          options: ["Pole vault", "High jump", "Gymnastics floor", "Diving"],
+          correctIndex: 1
+        },
+        {
+          q: "Which country has won the most FIFA World Cups (men’s)?",
+          options: ["Germany", "Italy", "Argentina", "Brazil"],
+          correctIndex: 3
+        },
+        {
+          q: "Who developed the theory of relativity?",
+          options: ["Isaac Newton", "Albert Einstein", "Nikola Tesla", "Galileo Galilei"],
+          correctIndex: 1
+        },
+        {
+          q: "What is the main gas found in the air we breathe?",
+          options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
+          correctIndex: 2
+        },
+        {
+          q: "Which country is famous for the landmark Machu Picchu?",
+          options: ["Peru", "Chile", "Mexico", "Guatemala"],
+          correctIndex: 0
+        },
+        {
+          q: "Which city hosted the first modern Olympic Games (1896)?",
+          options: ["Paris", "Rome", "Athens", "London"],
+          correctIndex: 2
+        },
+        {
+          q: "What is the largest internal organ in the human body?",
+          options: ["Heart", "Liver", "Lungs", "Kidneys"],
+          correctIndex: 1
+        },
+        {
+          q: "Which planet is closest to the Sun?",
+          options: ["Venus", "Mercury", "Earth", "Mars"],
+          correctIndex: 1
+        },
+        {
+          q: "What does a sphygmomanometer measure?",
+          options: ["Blood sugar", "Blood pressure", "Lung capacity", "Heart rate"],
+          correctIndex: 1
+        },
+        {
+          q: "Which is Shakespeare's longest play?",
+          options: ["Macbeth", "King Lear", "Hamlet", "Othello"],
+          correctIndex: 2
+        },
+        {
+          q: "The day before two days after the day before tomorrow is Saturday. What day is it today?",
+          options: ["Thursday", "Friday", "Saturday", "Sunday"],
+          correctIndex: 1
+        }
+      ]
+    };
 
     const today = new Date();
-    const weekOfYear = getWeekOfYear(today);
-    const quizIndex = (weekOfYear - 1) % quizSets.length;
-    const currentQuiz = quizSets[quizIndex];
-
-    const recentSunday = getMostRecentSunday(today);
-    const uploadDateText = formatNiceDate(recentSunday);
 
     // ------------------------------
     // RENDER QUIZ
@@ -844,9 +569,9 @@
     const footerMetaEl = document.getElementById("footer-text");
 
     quizTitleEl.textContent = currentQuiz.title;
-    quizWeekInfoEl.textContent = `Current set: Week ${quizIndex + 1} · ${currentQuiz.questions.length} questions · New quiz every Sunday`;
+    quizWeekInfoEl.textContent = `${currentQuiz.questions.length} questions · One-off special`;
 
-    // Footer: Made by Ben · Week X · Sunday, 23 November 2025
+    // Footer: Made by Ben · <full date>
     (function setFooter() {
       const fullDate = today.toLocaleDateString(undefined, {
         weekday: "long",
@@ -854,7 +579,7 @@
         month: "long",
         year: "numeric"
       });
-      footerMetaEl.textContent = `Made by Ben · Week ${quizIndex + 1} · ${fullDate}`;
+      footerMetaEl.textContent = `Made by Ben · ${fullDate}`;
     })();
 
     const questionStates = currentQuiz.questions.map(() => ({
@@ -1050,41 +775,41 @@
       }
     });
 
-// ------------------------------
-// SHARING
-// ------------------------------
-const shareWhatsAppBtn = document.getElementById("share-whatsapp");
-const copyResultBtn = document.getElementById("copy-result");
+    // ------------------------------
+    // SHARING (multi-line text)
+    // ------------------------------
+    const shareWhatsAppBtn = document.getElementById("share-whatsapp");
+    const copyResultBtn = document.getElementById("copy-result");
 
-function buildShareText() {
-  const total = currentQuiz.questions.length;
-  const baseLines = [
-    `I just played "The Big Fat Sunday Quiz" on Ben's Trivia!`,
-    ``,
-    `My score: ${lastScore}/${total} (${lastPercent}%)`,
-    ``,
-    `Try to beat my score:`,
-    window.location.href
-  ];
+    function buildShareText() {
+      const total = currentQuiz.questions.length;
+      const baseLines = [
+        `I just played "The Big Fat Sunday Quiz" on Ben's Trivia!`,
+        ``,
+        `My score: ${lastScore}/${total} (${lastPercent}%)`,
+        ``,
+        `Try to beat my score:`,
+        window.location.href
+      ];
 
-  return baseLines.join("\n");
-}
+      return baseLines.join("\n");
+    }
 
-shareWhatsAppBtn.addEventListener("click", () => {
-  const text = buildShareText();
-  const url = "https://wa.me/?text=" + encodeURIComponent(text);
-  window.open(url, "_blank");
-});
+    shareWhatsAppBtn.addEventListener("click", () => {
+      const text = buildShareText();
+      const url = "https://wa.me/?text=" + encodeURIComponent(text);
+      window.open(url, "_blank");
+    });
 
-copyResultBtn.addEventListener("click", async () => {
-  const text = buildShareText();
-  try {
-    await navigator.clipboard.writeText(text);
-    shareStatus.textContent = "Copied! Paste into Messenger, Instagram, SMS, etc.";
-  } catch (err) {
-    shareStatus.textContent = "Couldn't copy automatically – select and copy manually.";
-  }
-});
+    copyResultBtn.addEventListener("click", async () => {
+      const text = buildShareText();
+      try {
+        await navigator.clipboard.writeText(text);
+        shareStatus.textContent = "Copied! Paste into Messenger, Instagram, SMS, etc.";
+      } catch (err) {
+        shareStatus.textContent = "Couldn't copy automatically – select and copy manually.";
+      }
+    });
   </script>
 </body>
 </html>
