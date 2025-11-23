@@ -204,37 +204,94 @@
       accent-color: var(--neon);
     }
 
+    .option-label.correct {
+      border-color: var(--good);
+      box-shadow: 0 0 14px rgba(56, 239, 125, 0.7);
+    }
+
+    .option-label.chosen-wrong {
+      border-color: var(--bad);
+      box-shadow: 0 0 14px rgba(255, 66, 102, 0.7);
+    }
+
+    .btn-question {
+      margin-top: 10px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(150, 208, 255, 0.7);
+      background: rgba(3, 15, 34, 0.95);
+      color: #e9f4ff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-question:active {
+      transform: translateY(1px);
+    }
+
+    .feedback {
+      margin-top: 6px;
+      font-size: 13px;
+      min-height: 16px;
+    }
+
+    .feedback.correct {
+      color: var(--good);
+    }
+
+    .feedback.incorrect {
+      color: var(--bad);
+    }
+
     .controls {
       text-align: center;
-      margin-top: 26px;
+      margin-top: 16px;
       margin-bottom: 10px;
     }
 
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 28px;
-      font-size: 16px;
-      border-radius: 999px;
-      border: none;
-      background: radial-gradient(circle at top left, var(--neon-soft), var(--neon));
-      color: #020712;
-      cursor: pointer;
-      box-shadow:
-        0 0 18px rgba(55, 161, 255, 0.8),
-        0 0 32px rgba(55, 161, 255, 0.55);
+    .progress-wrap {
+      max-width: 480px;
+      margin: 0 auto 10px;
+      text-align: left;
+      font-size: 13px;
+      opacity: 0.9;
     }
 
-    .btn-primary:active {
-      transform: translateY(1px);
-      box-shadow: 0 0 10px rgba(55, 161, 255, 0.6);
+    .progress-label {
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .progress-bar-outer {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(4, 20, 40, 0.9);
+      border: 1px solid rgba(150, 208, 255, 0.5);
+      overflow: hidden;
+    }
+
+    .progress-bar-inner {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--neon-soft), var(--good));
+      box-shadow:
+        0 0 14px rgba(55, 161, 255, 0.7),
+        0 0 24px rgba(56, 239, 125, 0.7);
+      transition: width 0.15s ease-out;
+    }
+
+    .btn-utility {
+      margin-top: 10px;
+      margin-bottom: 4px;
     }
 
     .score-box {
       text-align: center;
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 20px;
       min-height: 28px;
     }
@@ -331,8 +388,23 @@
     </section>
 
     <div class="controls">
-      <button class="btn-primary" id="submit-btn">Submit Answers</button>
-      <div class="score-box" id="score-box"></div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Progress</span>
+          <span id="progress-text">0 / 25 answered</span>
+        </div>
+        <div class="progress-bar-outer">
+          <div class="progress-bar-inner" id="progress-bar"></div>
+        </div>
+      </div>
+
+      <button class="btn-secondary btn-utility" id="jump-unanswered">
+        Show first unanswered question
+      </button>
+
+      <div class="score-box" id="score-box">
+        <!-- Score updates as you check questions -->
+      </div>
 
       <div class="share-panel" id="share-panel">
         <div style="font-size: 13px; opacity: 0.9; margin-bottom: 4px;">
@@ -641,11 +713,17 @@
     quizWeekInfoEl.textContent = `Current set: Week ${quizIndex + 1} · 25 questions · New quiz every Sunday`;
     footerMetaEl.textContent = `This week’s quiz uploaded: ${uploadDateText}`;
 
+    const questionStates = currentQuiz.questions.map(() => ({
+      checked: false,
+      correct: false
+    }));
+
     function renderQuiz() {
       quizContainer.innerHTML = "";
       currentQuiz.questions.forEach((qObj, qIndex) => {
         const card = document.createElement("article");
         card.className = "question-card";
+        card.id = `card-${qIndex}`;
 
         const header = document.createElement("div");
         header.className = "question-header";
@@ -669,6 +747,8 @@
           const label = document.createElement("label");
           label.className = "option-label";
           label.setAttribute("for", id);
+          label.dataset.q = qIndex;
+          label.dataset.opt = optIndex;
 
           const input = document.createElement("input");
           input.type = "radio";
@@ -684,8 +764,21 @@
           optionsWrap.appendChild(label);
         });
 
+        const checkBtn = document.createElement("button");
+        checkBtn.className = "btn-question";
+        checkBtn.type = "button";
+        checkBtn.textContent = "Check answer";
+        checkBtn.addEventListener("click", () => checkQuestion(qIndex));
+
+        const feedback = document.createElement("div");
+        feedback.className = "feedback";
+        feedback.id = `feedback-${qIndex}`;
+
         card.appendChild(header);
         card.appendChild(optionsWrap);
+        card.appendChild(checkBtn);
+        card.appendChild(feedback);
+
         quizContainer.appendChild(card);
       });
     }
@@ -693,38 +786,130 @@
     renderQuiz();
 
     // ------------------------------
-    // SUBMIT & SCORING
+    // PER-QUESTION CHECK + SCORE + PROGRESS
     // ------------------------------
-    const submitBtn = document.getElementById("submit-btn");
     const scoreBox = document.getElementById("score-box");
     const sharePanel = document.getElementById("share-panel");
     const shareStatus = document.getElementById("share-status");
 
-    let lastScore = null;
-    let lastPercent = null;
+    const progressTextEl = document.getElementById("progress-text");
+    const progressBarEl = document.getElementById("progress-bar");
+    const jumpUnansweredBtn = document.getElementById("jump-unanswered");
 
-    submitBtn.addEventListener("click", () => {
-      let score = 0;
-      currentQuiz.questions.forEach((qObj, qIndex) => {
-        const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
-        if (selected && Number(selected.value) === qObj.correctIndex) {
-          score++;
+    let lastScore = 0;
+    let lastPercent = 0;
+
+    function checkQuestion(qIndex) {
+      const qObj = currentQuiz.questions[qIndex];
+      const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+      const feedbackEl = document.getElementById(`feedback-${qIndex}`);
+
+      // reset visual styles for this question
+      const labels = document.querySelectorAll(`label.option-label[data-q="${qIndex}"]`);
+      labels.forEach(label => {
+        label.classList.remove("correct", "chosen-wrong");
+      });
+
+      if (!selected) {
+        feedbackEl.textContent = "Choose an answer first 😊";
+        feedbackEl.classList.remove("correct", "incorrect");
+        return;
+      }
+
+      const chosenIndex = Number(selected.value);
+      const correctIndex = qObj.correctIndex;
+
+      if (chosenIndex === correctIndex) {
+        feedbackEl.textContent = "Correct! 🎉";
+        feedbackEl.classList.add("correct");
+        feedbackEl.classList.remove("incorrect");
+      } else {
+        feedbackEl.textContent = `Incorrect – correct answer: ${qObj.options[correctIndex]}`;
+        feedbackEl.classList.add("incorrect");
+        feedbackEl.classList.remove("correct");
+      }
+
+      // highlight correct & chosen wrong
+      labels.forEach(label => {
+        const opt = Number(label.dataset.opt);
+        if (opt === correctIndex) {
+          label.classList.add("correct");
+        } else if (opt === chosenIndex && chosenIndex !== correctIndex) {
+          label.classList.add("chosen-wrong");
         }
       });
 
-      const total = currentQuiz.questions.length;
-      const percent = Math.round((score / total) * 100);
+      // Update state
+      questionStates[qIndex].checked = true;
+      questionStates[qIndex].correct = (chosenIndex === correctIndex);
 
-      lastScore = score;
+      updateScoreAndProgress();
+    }
+
+    function updateScoreAndProgress() {
+      const total = currentQuiz.questions.length;
+
+      // Score
+      let correct = 0;
+      questionStates.forEach(s => {
+        if (s.correct) correct++;
+      });
+      const percent = Math.round((correct / total) * 100);
+      lastScore = correct;
       lastPercent = percent;
 
       scoreBox.innerHTML = `
         <div class="percent">${percent}%</div>
-        <div class="raw">You scored ${score} out of ${total}</div>
+        <div class="raw">Currently ${correct} out of ${total} questions correct</div>
       `;
 
-      sharePanel.style.display = "flex";
-      shareStatus.textContent = "";
+      if (correct > 0) {
+        sharePanel.style.display = "flex";
+        shareStatus.textContent = "";
+      } else {
+        sharePanel.style.display = "none";
+      }
+
+      // Progress (questions checked)
+      let answered = 0;
+      questionStates.forEach(s => { if (s.checked) answered++; });
+      const progressPercent = Math.round((answered / total) * 100);
+
+      progressTextEl.textContent = `${answered} / ${total} answered`;
+      progressBarEl.style.width = progressPercent + "%";
+    }
+
+    // initialise score/progress display
+    updateScoreAndProgress();
+
+    // ------------------------------
+    // UNANSWERED QUESTION BUTTON
+    // ------------------------------
+    jumpUnansweredBtn.addEventListener("click", () => {
+      const total = questionStates.length;
+      let targetIndex = -1;
+
+      for (let i = 0; i < total; i++) {
+        if (!questionStates[i].checked) {
+          targetIndex = i;
+          break;
+        }
+      }
+
+      if (targetIndex === -1) {
+        shareStatus.textContent = "You've checked every question – nice! 🎉";
+        sharePanel.style.display = "flex";
+        return;
+      }
+
+      const card = document.getElementById(`card-${targetIndex}`);
+      if (card) {
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+        card.style.outline = "2px solid var(--neon)";
+        setTimeout(() => {
+          card.style.outline = "none";
+        }, 1400);
+      }
     });
 
     // ------------------------------
@@ -734,31 +919,20 @@
     const copyResultBtn = document.getElementById("copy-result");
 
     function buildShareText() {
-      if (lastScore === null) {
-        return null;
-      }
       const total = currentQuiz.questions.length;
-      const base = `I just played "The Big Fat Sunday Quiz" on Ben's Trivia and scored ${lastScore}/${total} (${lastPercent}%)!`;
+      const base = `I just played "The Big Fat Sunday Quiz" on Ben's Trivia and so far I've got ${lastScore}/${total} (${lastPercent}%) correct!`;
       const link = window.location.href;
       return `${base} Try to beat my score: ${link}`;
     }
 
     shareWhatsAppBtn.addEventListener("click", () => {
       const text = buildShareText();
-      if (!text) {
-        alert("Do the quiz and submit your answers first!");
-        return;
-      }
       const url = "https://wa.me/?text=" + encodeURIComponent(text);
       window.open(url, "_blank");
     });
 
     copyResultBtn.addEventListener("click", async () => {
       const text = buildShareText();
-      if (!text) {
-        alert("Do the quiz and submit your answers first!");
-        return;
-      }
       try {
         await navigator.clipboard.writeText(text);
         shareStatus.textContent = "Copied! Paste into Messenger, Instagram, SMS, etc.";
