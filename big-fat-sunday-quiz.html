@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Big Fat Sunday Quiz</title>
+
+  <!-- Global styling to match your main site -->
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* PAGE-SPECIFIC STYLES ONLY – rest comes from style.css */
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, system-ui, -apple-system, sans-serif;
+      color: #e9f4ff;
+      background:
+        radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
+        radial-gradient(80% 60% at 50% 110%, #000814 0%, transparent 60%),
+        linear-gradient(#071327, #001020);
+      padding-top: 72px; /* space for logo/menu */
+    }
+
+    .logo-wrap {
+      position: fixed;
+      top: 6px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 95;
+      pointer-events: none;
+    }
+    .logo-img {
+      height: 72px; /* slightly larger logo */
+      width: auto;
+      filter:
+        drop-shadow(0 0 12px var(--neon))
+        drop-shadow(0 0 30px var(--neon-soft));
+      pointer-events: auto;
+    }
+
+    .top-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      background: linear-gradient(90deg, #020713dd, #041831dd);
+      backdrop-filter: blur(12px);
+      z-index: 96;
+      border-bottom: 1px solid rgba(150, 208, 255, 0.25);
+    }
+
+    #menu-btn {
+      background: transparent;
+      border: 1px solid var(--neon);
+      color: var(--neon-soft);
+      font-size: 22px;
+      border-radius: 999px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(55, 161, 255, 0.4);
+    }
+
+    .menu-dropdown {
+      position: absolute;
+      top: 48px;
+      left: 12px;
+      background: #020818f5;
+      border-radius: 12px;
+      border: 1px solid rgba(150, 208, 255, 0.4);
+      padding: 8px 0;
+      display: none;
+      flex-direction: column;
+      min-width: 200px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(16px);
+    }
+    .menu-dropdown a {
+      padding: 8px 14px;
+      text-decoration: none;
+      color: #e9f4ff;
+      font-size: 14px;
+      display: block;
+      white-space: nowrap;
+    }
+    .menu-dropdown a:hover {
+      background: rgba(55, 161, 255, 0.18);
+    }
+
+    .page-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-top: 12px;
+      margin-bottom: 8px;
+      font-size: 32px;
+      letter-spacing: 0.04em;
+      color: var(--neon);
+      text-shadow:
+        0 0 12px var(--neon),
+        0 0 28px var(--neon-soft);
+    }
+
+    .page-subtitle {
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 22px;
+    }
+
+    .quiz-meta {
+      text-align: center;
+      font-size: 13px;
+      margin-bottom: 18px;
+      opacity: 0.9;
+    }
+
+    .quiz-meta strong {
+      color: var(--neon-soft);
+    }
+
+    .quiz-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .question-card {
+      background: radial-gradient(circle at top left, #12335a 0, #020a16 55%);
+      border-radius: 16px;
+      padding: 14px 14px 10px;
+      border: 1px solid rgba(150, 208, 255, 0.35);
+      box-shadow:
+        0 0 22px rgba(0, 0, 0, 0.7),
+        0 0 18px rgba(55, 161, 255, 0.22);
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .question-number {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .question-text {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .options {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    @media (max-width: 640px) {
+      .options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .option-label {
+      border-radius: 999px;
+      border: 1px solid rgba(150, 208, 255, 0.3);
+      padding: 7px 10px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      background: rgba(3, 15, 34, 0.8);
+      transition: transform 0.06s ease-out, box-shadow 0.06s ease-out, border-color 0.08s;
+    }
+
+    .option-label:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 12px rgba(55, 161, 255, 0.45);
+      border-color: var(--neon-soft);
+    }
+
+    .option-label input {
+      accent-color: var(--neon);
+    }
+
+    .controls {
+      text-align: center;
+      margin-top: 26px;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 28px;
+      font-size: 16px;
+      border-radius: 999px;
+      border: none;
+      background: radial-gradient(circle at top left, var(--neon-soft), var(--neon));
+      color: #020712;
+      cursor: pointer;
+      box-shadow:
+        0 0 18px rgba(55, 161, 255, 0.8),
+        0 0 32px rgba(55, 161, 255, 0.55);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: 0 0 10px rgba(55, 161, 255, 0.6);
+    }
+
+    .score-box {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 20px;
+      min-height: 28px;
+    }
+
+    .score-box .percent {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--good);
+      text-shadow:
+        0 0 12px var(--good),
+        0 0 24px rgba(56, 239, 125, 0.6);
+    }
+
+    .score-box .raw {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .share-panel {
+      margin-top: 12px;
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .share-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(150, 208, 255, 0.6);
+      background: rgba(3, 15, 34, 0.9);
+      color: #e9f4ff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-secondary:active {
+      transform: translateY(1px);
+    }
+
+    footer {
+      margin-top: 32px;
+      padding: 16px 8px 24px;
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    footer .footer-main {
+      margin-bottom: 2px;
+    }
+
+    footer .footer-meta {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGO -->
+  <div class="logo-wrap">
+    <!-- Update src to match your actual logo file -->
+    <img class="logo-img" src="bens-trivia-logo.svg" alt="Ben's Trivia Logo" />
+  </div>
+
+  <!-- TOP MENU -->
+  <header class="top-menu">
+    <button id="menu-btn" aria-label="Open menu">☰</button>
+    <nav class="menu-dropdown" id="menu-dropdown">
+      <a href="index.html">🎯 Daily Trivia</a>
+      <a href="big-fat-sunday-quiz.html">🍻 The Big Fat Sunday Quiz</a>
+    </nav>
+  </header>
+
+  <main class="page-wrap">
+    <h1 class="page-title">The Big Fat Sunday Quiz</h1>
+    <p class="page-subtitle">25 questions. One fresh quiz every Sunday. Big bragging rights.</p>
+
+    <div class="quiz-meta">
+      <div><strong id="quiz-title"></strong></div>
+      <div id="quiz-week-info"></div>
+    </div>
+
+    <section class="quiz-container" id="quiz-container">
+      <!-- Questions injected here -->
+    </section>
+
+    <div class="controls">
+      <button class="btn-primary" id="submit-btn">Submit Answers</button>
+      <div class="score-box" id="score-box"></div>
+
+      <div class="share-panel" id="share-panel">
+        <div style="font-size: 13px; opacity: 0.9; margin-bottom: 4px;">
+          Share your score with your mates:
+        </div>
+        <div class="share-buttons">
+          <button class="btn-secondary" id="share-whatsapp">Share via WhatsApp</button>
+          <button class="btn-secondary" id="copy-result">Copy result text</button>
+        </div>
+        <div id="share-status" style="font-size: 11px; opacity: 0.9; margin-top: 4px;"></div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-main">
+        Made by <strong>Benjy333</strong> · The Big Fat Sunday Quiz
+      </div>
+      <div class="footer-meta" id="footer-meta"></div>
+    </footer>
+  </main>
+
+  <script>
+    // ------------------------------
+    // MENU TOGGLE
+    // ------------------------------
+    const menuBtn = document.getElementById('menu-btn');
+    const menuDropdown = document.getElementById('menu-dropdown');
+    menuBtn.addEventListener('click', () => {
+      const isOpen = menuDropdown.style.display === 'flex';
+      menuDropdown.style.display = isOpen ? 'none' : 'flex';
+    });
+    document.addEventListener('click', (e) => {
+      if (!menuDropdown.contains(e.target) && !menuBtn.contains(e.target)) {
+        menuDropdown.style.display = 'none';
+      }
+    });
+
+    // ------------------------------
+    // QUIZ DATA: 4 WEEKS × 25 QUESTIONS
+    // ------------------------------
+    const quizSets = [
+      {
+        title: "Week 1 – General Knowledge Madness",
+        questions: [
+          { q: "What is the capital of France?",
+            options: ["Rome", "Paris", "Madrid", "Berlin"], correctIndex: 1 },
+          { q: "Which element has the chemical symbol 'O'?",
+            options: ["Gold", "Oxygen", "Osmium", "Tin"], correctIndex: 1 },
+          { q: "In which continent is the Amazon rainforest mainly located?",
+            options: ["Africa", "Asia", "South America", "Europe"], correctIndex: 2 },
+          { q: "Who painted the Mona Lisa?",
+            options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"], correctIndex: 2 },
+          { q: "How many days are there in a leap year?",
+            options: ["364", "365", "366", "367"], correctIndex: 2 },
+          { q: "What is the largest planet in our solar system?",
+            options: ["Earth", "Jupiter", "Saturn", "Neptune"], correctIndex: 1 },
+          { q: "Which language has the most native speakers?",
+            options: ["English", "Spanish", "Mandarin Chinese", "Hindi"], correctIndex: 2 },
+          { q: "What is the chemical symbol for water?",
+            options: ["H2", "HO2", "H2O", "OH2"], correctIndex: 2 },
+          { q: "Which country is famous for the pyramids of Giza?",
+            options: ["Mexico", "Egypt", "Peru", "India"], correctIndex: 1 },
+          { q: "What is the tallest animal in the world?",
+            options: ["Elephant", "Giraffe", "Polar bear", "Rhino"], correctIndex: 1 },
+          { q: "Which ocean lies between Africa and Australia?",
+            options: ["Pacific Ocean", "Arctic Ocean", "Indian Ocean", "Atlantic Ocean"], correctIndex: 2 },
+          { q: "What is the hardest natural substance on Earth?",
+            options: ["Diamond", "Iron", "Quartz", "Granite"], correctIndex: 0 },
+          { q: "Who wrote 'Harry Potter'?",
+            options: ["J.R.R. Tolkien", "J.K. Rowling", "George R.R. Martin", "C.S. Lewis"], correctIndex: 1 },
+          { q: "Which instrument has 88 keys?",
+            options: ["Guitar", "Piano", "Violin", "Flute"], correctIndex: 1 },
+          { q: "What is the square root of 81?",
+            options: ["8", "9", "7", "6"], correctIndex: 1 },
+          { q: "Which country hosted the 2016 Summer Olympics?",
+            options: ["China", "Brazil", "United Kingdom", "Russia"], correctIndex: 1 },
+          { q: "Which metal is liquid at room temperature?",
+            options: ["Mercury", "Aluminium", "Copper", "Lead"], correctIndex: 0 },
+          { q: "What is the smallest prime number?",
+            options: ["0", "1", "2", "3"], correctIndex: 2 },
+          { q: "Which Disney film features the song 'Let It Go'?",
+            options: ["Moana", "Frozen", "Tangled", "Encanto"], correctIndex: 1 },
+          { q: "Which gas do plants primarily use during photosynthesis?",
+            options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Helium"], correctIndex: 2 },
+          { q: "How many players are on the field per team in soccer?",
+            options: ["9", "10", "11", "12"], correctIndex: 2 },
+          { q: "Which country is home to the city of Vienna?",
+            options: ["Germany", "Austria", "Switzerland", "Czech Republic"], correctIndex: 1 },
+          { q: "What is the main language spoken in Brazil?",
+            options: ["Spanish", "Portuguese", "French", "Italian"], correctIndex: 1 },
+          { q: "Which animal is known as 'man's best friend'?",
+            options: ["Cat", "Dog", "Horse", "Parrot"], correctIndex: 1 },
+          { q: "What colour is a New York City taxi traditionally?",
+            options: ["Red", "Blue", "Yellow", "Black"], correctIndex: 2 }
+        ]
+      },
+      {
+        title: "Week 2 – Movies, TV & Pop Culture",
+        questions: [
+          { q: "Who plays Iron Man in the Marvel Cinematic Universe?",
+            options: ["Chris Evans", "Chris Hemsworth", "Robert Downey Jr", "Mark Ruffalo"], correctIndex: 2 },
+          { q: "Which movie features a DeLorean time machine?",
+            options: ["Back to the Future", "The Terminator", "Star Wars", "Blade Runner"], correctIndex: 0 },
+          { q: "What is the name of the wizarding school in Harry Potter?",
+            options: ["Beauxbatons", "Durmstrang", "Hogwarts", "Ilvermorny"], correctIndex: 2 },
+          { q: "Which TV series is set in the fictional land of Westeros?",
+            options: ["The Witcher", "Game of Thrones", "Vikings", "The Crown"], correctIndex: 1 },
+          { q: "Who directed 'Jurassic Park' (1993)?",
+            options: ["James Cameron", "Steven Spielberg", "George Lucas", "Ridley Scott"], correctIndex: 1 },
+          { q: "Which animated film features the character Buzz Lightyear?",
+            options: ["Toy Story", "Shrek", "Finding Nemo", "Frozen"], correctIndex: 0 },
+          { q: "Which singer is known as the 'King of Pop'?",
+            options: ["Prince", "Elvis Presley", "Michael Jackson", "Freddie Mercury"], correctIndex: 2 },
+          { q: "In Star Wars, what is the name of Han Solo’s ship?",
+            options: ["Star Destroyer", "Millennium Falcon", "X-wing", "TIE Fighter"], correctIndex: 1 },
+          { q: "Which TV show is set in the town of Springfield?",
+            options: ["Family Guy", "The Simpsons", "South Park", "Futurama"], correctIndex: 1 },
+          { q: "Who voices Shrek in the Shrek movies?",
+            options: ["Eddie Murphy", "Adam Sandler", "Mike Myers", "Jim Carrey"], correctIndex: 2 },
+          { q: "Which film won Best Picture at the Oscars for 1998?",
+            options: ["Titanic", "The Matrix", "Braveheart", "Shakespeare in Love"], correctIndex: 3 },
+          { q: "What is the name of the kingdom in Disney’s 'Frozen'?",
+            options: ["Arendelle", "Corona", "Agrabah", "DunBroch"], correctIndex: 0 },
+          { q: "Which actress played Katniss Everdeen in 'The Hunger Games'?",
+            options: ["Jennifer Lawrence", "Emma Stone", "Scarlett Johansson", "Anne Hathaway"], correctIndex: 0 },
+          { q: "Which TV series features the character Walter White?",
+            options: ["Breaking Bad", "Better Call Saul", "Ozark", "Mad Men"], correctIndex: 0 },
+          { q: "In 'Friends', what is the name of Ross’s sister?",
+            options: ["Rachel", "Phoebe", "Monica", "Janice"], correctIndex: 2 },
+          { q: "Which film features the line 'You can't handle the truth!'?",
+            options: ["A Few Good Men", "Top Gun", "Die Hard", "The Godfather"], correctIndex: 0 },
+          { q: "Who directed 'Avatar'?",
+            options: ["Christopher Nolan", "James Cameron", "Peter Jackson", "J.J. Abrams"], correctIndex: 1 },
+          { q: "Which superhero is also known as the 'Caped Crusader'?",
+            options: ["Superman", "Spider-Man", "Batman", "The Flash"], correctIndex: 2 },
+          { q: "What is the name of the talking snowman in 'Frozen'?",
+            options: ["Sven", "Kristoff", "Olaf", "Hans"], correctIndex: 2 },
+          { q: "Which band released the album 'Abbey Road'?",
+            options: ["The Beatles", "The Rolling Stones", "Pink Floyd", "Queen"], correctIndex: 0 },
+          { q: "Which TV show centres on a paper company in Scranton?",
+            options: ["Parks and Recreation", "The Office (US)", "Brooklyn Nine-Nine", "30 Rock"], correctIndex: 1 },
+          { q: "In the Marvel films, what is Thor’s hammer called?",
+            options: ["Gungnir", "Stormbreaker", "Mjolnir", "Aegis"], correctIndex: 2 },
+          { q: "Which film features a theme park full of cloned dinosaurs?",
+            options: ["Jurassic Park", "King Kong", "Avatar", "Jumanji"], correctIndex: 0 },
+          { q: "Which singer released 'Shape of You'?",
+            options: ["Ed Sheeran", "Justin Bieber", "Bruno Mars", "Shawn Mendes"], correctIndex: 0 },
+          { q: "Which Pixar film is about a rat who loves to cook?",
+            options: ["Ratatouille", "WALL·E", "Up", "Inside Out"], correctIndex: 0 }
+        ]
+      },
+      {
+        title: "Week 3 – Sport Special",
+        questions: [
+          { q: "How many points is a try worth in rugby union?",
+            options: ["3", "4", "5", "6"], correctIndex: 2 },
+          { q: "In tennis, what is the score when both players have 40?",
+            options: ["Deuce", "Love", "Advantage", "Tie"], correctIndex: 0 },
+          { q: "How many players are on a basketball team on the court?",
+            options: ["4", "5", "6", "7"], correctIndex: 1 },
+          { q: "Which country hosts the Tour de France?",
+            options: ["Italy", "France", "Spain", "Belgium"], correctIndex: 1 },
+          { q: "In soccer, what card does a player receive before being sent off?",
+            options: ["Blue card", "Yellow card", "Black card", "Purple card"], correctIndex: 1 },
+          { q: "Which country won the 2003 Rugby World Cup?",
+            options: ["Australia", "New Zealand", "South Africa", "England"], correctIndex: 3 },
+          { q: "Which athlete is known as 'The Lightning Bolt'?",
+            options: ["Mo Farah", "Usain Bolt", "Michael Johnson", "Carl Lewis"], correctIndex: 1 },
+          { q: "In golf, what do you call a score of one under par on a hole?",
+            options: ["Eagle", "Birdie", "Bogey", "Albatross"], correctIndex: 1 },
+          { q: "How long is an Olympic swimming pool?",
+            options: ["25 metres", "33 metres", "50 metres", "100 metres"], correctIndex: 2 },
+          { q: "Which sport uses a puck?",
+            options: ["Ice hockey", "Cricket", "Baseball", "Rugby"], correctIndex: 0 },
+          { q: "What is the maximum break in snooker?",
+            options: ["147", "155", "167", "180"], correctIndex: 0 },
+          { q: "Which nation traditionally hosts the Ashes with England?",
+            options: ["India", "Australia", "West Indies", "New Zealand"], correctIndex: 1 },
+          { q: "Which footballer is nicknamed 'CR7'?",
+            options: ["Cristiano Ronaldo", "Lionel Messi", "Neymar", "Kylian Mbappé"], correctIndex: 0 },
+          { q: "In which sport would you perform a 'slam dunk'?",
+            options: ["Rugby", "Basketball", "Tennis", "Volleyball"], correctIndex: 1 },
+          { q: "How many rings are there on the Olympic flag?",
+            options: ["4", "5", "6", "7"], correctIndex: 1 },
+          { q: "Which country hosted the 2000 Summer Olympics?",
+            options: ["Greece", "China", "Australia", "Canada"], correctIndex: 2 },
+          { q: "What is the distance of a marathon?",
+            options: ["21.1 km", "35 km", "40 km", "42.195 km"], correctIndex: 3 },
+          { q: "In cricket, how many balls are in an over?",
+            options: ["4", "5", "6", "8"], correctIndex: 2 },
+          { q: "Which court surface is Wimbledon played on?",
+            options: ["Clay", "Grass", "Hard", "Carpet"], correctIndex: 1 },
+          { q: "Which country is famous for the sport of sumo wrestling?",
+            options: ["China", "South Korea", "Japan", "Thailand"], correctIndex: 2 },
+          { q: "In rugby league, how many tackles are in a set?",
+            options: ["4", "5", "6", "7"], correctIndex: 2 },
+          { q: "Which team sport is played at the Super Bowl?",
+            options: ["Baseball", "American football", "Basketball", "Ice hockey"], correctIndex: 1 },
+          { q: "Which tennis tournament is played at Roland-Garros?",
+            options: ["Wimbledon", "US Open", "Australian Open", "French Open"], correctIndex: 3 },
+          { q: "Which sport features the positions 'prop' and 'hooker'?",
+            options: ["Rugby", "Football", "Basketball", "Baseball"], correctIndex: 0 },
+          { q: "Which country has won the most FIFA World Cups (men’s)?",
+            options: ["Germany", "Italy", "Argentina", "Brazil"], correctIndex: 3 }
+        ]
+      },
+      {
+        title: "Week 4 – Mixed Bag (Geography, History & Randoms)",
+        questions: [
+          { q: "Which city is the capital of Japan?",
+            options: ["Kyoto", "Tokyo", "Osaka", "Nagoya"], correctIndex: 1 },
+          { q: "Which river flows through London?",
+            options: ["Seine", "Danube", "Thames", "Rhine"], correctIndex: 2 },
+          { q: "Who was the first person to walk on the Moon?",
+            options: ["Buzz Aldrin", "Neil Armstrong", "Yuri Gagarin", "Michael Collins"], correctIndex: 1 },
+          { q: "In which country would you find the Taj Mahal?",
+            options: ["Pakistan", "Bangladesh", "India", "Sri Lanka"], correctIndex: 2 },
+          { q: "Which war ended in 1945?",
+            options: ["World War I", "World War II", "Vietnam War", "Korean War"], correctIndex: 1 },
+          { q: "Mount Everest lies on the border of Nepal and which country?",
+            options: ["China", "India", "Bhutan", "Pakistan"], correctIndex: 0 },
+          { q: "Which famous ship sank on its maiden voyage in 1912?",
+            options: ["Lusitania", "Titanic", "Bismarck", "Endeavour"], correctIndex: 1 },
+          { q: "Which continent is the Sahara Desert in?",
+            options: ["Asia", "Africa", "Australia", "South America"], correctIndex: 1 },
+          { q: "What is the largest land animal on Earth?",
+            options: ["Giraffe", "White rhino", "African elephant", "Hippopotamus"], correctIndex: 2 },
+          { q: "Which country is both an island and a continent?",
+            options: ["New Zealand", "Iceland", "Australia", "Madagascar"], correctIndex: 2 },
+          { q: "Who developed the theory of relativity?",
+            options: ["Isaac Newton", "Albert Einstein", "Nikola Tesla", "Galileo Galilei"], correctIndex: 1 },
+          { q: "Which city is known as 'The Big Apple'?",
+            options: ["Los Angeles", "Chicago", "New York City", "San Francisco"], correctIndex: 2 },
+          { q: "Which country gave the world pizza and pasta (as we know them)?",
+            options: ["France", "Italy", "Greece", "Spain"], correctIndex: 1 },
+          { q: "What is the main gas found in the air we breathe?",
+            options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], correctIndex: 2 },
+          { q: "Which country is famous for the landmark Machu Picchu?",
+            options: ["Peru", "Chile", "Mexico", "Guatemala"], correctIndex: 0 },
+          { q: "Which city hosted the first modern Olympic Games (1896)?",
+            options: ["Paris", "Rome", "Athens", "London"], correctIndex: 2 },
+          { q: "What is the largest internal organ in the human body?",
+            options: ["Heart", "Liver", "Lungs", "Kidneys"], correctIndex: 1 },
+          { q: "Which planet is closest to the Sun?",
+            options: ["Venus", "Mercury", "Earth", "Mars"], correctIndex: 1 },
+          { q: "Which instrument is known as the 'king of instruments'?",
+            options: ["Piano", "Organ", "Violin", "Trumpet"], correctIndex: 1 },
+          { q: "What is the currency of the United Kingdom?",
+            options: ["Euro", "US Dollar", "Pound sterling", "Swiss franc"], correctIndex: 2 },
+          { q: "Which desert covers much of central Australia?",
+            options: ["Gobi Desert", "Great Sandy Desert", "Atacama Desert", "Kalahari Desert"], correctIndex: 1 },
+          { q: "Which scientist is famous for the apple falling from a tree story?",
+            options: ["Albert Einstein", "Marie Curie", "Isaac Newton", "Charles Darwin"], correctIndex: 2 },
+          { q: "Which country has the maple leaf on its flag?",
+            options: ["Canada", "Denmark", "Norway", "Sweden"], correctIndex: 0 },
+          { q: "Which city is home to the Eiffel Tower?",
+            options: ["Rome", "Paris", "Berlin", "Madrid"], correctIndex: 1 },
+          { q: "Which sea lies between Europe and Africa?",
+            options: ["Caribbean Sea", "Mediterranean Sea", "Black Sea", "Red Sea"], correctIndex: 1 }
+        ]
+      }
+    ];
+
+    // ------------------------------
+    // WEEK CALC + QUIZ SELECTION
+    // ------------------------------
+    function getWeekOfYear(date) {
+      const tempDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = tempDate.getUTCDay() || 7;
+      tempDate.setUTCDate(tempDate.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(tempDate.getUTCFullYear(), 0, 1));
+      return Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
+    }
+
+    function getMostRecentSunday(date) {
+      const d = new Date(date);
+      const day = d.getDay(); // 0 = Sunday
+      const diff = day; // days since Sunday
+      d.setDate(d.getDate() - diff);
+      return d;
+    }
+
+    function formatNiceDate(date) {
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    }
+
+    const today = new Date();
+    const weekOfYear = getWeekOfYear(today);
+    const quizIndex = (weekOfYear - 1) % quizSets.length; // rotate through 4 quizzes
+    const currentQuiz = quizSets[quizIndex];
+
+    const recentSunday = getMostRecentSunday(today);
+    const uploadDateText = formatNiceDate(recentSunday);
+
+    // ------------------------------
+    // RENDER QUIZ
+    // ------------------------------
+    const quizContainer = document.getElementById("quiz-container");
+    const quizTitleEl = document.getElementById("quiz-title");
+    const quizWeekInfoEl = document.getElementById("quiz-week-info");
+    const footerMetaEl = document.getElementById("footer-meta");
+
+    quizTitleEl.textContent = currentQuiz.title;
+    quizWeekInfoEl.textContent = `Current set: Week ${quizIndex + 1} · 25 questions · New quiz every Sunday`;
+    footerMetaEl.textContent = `This week’s quiz uploaded: ${uploadDateText}`;
+
+    function renderQuiz() {
+      quizContainer.innerHTML = "";
+      currentQuiz.questions.forEach((qObj, qIndex) => {
+        const card = document.createElement("article");
+        card.className = "question-card";
+
+        const header = document.createElement("div");
+        header.className = "question-header";
+
+        const qNumber = document.createElement("div");
+        qNumber.className = "question-number";
+        qNumber.textContent = `Question ${qIndex + 1}`;
+
+        const qText = document.createElement("div");
+        qText.className = "question-text";
+        qText.textContent = qObj.q;
+
+        header.appendChild(qNumber);
+        header.appendChild(qText);
+
+        const optionsWrap = document.createElement("div");
+        optionsWrap.className = "options";
+
+        qObj.options.forEach((optText, optIndex) => {
+          const id = `q${qIndex}_opt${optIndex}`;
+          const label = document.createElement("label");
+          label.className = "option-label";
+          label.setAttribute("for", id);
+
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = `q${qIndex}`;
+          input.id = id;
+          input.value = optIndex;
+
+          const span = document.createElement("span");
+          span.textContent = optText;
+
+          label.appendChild(input);
+          label.appendChild(span);
+          optionsWrap.appendChild(label);
+        });
+
+        card.appendChild(header);
+        card.appendChild(optionsWrap);
+        quizContainer.appendChild(card);
+      });
+    }
+
+    renderQuiz();
+
+    // ------------------------------
+    // SUBMIT & SCORING
+    // ------------------------------
+    const submitBtn = document.getElementById("submit-btn");
+    const scoreBox = document.getElementById("score-box");
+    const sharePanel = document.getElementById("share-panel");
+    const shareStatus = document.getElementById("share-status");
+
+    let lastScore = null;
+    let lastPercent = null;
+
+    submitBtn.addEventListener("click", () => {
+      let score = 0;
+      currentQuiz.questions.forEach((qObj, qIndex) => {
+        const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+        if (selected && Number(selected.value) === qObj.correctIndex) {
+          score++;
+        }
+      });
+
+      const total = currentQuiz.questions.length;
+      const percent = Math.round((score / total) * 100);
+
+      lastScore = score;
+      lastPercent = percent;
+
+      scoreBox.innerHTML = `
+        <div class="percent">${percent}%</div>
+        <div class="raw">You scored ${score} out of ${total}</div>
+      `;
+
+      sharePanel.style.display = "flex";
+      shareStatus.textContent = "";
+    });
+
+    // ------------------------------
+    // SHARING
+    // ------------------------------
+    const shareWhatsAppBtn = document.getElementById("share-whatsapp");
+    const copyResultBtn = document.getElementById("copy-result");
+
+    function buildShareText() {
+      if (lastScore === null) {
+        return null;
+      }
+      const total = currentQuiz.questions.length;
+      const base = `I just played "The Big Fat Sunday Quiz" on Ben's Trivia and scored ${lastScore}/${total} (${lastPercent}%)!`;
+      const link = window.location.href;
+      return `${base} Try to beat my score: ${link}`;
+    }
+
+    shareWhatsAppBtn.addEventListener("click", () => {
+      const text = buildShareText();
+      if (!text) {
+        alert("Do the quiz and submit your answers first!");
+        return;
+      }
+      const url = "https://wa.me/?text=" + encodeURIComponent(text);
+      window.open(url, "_blank");
+    });
+
+    copyResultBtn.addEventListener("click", async () => {
+      const text = buildShareText();
+      if (!text) {
+        alert("Do the quiz and submit your answers first!");
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        shareStatus.textContent = "Copied! Paste into Messenger, Instagram, SMS, etc.";
+      } catch (err) {
+        shareStatus.textContent = "Couldn't copy automatically – select and copy manually.";
+      }
+    });
+  </script>
+</body>
+</html>
