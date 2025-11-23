@@ -1,146 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Big Fat Sunday Quiz</title>
-
-  <!-- Global styling -->
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Segoe UI", Arial, system-ui, -apple-system, sans-serif;
-      color: #e9f4ff;
-      background:
-        radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
-        radial-gradient(80% 60% at 50% 110%, #000814 0%, transparent 60%),
-        linear-gradient(#071327, #001020);
-      padding-top: 24px; /* small breathing room at top */
-    }
-
-    /* --- LOGO AT TOP --- */
-    .site-logo-wrap {
-      width: 100%;
-      text-align: center;
-      position: relative;
-      margin-top: 4px;
-      margin-bottom: 8px;
-      z-index: 1;
-    }
-
-    .site-logo-img {
-      height: 80px;
-      width: auto;
-      filter:
-        drop-shadow(0 0 12px var(--neon))
-        drop-shadow(0 0 28px var(--neon-soft));
-    }
-
-    /* --- MENU BAR --- */
-    .top-menu {
-      position: sticky;   /* sticks under the logo when you scroll */
+    /* ===== HEADER (shared feel with other games) ===== */
+    .global-header {
+      position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      height: 56px;
+      z-index: 120;
+      padding: 8px 12px 10px;
+      background: linear-gradient(90deg, #020713ee, #041831ee);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(150, 208, 255, 0.3);
+    }
+    .header-row-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 12px;
-      background: linear-gradient(90deg, #020713dd, #041831dd);
-      backdrop-filter: blur(12px);
-      z-index: 100;
-      border-bottom: 1px solid rgba(150, 208, 255, 0.25);
+      gap: 12px;
     }
-
-    #menu-btn {
-      background: transparent;
-      border: 1px solid var(--neon);
-      color: var(--neon-soft);
-      font-size: 22px;
-      border-radius: 999px;
-      width: 40px;
-      height: 40px;
+    .header-left {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 10px;
+    }
+    .header-logo {
+      height: 36px;
+      width: auto;
+      filter:
+        drop-shadow(0 0 8px var(--neon))
+        drop-shadow(0 0 18px var(--neon-soft));
+    }
+    .header-row-bottom {
+      margin-top: 6px;
+      text-align: center;
+    }
+    .page-title {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-shadow: 0 0 8px var(--neon-soft);
+    }
+    .page-date {
+      display: block;
+      margin-top: 2px;
+      font-size: 0.82rem;
+      color: var(--neon-soft);
+      opacity: 0.9;
+    }
+    .howto-icon {
+      display: none; /* Not used on this page */
+    }
+
+    /* Reuse your existing menu button styling from style.css where possible */
+    .global-header #menu-btn {
+      background: rgba(0,0,0,.25);
+      border: 1.5px solid var(--neon);
+      color: var(--neon);
+      font-size: 1.3rem;
+      padding: 6px 12px;
+      border-radius: 12px;
       cursor: pointer;
-      box-shadow: 0 0 10px rgba(55, 161, 255, 0.4);
+      box-shadow: 0 0 10px var(--neon-soft);
+      transition: .18s;
+    }
+    .global-header #menu-btn:hover {
+      background: var(--neon);
+      color: #001;
     }
 
     .menu-dropdown {
       position: absolute;
-      top: 48px;
-      left: 12px;
-      background: #020818f5;
+      top: 52px;
+      left: 8px;
+      background: var(--bg2);
+      border: 1px solid var(--neon);
       border-radius: 12px;
-      border: 1px solid rgba(150, 208, 255, 0.4);
-      padding: 8px 0;
+      padding: 6px;
+      box-shadow: 0 0 18px var(--neon-soft);
+      min-width: 210px;
       display: none;
       flex-direction: column;
-      min-width: 200px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(16px);
       z-index: 200;
     }
     .menu-dropdown a {
-      padding: 8px 14px;
-      text-decoration: none;
-      color: #e9f4ff;
-      font-size: 14px;
       display: block;
+      padding: 10px 12px;
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
       white-space: nowrap;
     }
     .menu-dropdown a:hover {
-      background: rgba(55, 161, 255, 0.18);
+      background: var(--neon);
+      color: #001;
     }
 
-    /* --- PAGE STYLES --- */
-    .page-wrap {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 16px;
+    /* Adjust body/main padding so card sits nicely under header */
+    body {
+      padding-top: 120px; /* header height + some breathing room */
+    }
+    main {
+      display: grid;
+      place-items: center;
+      padding: 24px 16px 48px;
     }
 
-    .page-title {
-      text-align: center;
-      margin-top: 16px;
-      margin-bottom: 8px;
-      font-size: 32px;
-      letter-spacing: 0.04em;
-      color: var(--neon);
-      text-shadow:
-        0 0 12px var(--neon),
-        0 0 28px var(--neon-soft);
+    /* ===== Quiz card / layout inside main card ===== */
+    .quiz-shell {
+      width: min(960px, 100%);
     }
-
     .page-subtitle {
       text-align: center;
-      font-size: 14px;
-      opacity: 0.85;
-      margin-bottom: 22px;
-    }
-
-    .quiz-meta {
-      text-align: center;
-      font-size: 13px;
-      margin-bottom: 18px;
+      margin: 0 0 8px;
+      font-size: 1rem;
+      color: var(--neon-soft);
       opacity: 0.9;
     }
-
+    .quiz-meta {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+      opacity: 0.9;
+    }
     .quiz-meta strong {
       color: var(--neon-soft);
     }
 
-    /* --- QUESTIONS --- */
     .quiz-container {
       display: flex;
       flex-direction: column;
       gap: 14px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
 
     .question-card {
@@ -148,8 +148,9 @@
       border-radius: 16px;
       padding: 14px 14px 10px;
       border: 1px solid rgba(150, 208, 255, 0.35);
-      box-shadow: 0 0 22px rgba(0, 0, 0, 0.7),
-                  0 0 18px rgba(55, 161, 255, 0.22);
+      box-shadow:
+        0 0 12px rgba(0, 0, 0, 0.6),
+        0 0 18px rgba(55, 161, 255, 0.22);
     }
 
     .question-header {
@@ -157,15 +158,14 @@
       justify-content: space-between;
       align-items: baseline;
       margin-bottom: 6px;
+      gap: 12px;
     }
-
     .question-number {
-      font-size: 13px;
+      font-size: 0.82rem;
       opacity: 0.85;
     }
-
     .question-text {
-      font-size: 15px;
+      font-size: 0.95rem;
       font-weight: 500;
     }
 
@@ -175,18 +175,16 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-
     @media (max-width: 640px) {
       .options {
         grid-template-columns: 1fr;
       }
     }
-
     .option-label {
       border-radius: 999px;
       border: 1px solid rgba(150, 208, 255, 0.3);
       padding: 7px 10px;
-      font-size: 14px;
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -194,16 +192,20 @@
       background: rgba(3, 15, 34, 0.8);
       transition: 0.06s ease-out;
     }
-
     .option-label:hover {
       transform: translateY(-1px);
       box-shadow: 0 0 12px rgba(55, 161, 255, 0.45);
       border-color: var(--neon-soft);
     }
-
     .option-label input { accent-color: var(--neon); }
-    .option-label.correct { border-color: var(--good); box-shadow: 0 0 14px rgba(56, 239, 125, 0.7); }
-    .option-label.chosen-wrong { border-color: var(--bad); box-shadow: 0 0 14px rgba(255, 66, 102, 0.7); }
+    .option-label.correct {
+      border-color: var(--good);
+      box-shadow: 0 0 14px rgba(56, 239, 125, 0.7);
+    }
+    .option-label.chosen-wrong {
+      border-color: var(--bad);
+      box-shadow: 0 0 14px rgba(255, 66, 102, 0.7);
+    }
 
     .btn-question {
       margin-top: 10px;
@@ -212,35 +214,32 @@
       border: 1px solid rgba(150, 208, 255, 0.7);
       background: rgba(3, 15, 34, 0.95);
       color: #e9f4ff;
-      font-size: 13px;
+      font-size: 0.82rem;
       cursor: pointer;
     }
 
     .feedback {
       margin-top: 6px;
-      font-size: 13px;
+      font-size: 0.82rem;
       min-height: 16px;
     }
-
     .feedback.correct { color: var(--good); }
     .feedback.incorrect { color: var(--bad); }
 
-    /* --- PROGRESS BAR --- */
+    /* Progress bar & buttons inside card */
     .progress-wrap {
       max-width: 480px;
       margin: 0 auto 10px;
       text-align: left;
-      font-size: 13px;
+      font-size: 0.85rem;
       opacity: 0.9;
     }
-
     .progress-label {
       margin-bottom: 4px;
       display: flex;
       justify-content: space-between;
       gap: 8px;
     }
-
     .progress-bar-outer {
       width: 100%;
       height: 10px;
@@ -249,14 +248,14 @@
       border: 1px solid rgba(150, 208, 255, 0.5);
       overflow: hidden;
     }
-
     .progress-bar-inner {
       height: 100%;
       width: 0%;
       border-radius: 999px;
       background: linear-gradient(90deg, var(--neon-soft), var(--good));
-      box-shadow: 0 0 14px rgba(55, 161, 255, 0.7),
-                  0 0 24px rgba(56, 239, 125, 0.7);
+      box-shadow:
+        0 0 14px rgba(55, 161, 255, 0.7),
+        0 0 24px rgba(56, 239, 125, 0.7);
       transition: width 0.15s ease-out;
     }
 
@@ -266,103 +265,168 @@
       border: 1px solid rgba(150, 208, 255, 0.6);
       background: rgba(3, 15, 34, 0.9);
       color: #e9f4ff;
-      font-size: 13px;
+      font-size: 0.82rem;
       cursor: pointer;
       margin-top: 10px;
     }
-
     .btn-secondary:active { transform: translateY(1px); }
 
-    footer {
-      margin-top: 32px;
-      padding: 16px 8px 24px;
+    .score-box {
+      margin-top: 12px;
       text-align: center;
-      font-size: 13px;
-      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+    .score-box .percent {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--neon-soft);
+      text-shadow: 0 0 8px var(--neon-soft);
+    }
+    .score-box .raw {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .share-panel {
+      margin-top: 12px;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .share-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .global-footer {
+      text-align: center;
+      padding: 12px 8px 20px;
+      font-size: 0.85rem;
+      color: var(--neon-soft);
+      opacity: 0.9;
+    }
+
+    @media (max-width: 480px) {
+      .header-logo {
+        height: 30px;
+      }
+      .page-title {
+        font-size: 0.95rem;
+      }
+      .quiz-shell {
+        padding: 18px 14px;
+      }
     }
   </style>
 </head>
 
 <body>
+  <!-- UNIVERSAL HEADER -->
+  <header class="global-header">
+    <div class="header-row-top">
+      <div class="header-left">
+        <button id="menu-btn">☰</button>
+        <img src="logo.png" class="header-logo" alt="Ben's Trivia Logo">
+      </div>
+      <!-- how-to icon only used on connections page; hidden here -->
+      <div class="howto-icon" id="howto-icon" style="display:none;">?</div>
+    </div>
 
-  <!-- 🌟 GLOWING LOGO AT TOP -->
-  <div class="site-logo-wrap">
-    <img src="logo.png" class="site-logo-img" alt="Ben's Trivia Logo">
-  </div>
+    <div class="header-row-bottom">
+      <h1 class="page-title">The Big Fat Sunday Quiz</h1>
+      <span class="page-date" id="page-date"></span>
+    </div>
 
-  <!-- MENU -->
-  <header class="top-menu">
-    <button id="menu-btn">☰</button>
     <nav class="menu-dropdown" id="menu-dropdown">
-      <a href="index.html">🎯 Ben's Trivia</a>
+      <a href="index.html">🎯 Daily Trivia</a>
       <a href="anagram.html">🔤 Anagram Game</a>
       <a href="riddle.html">🕵️ Riddle Game</a>
       <a href="connections.html">🧩 Connections</a>
-      <a href="big-fat-sunday-quiz.html"> 🍻 Big Fat Sunday Quiz </a>
+      <a href="big-fat-sunday-quiz.html">🍻 Big Fat Sunday Quiz</a>
     </nav>
   </header>
 
-  <!-- PAGE START -->
-  <main class="page-wrap">
+  <!-- PAGE CONTENT -->
+  <main>
+    <section class="game-card card quiz-shell">
+      <p class="page-subtitle">25 questions. New quiz every Sunday.</p>
 
-    <h1 class="page-title">The Big Fat Sunday Quiz</h1>
-    <p class="page-subtitle">25 questions. New quiz every Sunday.</p>
-
-    <div id="quiz-meta" class="quiz-meta">
-      <strong id="quiz-title"></strong><br>
-      <span id="quiz-week-info"></span>
-    </div>
-
-    <div class="quiz-container" id="quiz-container"></div>
-
-    <!-- PROGRESS BAR -->
-    <div class="progress-wrap">
-      <div class="progress-label">
-        <span>Progress</span>
-        <span id="progress-text">0 / 25 answered</span>
+      <div id="quiz-meta" class="quiz-meta">
+        <strong id="quiz-title"></strong><br>
+        <span id="quiz-week-info"></span>
       </div>
-      <div class="progress-bar-outer">
-        <div id="progress-bar" class="progress-bar-inner"></div>
+
+      <div class="quiz-container" id="quiz-container"></div>
+
+      <!-- PROGRESS BAR -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Progress</span>
+          <span id="progress-text">0 / 25 answered</span>
+        </div>
+        <div class="progress-bar-outer">
+          <div id="progress-bar" class="progress-bar-inner"></div>
+        </div>
       </div>
-    </div>
 
-    <button class="btn-secondary" id="jump-unanswered">Show first unanswered question</button>
+      <button class="btn-secondary" id="jump-unanswered">
+        Show first unanswered question
+      </button>
 
-    <div class="score-box" id="score-box"></div>
+      <div class="score-box" id="score-box"></div>
 
-    <div class="share-panel" id="share-panel" style="display:none;">
-      <div class="share-buttons">
-        <button class="btn-secondary" id="share-whatsapp">Share via WhatsApp</button>
-        <button class="btn-secondary" id="copy-result">Copy result</button>
+      <div class="share-panel" id="share-panel" style="display:none;">
+        <div class="share-buttons">
+          <button class="btn-secondary" id="share-whatsapp">Share via WhatsApp</button>
+          <button class="btn-secondary" id="copy-result">Copy result</button>
+        </div>
+        <div id="share-status" style="font-size:11px; opacity:0.8; margin-top:6px;"></div>
       </div>
-      <div id="share-status" style="font-size:11px; opacity:0.8; margin-top:6px;"></div>
-    </div>
-
-    <footer>
-      Made by <strong>Benjy333</strong> • Updated Weekly  
-      <div id="footer-meta"></div>
-    </footer>
-
+    </section>
   </main>
+
+  <footer class="global-footer" id="footer-text"></footer>
 
   <script>
     // ------------------------------
+    // HEADER DATE
+    // ------------------------------
+    (function setHeaderDate() {
+      const today = new Date();
+      const headerDate = document.getElementById("page-date");
+      headerDate.textContent = today.toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      });
+    })();
+
+    // ------------------------------
     // MENU TOGGLE
     // ------------------------------
-    const menuBtn = document.getElementById('menu-btn');
-    const menuDropdown = document.getElementById('menu-dropdown');
-    menuBtn.addEventListener('click', () => {
-      const isOpen = menuDropdown.style.display === 'flex';
-      menuDropdown.style.display = isOpen ? 'none' : 'flex';
+    const menuBtn = document.getElementById("menu-btn");
+    const menuDropdown = document.getElementById("menu-dropdown");
+
+    menuBtn.addEventListener("click", () => {
+      const isOpen = menuDropdown.style.display === "flex";
+      menuDropdown.style.display = isOpen ? "none" : "flex";
     });
-    document.addEventListener('click', (e) => {
+
+    document.addEventListener("click", (e) => {
       if (!menuDropdown.contains(e.target) && !menuBtn.contains(e.target)) {
-        menuDropdown.style.display = 'none';
+        menuDropdown.style.display = "none";
       }
     });
 
     // ------------------------------
     // QUIZ DATA: 4 WEEKS × 25 QUESTIONS
+    //
+    // 👉 To change questions each month:
+    //    - Replace the quizSets array below with your new 4 weekly sets.
+    //    - No other code changes needed.
     // ------------------------------
     const quizSets = [
       {
@@ -626,11 +690,21 @@
     const quizContainer = document.getElementById("quiz-container");
     const quizTitleEl = document.getElementById("quiz-title");
     const quizWeekInfoEl = document.getElementById("quiz-week-info");
-    const footerMetaEl = document.getElementById("footer-meta");
+    const footerMetaEl = document.getElementById("footer-text");
 
     quizTitleEl.textContent = currentQuiz.title;
     quizWeekInfoEl.textContent = `Current set: Week ${quizIndex + 1} · 25 questions · New quiz every Sunday`;
-    footerMetaEl.textContent = `This week’s quiz uploaded: ${uploadDateText}`;
+
+    // Footer: Made by Ben · Week X · Sunday, 23 November 2025
+    (function setFooter() {
+      const fullDate = today.toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+      footerMetaEl.textContent = `Made by Ben · Week ${quizIndex + 1} · ${fullDate}`;
+    })();
 
     const questionStates = currentQuiz.questions.map(() => ({
       checked: false,
