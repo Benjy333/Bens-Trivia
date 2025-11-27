@@ -486,6 +486,16 @@
 
     // ------------- QUESTION DATA (25 total) -------------
     const questions = [
+            // MS PAINT MOVIE POSTER – generic self-mark
+      {
+        id: "ms-paint-poster",
+        type: "self-text-image",
+        tag: "MS Paint poster",
+        text: "MS Paint movie poster: which film is this?",
+        image: "film.png",
+        answerText: "Edit this answer in the code to match your poster.",
+        maxPoints: 1},
+      
       // LIST: planets with rings – manual score
       {
         id: "rings-list",
@@ -636,16 +646,7 @@
         correctIndex: 3,
         maxPoints: 1
       },
-      // DUPLICATE GAS QUESTION – as in sheet
-      {
-        id: "main-gas-2",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "Again: what is the main gas found in the air we breathe?",
-        options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
-        correctIndex: 2,
-        maxPoints: 1
-      },
+   
       // MACHU PICCHU
       {
         id: "machu-picchu",
@@ -670,8 +671,8 @@
         id: "clock-right-angles",
         type: "numeric",
         tag: "Maths puzzle",
-        text: "How many right angles does a clock face make in a 12 hour period?",
-        correctNumber: 22,
+        text: "There are 5 people at a party, and everyone has a handshake, how many handshakes take place?",
+        correctNumber: 10,
         maxPoints: 1
       },
       // NEXT OLYMPICS – silly US place
@@ -728,17 +729,10 @@
         ],
         correctIndex: 0,
         maxPoints: 1
-      },
-      // MS PAINT MOVIE POSTER – generic self-mark
-      {
-        id: "ms-paint-poster",
-        type: "self-text-image",
-        tag: "MS Paint poster",
-        text: "MS Paint movie poster: which film is this?",
-        image: "film.png",
-        answerText: "Edit this answer in the code to match your poster.",
-        maxPoints: 1
       }
+
+
+  
     ];
 
     // ------------- STATE -------------
