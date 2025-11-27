@@ -57,7 +57,7 @@
       opacity: 0.9;
     }
     .howto-icon {
-      display: none; /* Not used on this page */
+      display: none;
     }
 
     .global-header #menu-btn {
@@ -104,7 +104,6 @@
       color: #001;
     }
 
-    /* Adjust body/main padding so card sits nicely under header */
     body {
       padding-top: 140px;
     }
@@ -114,7 +113,6 @@
       padding: 24px 16px 48px;
     }
 
-    /* ===== Quiz card / layout ===== */
     .quiz-shell {
       width: min(960px, 100%);
     }
@@ -168,26 +166,10 @@
       font-weight: 500;
     }
     .question-tag {
-      font-size: 0.75rem;
-      opacity: 0.85;
-      border-radius: 999px;
-      border: 1px solid rgba(150,208,255,0.5);
-      padding: 2px 8px;
-      margin-left: auto;
-    }
-
-    .question-body {
-      margin-top: 6px;
-    }
-
-    .question-media {
-      margin: 6px 0 8px;
-      text-align: center;
-    }
-    .question-media img {
-      max-width: 100%;
-      border-radius: 12px;
-      border: 1px solid rgba(150,208,255,0.4);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.7;
     }
 
     .options {
@@ -228,22 +210,6 @@
       box-shadow: 0 0 14px rgba(255, 66, 102, 0.7);
     }
 
-    .bf-input {
-      width: 100%;
-      margin-top: 8px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(150, 208, 255, 0.5);
-      background: rgba(2, 10, 22, 0.95);
-      color: #e9f4ff;
-      font-size: 0.9rem;
-    }
-    .bf-input:focus {
-      outline: none;
-      border-color: var(--neon-soft);
-      box-shadow: 0 0 10px rgba(55, 161, 255, 0.5);
-    }
-
     .btn-question {
       margin-top: 10px;
       padding: 6px 14px;
@@ -255,18 +221,6 @@
       cursor: pointer;
     }
 
-    .btn-mini {
-      margin-top: 6px;
-      margin-right: 6px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(150, 208, 255, 0.6);
-      background: rgba(1, 10, 22, 0.95);
-      color: #e9f4ff;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-
     .feedback {
       margin-top: 6px;
       font-size: 0.82rem;
@@ -275,50 +229,72 @@
     .feedback.correct { color: var(--good); }
     .feedback.incorrect { color: var(--bad); }
 
-    /* List-style question */
-    .list-inputs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-top: 8px;
-    }
-    @media (max-width: 640px) {
-      .list-inputs {
-        grid-template-columns: 1fr;
-      }
-    }
-    .list-score-controls {
-      margin-top: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-    }
-    .list-score-controls input {
-      width: 60px;
+    .small-hint {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      margin-top: 4px;
     }
 
-    /* Sort question */
-    .sort-list {
+    .question-input {
       margin-top: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(150, 208, 255, 0.6);
+      background: rgba(0, 8, 18, 0.85);
+      color: #e9f4ff;
+      font-size: 0.9rem;
+    }
+
+    .image-wrap {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .image-wrap img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(150, 208, 255, 0.4);
+    }
+
+    /* Drag-and-drop sort list */
+    .sort-list {
+      list-style: none;
+      margin: 10px 0 0;
+      padding: 0;
     }
     .sort-item {
-      padding: 6px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(150,208,255,0.5);
-      background: rgba(3,15,34,0.95);
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(150, 208, 255, 0.4);
+      background: rgba(3, 15, 34, 0.9);
+      margin-bottom: 6px;
       cursor: grab;
       font-size: 0.9rem;
     }
     .sort-item.dragging {
-      opacity: 0.6;
+      opacity: 0.7;
       border-style: dashed;
     }
 
-    /* Progress bar & buttons */
+    /* List self-score input */
+    .manual-score-wrap {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+    .manual-score-wrap input {
+      width: 60px;
+      padding: 4px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(150, 208, 255, 0.6);
+      background: rgba(0, 8, 18, 0.85);
+      color: #e9f4ff;
+      font-size: 0.85rem;
+    }
+
+    /* Progress, score, share */
     .progress-wrap {
       max-width: 480px;
       margin: 0 auto 10px;
@@ -402,15 +378,9 @@
     }
 
     @media (max-width: 480px) {
-      .header-logo {
-        height: 44px;
-      }
-      .page-title {
-        font-size: 0.95rem;
-      }
-      .quiz-shell {
-        padding: 18px 14px;
-      }
+      .header-logo { height: 44px; }
+      .page-title { font-size: 0.95rem; }
+      .quiz-shell { padding: 18px 14px; }
     }
   </style>
 </head>
@@ -446,8 +416,8 @@
       <p class="page-subtitle">25 questions. One big quiz.</p>
 
       <div id="quiz-meta" class="quiz-meta">
-        <strong id="quiz-title"></strong><br>
-        <span id="quiz-week-info"></span>
+        <strong id="quiz-title">General Knowledge – Big Fat Sunday Quiz</strong><br>
+        <span id="quiz-week-info">25 questions · Mixed formats · Auto-scored + self-scored specials</span>
       </div>
 
       <div class="quiz-container" id="quiz-container"></div>
@@ -456,7 +426,7 @@
       <div class="progress-wrap">
         <div class="progress-label">
           <span>Progress</span>
-          <span id="progress-text">0 / 25 answered</span>
+          <span id="progress-text">0 / 25 questions checked</span>
         </div>
         <div class="progress-bar-outer">
           <div id="progress-bar" class="progress-bar-inner"></div>
@@ -482,830 +452,724 @@
   <footer class="global-footer" id="footer-text"></footer>
 
   <script>
-    // ------------------------------
-    // HEADER DATE
-    // ------------------------------
-    (function setHeaderDate() {
+    // HEADER DATE + FOOTER
+    (function setHeaderAndFooter() {
       const today = new Date();
-      const headerDate = document.getElementById("page-date");
-      headerDate.textContent = today.toLocaleDateString(undefined, {
+      document.getElementById("page-date").textContent = today.toLocaleDateString(undefined, {
         weekday: "long",
         day: "numeric",
         month: "long"
       });
+      document.getElementById("footer-text").textContent = "Made by Ben · " + today.toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
     })();
 
-    // ------------------------------
-    // MENU TOGGLE
-    // ------------------------------
+    // MENU
     const menuBtn = document.getElementById("menu-btn");
     const menuDropdown = document.getElementById("menu-dropdown");
-
     menuBtn.addEventListener("click", () => {
       const isOpen = menuDropdown.style.display === "flex";
       menuDropdown.style.display = isOpen ? "none" : "flex";
     });
-
     document.addEventListener("click", (e) => {
       if (!menuDropdown.contains(e.target) && !menuBtn.contains(e.target)) {
         menuDropdown.style.display = "none";
       }
     });
 
-    // ------------------------------
-    // QUIZ DATA (25 questions)
-    // ------------------------------
+    // ------------- QUESTION DATA (25 total) -------------
     const questions = [
+      // LIST: planets with rings – manual score
       {
-        type: "textReveal",
-        tag: "MS Paint Poster",
-        q: "MS Paint movie poster – which film is this?",
-        answer: "The Matrix",
-        image: "film.png",
-        maxPoints: 1
+        id: "rings-list",
+        type: "list-manual",
+        tag: "List question",
+        text: "Name each planet with rings.",
+        correctItems: ["Saturn", "Jupiter", "Uranus", "Neptune"],
+        maxPoints: 4,
+        explanation: "1 point per correct planet. Reveal the list, then enter how many you got right."
       },
+      // MCQ
       {
-        type: "listSelf",
-        tag: "List Question",
-        q: "Name each planet with rings.",
-        listAnswers: ["Saturn", "Jupiter", "Uranus", "Neptune"],
-        maxPoints: 4
-      },
-      {
+        id: "language-native",
         type: "mcq",
-        q: "Which language has the most native speakers?",
+        tag: "Multiple choice",
+        text: "Which language has the most native speakers?",
         options: ["English", "Spanish", "Mandarin Chinese", "Hindi"],
         correctIndex: 2,
         maxPoints: 1
       },
       {
+        id: "smallest-prime",
         type: "mcq",
-        q: "What is the smallest prime number?",
+        tag: "Multiple choice",
+        text: "What is the smallest prime number?",
         options: ["0", "1", "2", "3"],
         correctIndex: 2,
         maxPoints: 1
       },
       {
+        id: "cant-handle-truth",
         type: "mcq",
-        q: "Which film features the line “You can't handle the truth!”?",
+        tag: "Movies",
+        text: "Which film features the line “You can’t handle the truth!”?",
         options: ["A Few Good Men", "Top Gun", "Die Hard", "The Godfather"],
         correctIndex: 0,
         maxPoints: 1
       },
+      // MORPHED CELEB – self mark
       {
-        type: "textReveal",
+        id: "morphed-celeb",
+        type: "self-text-image",
         tag: "Morphed celebrity",
-        q: "Morphed celebrity – who are the two actors?",
-        answer: "John Travolta and Tom Cruise",
-        image: "morph.PNG",
-        maxPoints: 2
+        text: "Morphed celebrity (picture shown). Who are the two actors?",
+        image: "morph.png", // you can change this
+        answerText: "John Travolta and Tom Cruise",
+        maxPoints: 1
       },
+      // MCQ
       {
+        id: "thor-hammer",
         type: "mcq",
-        q: "In the Marvel films, what is Thor’s hammer called?",
+        tag: "Multiple choice",
+        text: "In the Marvel films, what is Thor’s hammer called?",
         options: ["Gungnir", "Stormbreaker", "Mjolnir", "Aegis"],
         correctIndex: 2,
         maxPoints: 1
       },
       {
+        id: "main-gas-1",
         type: "mcq",
-        q: "What is the main gas found in the air we breathe?",
+        tag: "Multiple choice",
+        text: "What is the main gas found in the air we breathe?",
         options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
         correctIndex: 2,
         maxPoints: 1
       },
+      // ANAGRAM
       {
-        type: "textExact",
+        id: "anagram-platypus",
+        type: "text-exact",
         tag: "Anagram",
-        q: "Anagram – hint: it's an animal. Letters: “Platypus rearrange”",
-        answer: "Platypus",
+        text: "Anagram: “Platypus rearrange”. Hint: it’s an animal – what is it?",
+        correctAnswer: "platypus",
         maxPoints: 1
       },
+      // LARGEST INTERNAL ORGAN
       {
+        id: "largest-organ",
         type: "mcq",
-        q: "What is the largest internal organ in the human body?",
+        tag: "Multiple choice",
+        text: "What is the largest internal organ in the human body?",
         options: ["Heart", "Liver", "Lungs", "Kidneys"],
         correctIndex: 1,
         maxPoints: 1
       },
+      // SPHYGMOMANOMETER
       {
+        id: "sphygmo",
         type: "mcq",
-        q: "What does a sphygmomanometer measure?",
+        tag: "Multiple choice",
+        text: "What does a sphygmomanometer measure?",
         options: ["Blood sugar", "Blood pressure", "Lung capacity", "Heart rate"],
         correctIndex: 1,
         maxPoints: 1
       },
+      // SHAKESPEARE LONGEST PLAY
       {
+        id: "shakespeare-longest",
         type: "mcq",
-        q: "Which is Shakespeare’s longest play?",
-        options: ["Macbeth", "Hamlet", "King Lear", "Othello"],
-        correctIndex: 1,
+        tag: "Multiple choice",
+        text: "Which is Shakespeare’s longest play?",
+        options: ["Macbeth", "Othello", "Hamlet", "King Lear"],
+        correctIndex: 2,
         maxPoints: 1
       },
+      // GUESS THE CREDITS – self mark
       {
-        type: "textReveal",
+        id: "guess-credits",
+        type: "self-text-image",
         tag: "Guess the credits",
-        q: "Guess the movie from these credits.",
-        answer: "Rain Man",
-        image: "credits.PNG",
+        text: "Guess the movie from the credits screenshot.",
+        image: "credits.png", // change this to your actual image
+        answerText: "Rain Man",
         maxPoints: 1
       },
+      // SORT THE BOOKS – drag & drop
       {
-        type: "sort3",
-        tag: "Sort by word count",
-        q: "Sort these books by number of words, from least to most.",
-        items: ["Lord of the Rings", "Harry Potter", "King James Bible"],
-        correctOrder: ["Lord of the Rings", "Harry Potter", "King James Bible"],
+        id: "sort-books",
+        type: "sort",
+        tag: "Sort the order",
+        text: "Sort these books by number of words, from least to most.",
+        items: [
+          { id: "lotr", label: "Lord of the Rings" },
+          { id: "hp", label: "Harry Potter" },
+          { id: "kjb", label: "King James Bible" }
+        ],
+        correctOrder: ["lotr", "hp", "kjb"], /* as you specified */
         maxPoints: 1
       },
+      // FLAG QUESTION – self mark
       {
-        type: "textReveal",
-        tag: "Flag",
-        q: "What country does this flag belong to?",
-        answer: "Singapore",
+        id: "flag-country",
+        type: "self-text-image",
+        tag: "Flag question",
+        text: "What country does this flag belong to?",
         image: "flag.png",
+        answerText: "Singapore",
         maxPoints: 1
       },
+      // WORLD CUP WINS
       {
+        id: "world-cups",
         type: "mcq",
-        q: "Which country has won the most FIFA World Cups (men’s)?",
+        tag: "Multiple choice",
+        text: "Which country has won the most FIFA World Cups (men’s)?",
         options: ["Germany", "Italy", "Argentina", "Brazil"],
         correctIndex: 3,
         maxPoints: 1
       },
+      // DUPLICATE GAS QUESTION – as in sheet
       {
+        id: "main-gas-2",
         type: "mcq",
-        q: "Which country is famous for the landmark Machu Picchu?",
+        tag: "Multiple choice",
+        text: "Again: what is the main gas found in the air we breathe?",
+        options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
+        correctIndex: 2,
+        maxPoints: 1
+      },
+      // MACHU PICCHU
+      {
+        id: "machu-picchu",
+        type: "mcq",
+        tag: "Multiple choice",
+        text: "Which country is famous for the landmark Machu Picchu?",
         options: ["Peru", "Chile", "Mexico", "Guatemala"],
         correctIndex: 0,
         maxPoints: 1
       },
+      // GUESS THE YEAR
       {
+        id: "toy-story-year",
         type: "year",
         tag: "Guess the year",
-        q: "In what year did Toy Story 2 release and Chappelle Roan born?",
+        text: "In what year did Toy Story 2 release and Chappelle Roan born?",
         correctYear: 1998,
         maxPoints: 2
       },
+      // MATHS PUZZLE
       {
-        type: "number",
+        id: "clock-right-angles",
+        type: "numeric",
         tag: "Maths puzzle",
-        q: "How many right angles does a clock face make in a 12 hour period?",
+        text: "How many right angles does a clock face make in a 12 hour period?",
         correctNumber: 22,
         maxPoints: 1
       },
+      // NEXT OLYMPICS – silly US place
       {
+        id: "next-olympics",
         type: "mcq",
-        tag: "Random silly",
-        q: "Which country will host the next Olympics?",
-        options: ["Los Angeles, United States", "Tokyo, Japan", "Brisbane, Australia", "Barcelona, Spain"],
-        correctIndex: 0,
+        tag: "Silly US place",
+        text: "Which city will host the next Olympic Games (Summer)?",
+        options: ["Tokyo", "Brisbane", "Barcelona", "Los Angeles"],
+        correctIndex: 3,
         maxPoints: 1
       },
+      // TENNIS 40-40
       {
+        id: "tennis-40",
         type: "mcq",
-        q: "In tennis, what is the score when both players have 40?",
+        tag: "Multiple choice",
+        text: "In tennis, what is the score when both players have 40?",
         options: ["Deuce", "Love", "Advantage", "Tie"],
         correctIndex: 0,
         maxPoints: 1
       },
+      // OLYMPIC RING COLOURS
       {
+        id: "ring-colour",
         type: "mcq",
-        q: "Which of these is NOT a colour on the Olympic rings?",
+        tag: "Multiple choice",
+        text: "Which of these is NOT a colour on the Olympic rings?",
         options: ["Black", "White", "Green", "Yellow"],
         correctIndex: 1,
         maxPoints: 1
       },
+      // MAXIMUM BREAK
       {
+        id: "snooker-break",
         type: "mcq",
-        q: "What is the maximum break in snooker?",
+        tag: "Multiple choice",
+        text: "What is the maximum break in snooker?",
         options: ["147", "155", "167", "180"],
         correctIndex: 0,
         maxPoints: 1
       },
+      // NOT AN OLYMPIC EVENT – topical
       {
+        id: "not-olympic",
         type: "mcq",
-        tag: "Topical",
-        q: "Which one of these was NOT an Olympic event?",
-        options: ["Blind archery", "Solo Synchronised Swimming", "Hot air ballooning", "Live pigeon shooting"],
+        tag: "Topical / Odd one out",
+        text: "Which one of these was NOT an Olympic event?",
+        options: [
+          "Blind archery",
+          "Solo Synchronized Swimming",
+          "Hot Air Ballooning",
+          "Live pigeon shooting"
+        ],
         correctIndex: 0,
         maxPoints: 1
       },
+      // MS PAINT MOVIE POSTER – generic self-mark
       {
-        type: "mcq",
-        q: "Which country is home to the city of Vienna?",
-        options: ["Germany", "Austria", "Switzerland", "Czech Republic"],
-        correctIndex: 1,
+        id: "ms-paint-poster",
+        type: "self-text-image",
+        tag: "MS Paint poster",
+        text: "MS Paint movie poster: which film is this?",
+        image: "film.png",
+        answerText: "Edit this answer in the code to match your poster.",
         maxPoints: 1
       }
     ];
 
-    // ------------------------------
-    // STATE & RENDERING
-    // ------------------------------
-    const quizContainer = document.getElementById("quiz-container");
-    const quizTitleEl = document.getElementById("quiz-title");
-    const quizWeekInfoEl = document.getElementById("quiz-week-info");
-    const footerMetaEl = document.getElementById("footer-text");
-
-    const today = new Date();
-
-    quizTitleEl.textContent = "General Knowledge – Big Fat Sunday Quiz";
-    quizWeekInfoEl.textContent = `${questions.length} questions · Mixed rounds & specials`;
-
-    (function setFooter() {
-      const fullDate = today.toLocaleDateString(undefined, {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
-      footerMetaEl.textContent = `Made by Ben · ${fullDate}`;
-    })();
-
+    // ------------- STATE -------------
     const questionStates = questions.map(q => ({
-      answered: false,
-      score: 0,
-      maxPoints: q.maxPoints || (q.type === "year" ? 2 : 1)
+      checked: false,
+      points: 0,
+      maxPoints: q.maxPoints
     }));
 
-    const totalMaxPoints = questionStates.reduce((sum, s) => sum + s.maxPoints, 0);
+    const quizContainer = document.getElementById("quiz-container");
+    const scoreBox = document.getElementById("score-box");
+    const sharePanel = document.getElementById("share-panel");
+    const shareStatus = document.getElementById("share-status");
+    const progressTextEl = document.getElementById("progress-text");
+    const progressBarEl = document.getElementById("progress-bar");
+    const jumpUnansweredBtn = document.getElementById("jump-unanswered");
 
-    function createOptionLabel(qIndex, optText, optIndex, nameId) {
-      const id = `${nameId}_opt${optIndex}`;
-      const label = document.createElement("label");
-      label.className = "option-label";
-      label.setAttribute("for", id);
-      label.dataset.q = qIndex;
-      label.dataset.opt = optIndex;
+    const TOTAL_QUESTIONS = questions.length;
+    const MAX_POINTS = questionStates.reduce((sum, s) => sum + s.maxPoints, 0);
 
-      const input = document.createElement("input");
-      input.type = "radio";
-      input.name = nameId;
-      input.id = id;
-      input.value = optIndex;
-
-      const span = document.createElement("span");
-      span.textContent = optText;
-
-      label.appendChild(input);
-      label.appendChild(span);
-      return label;
-    }
-
+    // ------------- RENDERING -------------
     function renderQuiz() {
       quizContainer.innerHTML = "";
-      questions.forEach((qObj, qIndex) => {
+      questions.forEach((q, index) => {
         const card = document.createElement("article");
         card.className = "question-card";
-        card.id = `card-${qIndex}`;
+        card.id = `card-${index}`;
 
         const header = document.createElement("div");
         header.className = "question-header";
 
         const qNumber = document.createElement("div");
         qNumber.className = "question-number";
-        qNumber.textContent = `Question ${qIndex + 1}`;
+        qNumber.textContent = `Question ${index + 1}`;
 
         const qText = document.createElement("div");
         qText.className = "question-text";
-        qText.textContent = qObj.q;
+        qText.textContent = q.text;
 
         header.appendChild(qNumber);
         header.appendChild(qText);
 
-        if (qObj.tag) {
+        if (q.tag) {
           const tag = document.createElement("div");
           tag.className = "question-tag";
-          tag.textContent = qObj.tag;
+          tag.textContent = q.tag;
           header.appendChild(tag);
         }
 
-        const body = document.createElement("div");
-        body.className = "question-body";
+        card.appendChild(header);
 
-        if (qObj.image) {
-          const media = document.createElement("div");
-          media.className = "question-media";
-          const img = document.createElement("img");
-          img.src = qObj.image;
-          img.alt = "Question image";
-          media.appendChild(img);
-          body.appendChild(media);
-        }
-
-        let feedback = document.createElement("div");
-        feedback.className = "feedback";
-        feedback.id = `feedback-${qIndex}`;
-
-        // Render by type
-        if (qObj.type === "mcq") {
+        // type-specific UI
+        if (q.type === "mcq") {
           const optionsWrap = document.createElement("div");
           optionsWrap.className = "options";
+          q.options.forEach((optText, optIndex) => {
+            const id = `q${index}_opt${optIndex}`;
+            const label = document.createElement("label");
+            label.className = "option-label";
+            label.setAttribute("for", id);
+            label.dataset.q = index;
+            label.dataset.opt = optIndex;
 
-          qObj.options.forEach((optText, optIndex) => {
-            const label = createOptionLabel(qIndex, optText, optIndex, `q${qIndex}`);
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.name = `q${index}`;
+            input.id = id;
+            input.value = optIndex;
+
+            const span = document.createElement("span");
+            span.textContent = optText;
+
+            label.appendChild(input);
+            label.appendChild(span);
             optionsWrap.appendChild(label);
           });
-
-          const checkBtn = document.createElement("button");
-          checkBtn.className = "btn-question";
-          checkBtn.type = "button";
-          checkBtn.textContent = "Check answer";
-          checkBtn.addEventListener("click", () => checkMcqQuestion(qIndex));
-
-          body.appendChild(optionsWrap);
-          body.appendChild(checkBtn);
-        } else if (qObj.type === "year") {
-          const input = document.createElement("input");
-          input.type = "number";
-          input.className = "bf-input";
-          input.placeholder = "Enter a year";
-
-          const checkBtn = document.createElement("button");
-          checkBtn.className = "btn-question";
-          checkBtn.type = "button";
-          checkBtn.textContent = "Check year";
-          checkBtn.addEventListener("click", () => checkYearQuestion(qIndex, input));
-
-          body.appendChild(input);
-          body.appendChild(checkBtn);
-        } else if (qObj.type === "number") {
-          const input = document.createElement("input");
-          input.type = "number";
-          input.className = "bf-input";
-          input.placeholder = "Enter a number";
-
-          const checkBtn = document.createElement("button");
-          checkBtn.className = "btn-question";
-          checkBtn.type = "button";
-          checkBtn.textContent = "Check answer";
-          checkBtn.addEventListener("click", () => checkNumberQuestion(qIndex, input));
-
-          body.appendChild(input);
-          body.appendChild(checkBtn);
-        } else if (qObj.type === "textExact") {
+          card.appendChild(optionsWrap);
+        } else if (q.type === "text-exact" || q.type === "numeric" || q.type === "year") {
           const input = document.createElement("input");
           input.type = "text";
-          input.className = "bf-input";
-          input.placeholder = "Type your answer";
-
-          const checkBtn = document.createElement("button");
-          checkBtn.className = "btn-question";
-          checkBtn.type = "button";
-          checkBtn.textContent = "Check answer";
-          checkBtn.addEventListener("click", () => checkTextExactQuestion(qIndex, input));
-
-          body.appendChild(input);
-          body.appendChild(checkBtn);
-        } else if (qObj.type === "textReveal") {
+          input.className = "question-input";
+          input.id = `input-${index}`;
+          input.placeholder = (q.type === "year" || q.type === "numeric") ? "Enter a number…" : "Type your answer…";
+          card.appendChild(input);
+        } else if (q.type === "self-text-image") {
+          if (q.image) {
+            const imgWrap = document.createElement("div");
+            imgWrap.className = "image-wrap";
+            const img = document.createElement("img");
+            img.src = q.image;
+            img.alt = "Question image";
+            imgWrap.appendChild(img);
+            card.appendChild(imgWrap);
+          }
           const input = document.createElement("input");
           input.type = "text";
-          input.className = "bf-input";
-          input.placeholder = "Type your guess (optional)";
+          input.className = "question-input";
+          input.id = `input-${index}`;
+          input.placeholder = "Type your guess (you'll self-mark)…";
+          card.appendChild(input);
+          const hint = document.createElement("div");
+          hint.className = "small-hint";
+          hint.textContent = "Tap 'Reveal answer' then choose if you were correct.";
+          card.appendChild(hint);
+        } else if (q.type === "list-manual") {
+          const hint = document.createElement("div");
+          hint.className = "small-hint";
+          hint.textContent = "Write your answers on paper or in your head. Reveal the list, then enter how many you got right (1 point per planet).";
+          card.appendChild(hint);
+        } else if (q.type === "sort") {
+          const list = document.createElement("ul");
+          list.className = "sort-list";
+          list.id = `sort-${index}`;
+          q.items.forEach(item => {
+            const li = document.createElement("li");
+            li.className = "sort-item";
+            li.textContent = item.label;
+            li.draggable = true;
+            li.dataset.value = item.id;
+            list.appendChild(li);
+          });
+          card.appendChild(list);
+          enableDragAndDrop(list);
+        }
 
+        if (q.type === "self-text-image" || q.type === "list-manual") {
+          // self-marking style button(s)
           const revealBtn = document.createElement("button");
           revealBtn.className = "btn-question";
           revealBtn.type = "button";
           revealBtn.textContent = "Reveal answer";
-
-          const answerDiv = document.createElement("div");
-          answerDiv.style.marginTop = "6px";
-          answerDiv.style.fontSize = "0.85rem";
-          answerDiv.style.display = "none";
-
-          const rightBtn = document.createElement("button");
-          rightBtn.className = "btn-mini";
-          rightBtn.textContent = "I got it right (+1)";
-          rightBtn.style.display = "none";
-
-          const wrongBtn = document.createElement("button");
-          wrongBtn.className = "btn-mini";
-          wrongBtn.textContent = "I got it wrong (0)";
-          wrongBtn.style.display = "none";
-
-          revealBtn.addEventListener("click", () => {
-            answerDiv.textContent = `Answer: ${qObj.answer}`;
-            answerDiv.style.display = "block";
-            rightBtn.style.display = "inline-block";
-            wrongBtn.style.display = "inline-block";
-          });
-
-          rightBtn.addEventListener("click", () => {
-            questionStates[qIndex].score = qObj.maxPoints || 1;
-            questionStates[qIndex].answered = true;
-            feedback.textContent = "Marked as correct ✅";
-            feedback.classList.add("correct");
-            feedback.classList.remove("incorrect");
-            updateScoreAndProgress();
-          });
-
-          wrongBtn.addEventListener("click", () => {
-            questionStates[qIndex].score = 0;
-            questionStates[qIndex].answered = true;
-            feedback.textContent = "Marked as incorrect.";
-            feedback.classList.add("incorrect");
-            feedback.classList.remove("correct");
-            updateScoreAndProgress();
-          });
-
-          body.appendChild(input);
-          body.appendChild(revealBtn);
-          body.appendChild(answerDiv);
-          body.appendChild(rightBtn);
-          body.appendChild(wrongBtn);
-        } else if (qObj.type === "listSelf") {
-          const helper = document.createElement("div");
-          helper.style.fontSize = "0.8rem";
-          helper.style.opacity = "0.85";
-          helper.textContent = "Enter as many as you can, then reveal and choose how many points you earned.";
-
-          const listWrap = document.createElement("div");
-          listWrap.className = "list-inputs";
-
-          const numBoxes = qObj.listAnswers.length;
-          for (let i = 0; i < numBoxes; i++) {
-            const inp = document.createElement("input");
-            inp.type = "text";
-            inp.className = "bf-input";
-            inp.placeholder = `Answer ${i + 1}`;
-            listWrap.appendChild(inp);
-          }
-
-          const revealBtn = document.createElement("button");
-          revealBtn.className = "btn-question";
-          revealBtn.type = "button";
-          revealBtn.textContent = "Reveal answers";
-
-          const answersDiv = document.createElement("div");
-          answersDiv.style.marginTop = "6px";
-          answersDiv.style.fontSize = "0.85rem";
-          answersDiv.style.display = "none";
-
-          const scoreControls = document.createElement("div");
-          scoreControls.className = "list-score-controls";
-          scoreControls.style.display = "none";
-
-          const label = document.createElement("span");
-          label.textContent = `How many did you get right? (0–${qObj.listAnswers.length})`;
-
-          const numInput = document.createElement("input");
-          numInput.type = "number";
-          numInput.min = 0;
-          numInput.max = qObj.listAnswers.length;
-          numInput.value = 0;
-          numInput.className = "bf-input";
-
-          const saveBtn = document.createElement("button");
-          saveBtn.className = "btn-mini";
-          saveBtn.textContent = "Save score";
-
-          revealBtn.addEventListener("click", () => {
-            answersDiv.innerHTML = `Answers: <strong>${qObj.listAnswers.join(", ")}</strong>`;
-            answersDiv.style.display = "block";
-            scoreControls.style.display = "flex";
-          });
-
-          saveBtn.addEventListener("click", () => {
-            let val = parseInt(numInput.value, 10);
-            if (isNaN(val)) val = 0;
-            if (val < 0) val = 0;
-            if (val > qObj.listAnswers.length) val = qObj.listAnswers.length;
-            questionStates[qIndex].score = val;
-            questionStates[qIndex].answered = true;
-            feedback.textContent = `Saved ${val} point(s) for this question.`;
-            feedback.classList.remove("incorrect");
-            feedback.classList.add("correct");
-            updateScoreAndProgress();
-          });
-
-          scoreControls.appendChild(label);
-          scoreControls.appendChild(numInput);
-          scoreControls.appendChild(saveBtn);
-
-          body.appendChild(helper);
-          body.appendChild(listWrap);
-          body.appendChild(revealBtn);
-          body.appendChild(answersDiv);
-          body.appendChild(scoreControls);
-        } else if (qObj.type === "sort3") {
-          const list = document.createElement("div");
-          list.className = "sort-list";
-          qObj.items.forEach(text => {
-            const item = document.createElement("div");
-            item.className = "sort-item";
-            item.textContent = text;
-            item.draggable = true;
-            list.appendChild(item);
-          });
-
-          let draggedItem = null;
-
-          list.addEventListener("dragstart", (e) => {
-            if (e.target.classList.contains("sort-item")) {
-              draggedItem = e.target;
-              e.target.classList.add("dragging");
-            }
-          });
-          list.addEventListener("dragend", (e) => {
-            if (e.target.classList.contains("sort-item")) {
-              e.target.classList.remove("dragging");
-            }
-          });
-          list.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            const afterElement = getDragAfterElement(list, e.clientY);
-            if (draggedItem) {
-              if (afterElement == null) {
-                list.appendChild(draggedItem);
-              } else {
-                list.insertBefore(draggedItem, afterElement);
-              }
-            }
-          });
-
-          function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll(".sort-item:not(.dragging)")];
-            return draggableElements.reduce(
-              (closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                if (offset < 0 && offset > closest.offset) {
-                  return { offset: offset, element: child };
-                } else {
-                  return closest;
-                }
-              },
-              { offset: Number.NEGATIVE_INFINITY, element: null }
-            ).element;
-          }
-
+          revealBtn.addEventListener("click", () => revealSelfMarked(index));
+          card.appendChild(revealBtn);
+        } else if (q.type === "sort") {
           const checkBtn = document.createElement("button");
           checkBtn.className = "btn-question";
           checkBtn.type = "button";
           checkBtn.textContent = "Check order";
-
-          checkBtn.addEventListener("click", () => {
-            const currentOrder = Array.from(list.children).map(el => el.textContent.trim());
-            const correctOrder = qObj.correctOrder;
-            const isCorrect = currentOrder.every((val, idx) => val === correctOrder[idx]);
-
-            questionStates[qIndex].answered = true;
-            questionStates[qIndex].score = isCorrect ? 1 : 0;
-
-            if (isCorrect) {
-              feedback.textContent = "Perfect order! ✅";
-              feedback.classList.add("correct");
-              feedback.classList.remove("incorrect");
-            } else {
-              feedback.textContent = `Not quite. Correct order is: ${correctOrder.join(" → ")}`;
-              feedback.classList.add("incorrect");
-              feedback.classList.remove("correct");
-            }
-            updateScoreAndProgress();
-          });
-
-          body.appendChild(list);
-          body.appendChild(checkBtn);
+          checkBtn.addEventListener("click", () => checkSortQuestion(index));
+          card.appendChild(checkBtn);
+        } else {
+          const checkBtn = document.createElement("button");
+          checkBtn.className = "btn-question";
+          checkBtn.type = "button";
+          checkBtn.textContent = "Check answer";
+          checkBtn.addEventListener("click", () => checkStandardQuestion(index));
+          card.appendChild(checkBtn);
         }
 
-        card.appendChild(header);
-        card.appendChild(body);
+        const feedback = document.createElement("div");
+        feedback.className = "feedback";
+        feedback.id = `feedback-${index}`;
         card.appendChild(feedback);
+
+        // for self-mark or list manual we add controls below feedback
+        if (q.type === "self-text-image") {
+          const selfButtons = document.createElement("div");
+          selfButtons.className = "manual-score-wrap";
+          const correctBtn = document.createElement("button");
+          correctBtn.type = "button";
+          correctBtn.className = "btn-secondary";
+          correctBtn.textContent = "I got it right";
+          correctBtn.addEventListener("click", () => {
+            questionStates[index].checked = true;
+            questionStates[index].points = q.maxPoints;
+            feedback.textContent = `Nice! You’ve given yourself ${q.maxPoints} point${q.maxPoints !== 1 ? "s" : ""}.`;
+            feedback.classList.remove("incorrect");
+            feedback.classList.add("correct");
+            updateScoreAndProgress();
+          });
+          const wrongBtn = document.createElement("button");
+          wrongBtn.type = "button";
+          wrongBtn.className = "btn-secondary";
+          wrongBtn.textContent = "I got it wrong";
+          wrongBtn.addEventListener("click", () => {
+            questionStates[index].checked = true;
+            questionStates[index].points = 0;
+            feedback.textContent = "Marked as 0 points.";
+            feedback.classList.remove("correct");
+            feedback.classList.add("incorrect");
+            updateScoreAndProgress();
+          });
+          selfButtons.appendChild(correctBtn);
+          selfButtons.appendChild(wrongBtn);
+          card.appendChild(selfButtons);
+        } else if (q.type === "list-manual") {
+          const manual = document.createElement("div");
+          manual.className = "manual-score-wrap";
+          manual.innerHTML = `
+            <span>How many did you get right?</span>
+            <input type="number" min="0" max="${q.maxPoints}" id="manual-${index}" value="0" />
+            <button type="button" class="btn-secondary">Save score</button>
+          `;
+          const btn = manual.querySelector("button");
+          btn.addEventListener("click", () => {
+            const inputEl = manual.querySelector("input");
+            let val = parseInt(inputEl.value, 10);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > q.maxPoints) val = q.maxPoints;
+            inputEl.value = val;
+            questionStates[index].checked = true;
+            questionStates[index].points = val;
+            feedback.textContent = `Saved ${val} point${val !== 1 ? "s" : ""} for this question.`;
+            feedback.classList.remove("incorrect");
+            feedback.classList.add("correct");
+            updateScoreAndProgress();
+          });
+          card.appendChild(manual);
+        }
+
         quizContainer.appendChild(card);
       });
     }
 
-    renderQuiz();
-
-    // ------------------------------
-    // CHECKERS
-    // ------------------------------
-    const scoreBox = document.getElementById("score-box");
-    const sharePanel = document.getElementById("share-panel");
-    const shareStatus = document.getElementById("share-status");
-
-    const progressTextEl = document.getElementById("progress-text");
-    const progressBarEl = document.getElementById("progress-bar");
-    const jumpUnansweredBtn = document.getElementById("jump-unanswered");
-
-    let lastScore = 0;
-    let lastPercent = 0;
-
-    function resetOptionStyles(qIndex) {
-      const labels = document.querySelectorAll(`label.option-label[data-q="${qIndex}"]`);
-      labels.forEach(label => {
-        label.classList.remove("correct", "chosen-wrong");
-      });
-    }
-
-    function checkMcqQuestion(qIndex) {
-      const qObj = questions[qIndex];
-      const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
-      const feedbackEl = document.getElementById(`feedback-${qIndex}`);
-
-      resetOptionStyles(qIndex);
-
-      if (!selected) {
-        feedbackEl.textContent = "Choose an answer first 😊";
-        feedbackEl.classList.remove("correct", "incorrect");
-        return;
-      }
-
-      const chosenIndex = Number(selected.value);
-      const correctIndex = qObj.correctIndex;
-
-      const labels = document.querySelectorAll(`label.option-label[data-q="${qIndex}"]`);
-      labels.forEach(label => {
-        const opt = Number(label.dataset.opt);
-        if (opt === correctIndex) {
-          label.classList.add("correct");
-        } else if (opt === chosenIndex && chosenIndex !== correctIndex) {
-          label.classList.add("chosen-wrong");
+    // drag-and-drop helper
+    function enableDragAndDrop(listEl) {
+      let draggedItem = null;
+      listEl.addEventListener("dragstart", (e) => {
+        if (e.target.classList.contains("sort-item")) {
+          draggedItem = e.target;
+          e.target.classList.add("dragging");
         }
       });
-
-      if (chosenIndex === correctIndex) {
-        feedbackEl.textContent = "Correct! 🎉";
-        feedbackEl.classList.add("correct");
-        feedbackEl.classList.remove("incorrect");
-        questionStates[qIndex].score = qObj.maxPoints || 1;
-      } else {
-        feedbackEl.textContent = `Incorrect – correct answer: ${qObj.options[correctIndex]}`;
-        feedbackEl.classList.add("incorrect");
-        feedbackEl.classList.remove("correct");
-        questionStates[qIndex].score = 0;
-      }
-
-      questionStates[qIndex].answered = true;
-      updateScoreAndProgress();
-    }
-
-    function checkYearQuestion(qIndex, inputEl) {
-      const qObj = questions[qIndex];
-      const feedbackEl = document.getElementById(`feedback-${qIndex}`);
-      const value = parseInt(inputEl.value, 10);
-
-      if (isNaN(value)) {
-        feedbackEl.textContent = "Enter a year first 😊";
-        feedbackEl.classList.remove("correct", "incorrect");
-        return;
-      }
-
-      const diff = Math.abs(value - qObj.correctYear);
-      let points = 0;
-      if (diff === 0) points = 2;
-      else if (diff === 1) points = 1;
-
-      questionStates[qIndex].score = points;
-      questionStates[qIndex].answered = true;
-
-      if (points === 2) {
-        feedbackEl.textContent = `Spot on! ${value} is exactly right (+2).`;
-        feedbackEl.classList.add("correct");
-        feedbackEl.classList.remove("incorrect");
-      } else if (points === 1) {
-        feedbackEl.textContent = `Close! Correct year is ${qObj.correctYear} (+1 for being one year off).`;
-        feedbackEl.classList.add("correct");
-        feedbackEl.classList.remove("incorrect");
-      } else {
-        feedbackEl.textContent = `Incorrect – correct year is ${qObj.correctYear}.`;
-        feedbackEl.classList.add("incorrect");
-        feedbackEl.classList.remove("correct");
-      }
-
-      updateScoreAndProgress();
-    }
-
-    function checkNumberQuestion(qIndex, inputEl) {
-      const qObj = questions[qIndex];
-      const feedbackEl = document.getElementById(`feedback-${qIndex}`);
-      const value = parseInt(inputEl.value, 10);
-
-      if (isNaN(value)) {
-        feedbackEl.textContent = "Enter a number first 😊";
-        feedbackEl.classList.remove("correct", "incorrect");
-        return;
-      }
-
-      const correct = value === qObj.correctNumber;
-      questionStates[qIndex].score = correct ? qObj.maxPoints || 1 : 0;
-      questionStates[qIndex].answered = true;
-
-      if (correct) {
-        feedbackEl.textContent = "Correct! 🎉";
-        feedbackEl.classList.add("correct");
-        feedbackEl.classList.remove("incorrect");
-      } else {
-        feedbackEl.textContent = `Incorrect – correct answer: ${qObj.correctNumber}.`;
-        feedbackEl.classList.add("incorrect");
-        feedbackEl.classList.remove("correct");
-      }
-
-      updateScoreAndProgress();
-    }
-
-    function checkTextExactQuestion(qIndex, inputEl) {
-      const qObj = questions[qIndex];
-      const feedbackEl = document.getElementById(`feedback-${qIndex}`);
-      const value = (inputEl.value || "").trim().toLowerCase();
-      if (!value) {
-        feedbackEl.textContent = "Type an answer first 😊";
-        feedbackEl.classList.remove("correct", "incorrect");
-        return;
-      }
-
-      const correctText = qObj.answer.trim().toLowerCase();
-      const correct = value === correctText;
-
-      questionStates[qIndex].score = correct ? qObj.maxPoints || 1 : 0;
-      questionStates[qIndex].answered = true;
-
-      if (correct) {
-        feedbackEl.textContent = "Correct! 🎉";
-        feedbackEl.classList.add("correct");
-        feedbackEl.classList.remove("incorrect");
-      } else {
-        feedbackEl.textContent = `Incorrect – correct answer: ${qObj.answer}.`;
-        feedbackEl.classList.add("incorrect");
-        feedbackEl.classList.remove("correct");
-      }
-
-      updateScoreAndProgress();
-    }
-
-    // ------------------------------
-    // SCORE & PROGRESS
-    // ------------------------------
-    function updateScoreAndProgress() {
-      const total = questions.length;
-
-      let correctPoints = 0;
-      let answered = 0;
-      questionStates.forEach(s => {
-        correctPoints += s.score;
-        if (s.answered) answered++;
+      listEl.addEventListener("dragend", (e) => {
+        if (draggedItem) {
+          draggedItem.classList.remove("dragging");
+          draggedItem = null;
+        }
       });
+      listEl.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(listEl, e.clientY);
+        if (!draggedItem) return;
+        if (afterElement == null) {
+          listEl.appendChild(draggedItem);
+        } else {
+          listEl.insertBefore(draggedItem, afterElement);
+        }
+      });
+    }
 
-      const percent = totalMaxPoints > 0
-        ? Math.round((correctPoints / totalMaxPoints) * 100)
-        : 0;
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll(".sort-item:not(.dragging)")];
+      let closest = { offset: Number.NEGATIVE_INFINITY, element: null };
+      draggableElements.forEach(child => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          closest = { offset, element: child };
+        }
+      });
+      return closest.element;
+    }
 
-      lastScore = correctPoints;
-      lastPercent = percent;
+    renderQuiz();
+
+    // ------------- CHECKING LOGIC -------------
+    function checkStandardQuestion(index) {
+      const q = questions[index];
+      const feedback = document.getElementById(`feedback-${index}`);
+      feedback.classList.remove("correct", "incorrect");
+
+      if (q.type === "mcq") {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        const labels = document.querySelectorAll(`label.option-label[data-q="${index}"]`);
+        labels.forEach(l => l.classList.remove("correct", "chosen-wrong"));
+
+        if (!selected) {
+          feedback.textContent = "Choose an answer first 😊";
+          return;
+        }
+        const chosen = Number(selected.value);
+        const correct = q.correctIndex;
+
+        labels.forEach(label => {
+          const opt = Number(label.dataset.opt);
+          if (opt === correct) {
+            label.classList.add("correct");
+          } else if (opt === chosen && chosen !== correct) {
+            label.classList.add("chosen-wrong");
+          }
+        });
+
+        if (chosen === correct) {
+          feedback.textContent = "Correct! 🎉";
+          feedback.classList.add("correct");
+          questionStates[index].points = q.maxPoints;
+        } else {
+          feedback.textContent = `Incorrect – correct answer: ${q.options[correct]}`;
+          feedback.classList.add("incorrect");
+          questionStates[index].points = 0;
+        }
+        questionStates[index].checked = true;
+      } else if (q.type === "text-exact") {
+        const input = document.getElementById(`input-${index}`);
+        const user = (input.value || "").trim().toLowerCase();
+        const correct = (q.correctAnswer || "").trim().toLowerCase();
+        if (!user) {
+          feedback.textContent = "Type an answer first 😊";
+          return;
+        }
+        if (user === correct) {
+          feedback.textContent = "Correct! 🎉";
+          feedback.classList.add("correct");
+          questionStates[index].points = q.maxPoints;
+        } else {
+          feedback.textContent = `Incorrect – correct answer: ${q.correctAnswer}`;
+          feedback.classList.add("incorrect");
+          questionStates[index].points = 0;
+        }
+        questionStates[index].checked = true;
+      } else if (q.type === "numeric") {
+        const input = document.getElementById(`input-${index}`);
+        const val = parseInt(input.value, 10);
+        if (isNaN(val)) {
+          feedback.textContent = "Enter a number first 😊";
+          return;
+        }
+        if (val === q.correctNumber) {
+          feedback.textContent = "Correct! 🎉";
+          feedback.classList.add("correct");
+          questionStates[index].points = q.maxPoints;
+        } else {
+          feedback.textContent = `Incorrect – correct answer: ${q.correctNumber}`;
+          feedback.classList.add("incorrect");
+          questionStates[index].points = 0;
+        }
+        questionStates[index].checked = true;
+      } else if (q.type === "year") {
+        const input = document.getElementById(`input-${index}`);
+        const val = parseInt(input.value, 10);
+        if (isNaN(val)) {
+          feedback.textContent = "Enter a year first 😊";
+          return;
+        }
+        const diff = Math.abs(val - q.correctYear);
+        let pts = 0;
+        if (diff === 0) pts = 2;
+        else if (diff === 1) pts = 1;
+
+        if (pts === 2) {
+          feedback.textContent = "Bang on! 🎉 +2 points";
+          feedback.classList.add("correct");
+        } else if (pts === 1) {
+          feedback.textContent = `Close! The correct year is ${q.correctYear}. +1 point`;
+          feedback.classList.add("correct");
+        } else {
+          feedback.textContent = `Incorrect – correct year: ${q.correctYear}`;
+          feedback.classList.add("incorrect");
+        }
+        questionStates[index].points = pts;
+        questionStates[index].checked = true;
+      }
+
+      updateScoreAndProgress();
+    }
+
+    function revealSelfMarked(index) {
+      const q = questions[index];
+      const feedback = document.getElementById(`feedback-${index}`);
+      feedback.classList.remove("correct", "incorrect");
+      feedback.textContent = `Answer: ${q.answerText}`;
+    }
+
+    function checkSortQuestion(index) {
+      const q = questions[index];
+      const feedback = document.getElementById(`feedback-${index}`);
+      feedback.classList.remove("correct", "incorrect");
+
+      const list = document.getElementById(`sort-${index}`);
+      const order = [...list.querySelectorAll(".sort-item")].map(li => li.dataset.value);
+      const correct = q.correctOrder;
+      const isCorrect = order.length === correct.length && order.every((v, i) => v === correct[i]);
+
+      if (isCorrect) {
+        feedback.textContent = "Correct order! 🎉";
+        feedback.classList.add("correct");
+        questionStates[index].points = q.maxPoints;
+      } else {
+        feedback.textContent = "Not quite – try again, or leave it and move on.";
+        feedback.classList.add("incorrect");
+        questionStates[index].points = 0;
+      }
+      questionStates[index].checked = true;
+      updateScoreAndProgress();
+    }
+
+    // ------------- SCORE + PROGRESS -------------
+    let lastPoints = 0;
+    let lastPercent = 0;
+
+    function updateScoreAndProgress() {
+      const totalPoints = questionStates.reduce((sum, s) => sum + s.points, 0);
+      const answered = questionStates.reduce((count, s) => count + (s.checked ? 1 : 0), 0);
+      const progressPercent = Math.round((answered / TOTAL_QUESTIONS) * 100);
+      const percentScore = Math.round((totalPoints / MAX_POINTS) * 100);
+
+      lastPoints = totalPoints;
+      lastPercent = percentScore;
+
+      progressTextEl.textContent = `${answered} / ${TOTAL_QUESTIONS} questions checked`;
+      progressBarEl.style.width = progressPercent + "%";
 
       scoreBox.innerHTML = `
-        <div class="percent">${percent}%</div>
-        <div class="raw">Currently ${correctPoints} out of ${totalMaxPoints} possible points</div>
+        <div class="percent">${percentScore}%</div>
+        <div class="raw">Currently ${totalPoints} out of ${MAX_POINTS} points</div>
       `;
 
-      if (correctPoints > 0) {
+      if (answered > 0) {
         sharePanel.style.display = "flex";
-        shareStatus.textContent = "";
       } else {
         sharePanel.style.display = "none";
       }
-
-      const progressPercent = Math.round((answered / total) * 100);
-      progressTextEl.textContent = `${answered} / ${total} answered`;
-      progressBarEl.style.width = progressPercent + "%";
     }
 
     updateScoreAndProgress();
 
-    // ------------------------------
-    // UNANSWERED QUESTION BUTTON
-    // ------------------------------
+    // UNANSWERED BUTTON
     jumpUnansweredBtn.addEventListener("click", () => {
-      const total = questionStates.length;
-      let targetIndex = -1;
-
-      for (let i = 0; i < total; i++) {
-        if (!questionStates[i].answered) {
-          targetIndex = i;
-          break;
-        }
-      }
-
+      let targetIndex = questionStates.findIndex(s => !s.checked);
       if (targetIndex === -1) {
-        shareStatus.textContent = "You've answered every question – nice! 🎉";
+        shareStatus.textContent = "You've checked every question – nice! 🎉";
         sharePanel.style.display = "flex";
         return;
       }
-
       const card = document.getElementById(`card-${targetIndex}`);
       if (card) {
         card.scrollIntoView({ behavior: "smooth", block: "center" });
         card.style.outline = "2px solid var(--neon)";
-        setTimeout(() => {
-          card.style.outline = "none";
-        }, 1400);
+        setTimeout(() => { card.style.outline = "none"; }, 1400);
       }
     });
 
-    // ------------------------------
-    // SHARING (multi-line text)
-    // ------------------------------
+    // SHARING
     const shareWhatsAppBtn = document.getElementById("share-whatsapp");
     const copyResultBtn = document.getElementById("copy-result");
 
@@ -1313,12 +1177,11 @@
       const baseLines = [
         `I just played "The Big Fat Sunday Quiz" on Ben's Trivia!`,
         ``,
-        `My score: ${lastScore}/${totalMaxPoints} points (${lastPercent}%)`,
+        `My score: ${lastPoints}/${MAX_POINTS} (${lastPercent}%)`,
         ``,
         `Try to beat my score:`,
         window.location.href
       ];
-
       return baseLines.join("\n");
     }
 
