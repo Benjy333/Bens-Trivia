@@ -610,19 +610,21 @@
         maxPoints: 1
       },
       // SORT THE BOOKS – drag & drop
+ 
+
       {
-        id: "sort-books",
-        type: "sort",
-        tag: "Sort the order",
-        text: "Sort these books by number of words, from least to most.",
-        items: [
-          { id: "lotr", label: "Lord of the Rings" },
-          { id: "hp", label: "Harry Potter" },
-          { id: "kjb", label: "King James Bible" }
-        ],
-        correctOrder: ["lotr", "hp", "kjb"], /* as you specified */
-        maxPoints: 1
-      },
+  id: "sort-books",
+  type: "rank-numbers",
+  text: "Sort these books by number of words, from least to most:",
+  items: [
+    "Lord of the Rings",
+    "Harry Potter",
+    "King James Bible"
+  ],
+  correctRanks: [2, 1, 3],  // Harry = 1, LOTR = 2, Bible = 3
+  maxPoints: 1
+},
+
       // FLAG QUESTION – self mark
       {
         id: "flag-country",
