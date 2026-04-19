@@ -498,248 +498,213 @@
     const questions = [
             // MS PAINT MOVIE POSTER – generic self-mark
       {
-        id: "ms-paint-poster",
-        type: "self-text-image",
-        tag: "MS Paint poster",
-        text: "MS Paint movie poster: which film is this?",
-        image: "film.png",
-        answerText: "The Matrix",
-        maxPoints: 1},
-      
-      // LIST: planets with rings – manual score
-      {
-        id: "rings-list",
-        type: "list-manual",
-        tag: "List question",
-        text: "Name the 4 planets with rings.",
-        correctItems: ["Saturn", "Jupiter", "Uranus", "Neptune"],
-        maxPoints: 4,
-        explanation: "1 point per correct planet. Reveal the list, then enter how many you got right."
-      },
-      // MCQ
-      {
-        id: "language-native",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "Which language has the most native speakers?",
-        options: ["English", "Spanish", "Mandarin Chinese", "Hindi"],
-        correctIndex: 2,
-        maxPoints: 1
-      },
-      {
-        id: "smallest-prime",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "What is the smallest prime number?",
-        options: ["0", "1", "2", "3"],
-        correctIndex: 2,
-        maxPoints: 1
-      },
-      {
-        id: "cant-handle-truth",
-        type: "mcq",
-        tag: "Movies",
-        text: "Which film features the line “You can’t handle the truth!”?",
-        options: ["A Few Good Men", "Top Gun", "Die Hard", "The Godfather"],
-        correctIndex: 0,
-        maxPoints: 1
-      },
-      // MORPHED CELEB – self mark
-      {
-        id: "morphed-celeb",
-        type: "self-text-image",
-        tag: "Morphed celebrity",
-        text: "Morphed celebrity (picture shown). Who are the two actors?",
-        image: "morph.png",
-        answerText: "John Travolta and Tom Cruise",
-        maxPoints: 1
-      },
-      // MCQ
-      {
-        id: "thor-hammer",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "In the Marvel films, what is Thor’s hammer called?",
-        options: ["Gungnir", "Stormbreaker", "Mjolnir", "Aegis"],
-        correctIndex: 2,
-        maxPoints: 1
-      },
-      {
-        id: "main-gas-1",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "What is the main gas found in the air we breathe?",
-        options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
-        correctIndex: 2,
-        maxPoints: 1
-      },
-      // ANAGRAM
-      {
-        id: "anagram-platypus",
-        type: "text-exact",
-        tag: "Anagram",
-        text: "Anagram: LSPPTAYU. Hint: it’s an animal – what is it?",
-        correctAnswer: "platypus",
-        maxPoints: 1
-      },
-      // LARGEST INTERNAL ORGAN
-      {
-        id: "largest-organ",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "What is the largest internal organ in the human body?",
-        options: ["Heart", "Liver", "Lungs", "Kidneys"],
-        correctIndex: 1,
-        maxPoints: 1
-      },
-      // SPHYGMOMANOMETER
-      {
-        id: "sphygmo",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "What does a sphygmomanometer measure?",
-        options: ["Blood sugar", "Blood pressure", "Lung capacity", "Heart rate"],
-        correctIndex: 1,
-        maxPoints: 1
-      },
-      // SHAKESPEARE LONGEST PLAY
-      {
-        id: "shakespeare-longest",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "Which is Shakespeare’s longest play?",
-        options: ["Macbeth", "Othello", "Hamlet", "King Lear"],
-        correctIndex: 2,
-        maxPoints: 1
-      },
-      // GUESS THE CREDITS – self mark
-      {
-        id: "guess-credits",
-        type: "self-text-image",
-        tag: "Guess the credits",
-        text: "Guess the movie from the credits screenshot.",
-        image: "credits.png",
-        answerText: "Rain Man",
-        maxPoints: 1
-      },
-      // SORT THE BOOKS – 1,2,3 inputs
-      {
-        id: "sort-books",
-        type: "rank",
-        tag: "Sort the order",
-        text: "Sort these books by number of words, from least to most. Enter 1 (least), 2 (middle) or 3 (most) beside each title.",
-        items: [
-          "Lord of the Rings",
-          "Harry Potter",
-          "King James Bible"
-        ],
-        correctRanks: [1, 2, 3],
-        maxPoints: 1
-      },
-      // FLAG QUESTION – self mark
-      {
-        id: "flag-country",
-        type: "self-text-image",
-        tag: "Flag question",
-        text: "What country does this flag belong to?",
-        image: "flag.png",
-        answerText: "Singapore",
-        maxPoints: 1
-      },
-      // WORLD CUP WINS
-      {
-        id: "world-cups",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "Which country has won the most FIFA World Cups (men’s)?",
-        options: ["Germany", "Italy", "Argentina", "Brazil"],
-        correctIndex: 3,
-        maxPoints: 1
-      },
-   
-      // MACHU PICCHU
-      {
-        id: "machu-picchu",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "Which country is famous for the landmark Machu Picchu?",
-        options: ["Peru", "Chile", "Mexico", "Guatemala"],
-        correctIndex: 0,
-        maxPoints: 1
-      },
-      // GUESS THE YEAR
-      {
-        id: "toy-story-year",
-        type: "year",
-        tag: "Guess the year",
-        text: "In what year did Toy Story 2 release and was Sabrina Carpenter born?",
-        correctYear: 1999,
-        maxPoints: 2
-      },
-      // MATHS PUZZLE
-      {
-        id: "clock-right-angles",
-        type: "numeric",
-        tag: "Maths puzzle",
-        text: "There are 5 people at a party, and everyone has a handshake, how many handshakes take place?",
-        correctNumber: 10,
-        maxPoints: 1
-      },
-      // NEXT OLYMPICS – silly US place
-      {
-        id: "next-olympics",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "Which city will host the next Olympic Games (Summer)?",
-        options: ["Tokyo", "Brisbane", "Barcelona", "Los Angeles"],
-        correctIndex: 3,
-        maxPoints: 1
-      },
-      // TENNIS 40-40
-      {
-        id: "tennis-40",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "In tennis, what is the score when both players have 40?",
-        options: ["Deuce", "Love", "Advantage", "Tie"],
-        correctIndex: 0,
-        maxPoints: 1
-      },
-      // OLYMPIC RING COLOURS
-      {
-        id: "ring-colour",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "Which of these is NOT a colour on the Olympic rings?",
-        options: ["Black", "White", "Green", "Yellow"],
-        correctIndex: 1,
-        maxPoints: 1
-      },
-      // MAXIMUM BREAK
-      {
-        id: "snooker-break",
-        type: "mcq",
-        tag: "Multiple choice",
-        text: "What is the maximum break in snooker?",
-        options: ["147", "155", "167", "180"],
-        correctIndex: 0,
-        maxPoints: 1
-      },
-      // NOT AN OLYMPIC EVENT – topical
-      {
-        id: "not-olympic",
-        type: "mcq",
-        tag: "Topical / Odd one out",
-        text: "Which one of these was NOT an Olympic event?",
-        options: [
-          "Blind archery",
-          "Solo Synchronized Swimming",
-          "Hot Air Ballooning",
-          "Live pigeon shooting"
-        ],
-        correctIndex: 0,
-        maxPoints: 1
-      }
+    id: "northernmost-scandinavia",
+    type: "mcq",
+    tag: "Geography",
+    text: "What is the northernmost Scandinavian country?",
+    options: ["Denmark", "Sweden", "Finland", "Norway"],
+    correctIndex: 3,
+    maxPoints: 1
+  },
+  {
+    id: "sydney-hobart-decade",
+    type: "mcq",
+    tag: "History",
+    text: "In which decade was the Wizard of Oz released",
+    options: ["1920s", "1930s", "1940s", "1950s"],
+    correctIndex: 1,
+    maxPoints: 1
+  },
+  {
+    id: "lapstone-artisan",
+    type: "mcq",
+    tag: "General knowledge",
+    text: "What kind of artisan might use a lapstone?",
+    options: ["Blacksmith", "Shoemaker", "Carpenter", "Bricklayer"],
+    correctIndex: 1,
+    maxPoints: 1
+  },
+  {
+    id: "biden-middle-name",
+    type: "mcq",
+    tag: "Politics",
+    text: "What is former US president Joe Biden’s middle name?",
+    options: ["Robertson", "Robar", "Robinette"],
+    correctIndex: 2,
+    maxPoints: 1
+  },
+  {
+    id: "thylacoleo",
+    type: "text-exact",
+    tag: "Animals",
+    text: "The extinct Australian predator Thylacoleo carnifex is better known as which marsupial?",
+    correctAnswer: "marsupial lion",
+    maxPoints: 1
+  },
+  {
+    id: "eye-of-the-tiger",
+    type: "mcq",
+    tag: "Movies",
+    text: "Survivor’s 'Eye of the Tiger' was the theme song for which Rocky film?",
+    options: ["Rocky", "Rocky II", "Rocky III", "Rocky IV"],
+    correctIndex: 2,
+    maxPoints: 1
+  },
+  {
+    id: "cooking-method",
+    type: "MCQ",
+    tag: "Food",
+    text: "Which cooking method is common to the dishes crêpes suzette, bombe Alaska and cherries jubilee?",
+    options: ["Flamb", "Rocky II", "Rocky III", "Rocky IV"],
+    correctIndex: 2,
+    maxPoints: 1
+  },
+  {
+    id: "reverse-swing",
+    type: "text-exact",
+    tag: "Sport",
+    text: "Reverse swing is a technique used in which ball sport?",
+    correctAnswer: "cricket",
+    maxPoints: 1
+  },
+  {
+    id: "konnichiwa",
+    type: "text-exact",
+    tag: "Language",
+    text: "Konnichiwa is a greeting in which language?",
+    correctAnswer: "Japanese",
+    maxPoints: 1
+  },
+  {
+    id: "knot-speed",
+    type: "numeric",
+    tag: "General knowledge",
+    text: "A knot is equal to how many nautical miles per hour?",
+    correctNumber: 1,
+    maxPoints: 1
+  },
+  {
+    id: "last-showgirl",
+    type: "text-exact",
+    tag: "Movies",
+    text: "Who plays the title role in the 2024 film The Last Showgirl?",
+    correctAnswer: "Pamela Anderson",
+    maxPoints: 1
+  },
+  {
+    id: "batavia",
+    type: "text-exact",
+    tag: "Geography",
+    text: "Batavia is a former name of which Asian city?",
+    correctAnswer: "Jakarta",
+    maxPoints: 1
+  },
+  {
+    id: "arch-truss",
+    type: "text-exact",
+    tag: "Engineering",
+    text: "Arch, truss and suspension are types of what structure?",
+    correctAnswer: "bridge",
+    maxPoints: 1
+  },
+  {
+    id: "ovaries",
+    type: "numeric",
+    tag: "Biology",
+    text: "Women usually have how many ovaries?",
+    correctNumber: 2,
+    maxPoints: 1
+  },
+  {
+    id: "cranberries-song",
+    type: "text-exact",
+    tag: "Music",
+    text: "Which song by the Cranberries begins, 'Oh, my life is changing every day/In every possible way'?",
+    correctAnswer: "Dreams",
+    maxPoints: 1
+  },
+  {
+    id: "nylon-riots",
+    type: "text-exact",
+    tag: "History",
+    text: "The demand for what led to the US nylon riots of 1946?",
+    correctAnswer: "nylon stockings",
+    maxPoints: 1
+  },
+  {
+    id: "melbourne-grid",
+    type: "text-exact",
+    tag: "Australia",
+    text: "What Melbourne grid is bound by Flinders, Spring, La Trobe and Spencer streets?",
+    correctAnswer: "Hoddle Grid",
+    maxPoints: 1
+  },
+  {
+    id: "sparrows-fart",
+    type: "mcq",
+    tag: "Phrases",
+    text: "Does 'sparrow’s fart' refer to early morning, early evening or midnight?",
+    options: ["Early morning", "Early evening", "Midnight"],
+    correctIndex: 0,
+    maxPoints: 1
+  },
+  {
+    id: "sidekicks",
+    type: "text-exact",
+    tag: "Pop culture",
+    text: "Robin, Gromit and Pedro Sanchez are sidekicks to whom, respectively?",
+    correctAnswer: "Batman, Wallace and Napoleon Dynamite",
+    maxPoints: 1
+  },
+  {
+    id: "coal-country",
+    type: "text-exact",
+    tag: "Environment",
+    text: "Which country was the first to completely stop using coal to generate power?",
+    correctAnswer: "United Kingdom",
+    maxPoints: 1
+  },
+  {
+    id: "all-that-jazz",
+    type: "text-exact",
+    tag: "Musicals",
+    text: "All That Jazz, Cell Block Tango and Mr Cellophane are songs from which musical?",
+    correctAnswer: "Chicago",
+    maxPoints: 1
+  },
+  {
+    id: "cezanne-gauguin",
+    type: "text-exact",
+    tag: "Art",
+    text: "What first name did artists Cézanne and Gauguin share?",
+    correctAnswer: "Paul",
+    maxPoints: 1
+  },
+  {
+    id: "mexico-emoji",
+    type: "text-exact",
+    tag: "Animals",
+    text: "Which amphibian features in the official emoji of Mexico City?",
+    correctAnswer: "axolotl",
+    maxPoints: 1
+  },
+  {
+    id: "anagram-angered",
+    type: "text-exact",
+    tag: "Wordplay",
+    text: "What word is both an anagram of, and synonym for, 'angered'?",
+    correctAnswer: "enraged",
+    maxPoints: 1
+  },
+  {
+    id: "akubra-pelts",
+    type: "mcq",
+    tag: "Australia",
+    text: "On average, how many rabbit pelts are used to make an Akubra: three, seven or 12?",
+    options: ["3", "7", "12"],
+    correctIndex: 2,
+    maxPoints: 1
+  }
 
 
   
