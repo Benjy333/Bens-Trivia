@@ -501,13 +501,11 @@ function lockCard(i, wasCorrect) {
   states[i].checked = true;
   updateProgress();
 
-  /* Auto-scroll to next unanswered after short delay */
+  /* Update pulsing border to next unanswered question */
   setTimeout(() => {
     const next = states.findIndex((s, idx) => idx > i && !s.checked);
     if (next !== -1) {
-      const nextCard = document.getElementById(`card-${next}`);
-      nextCard.classList.add("current-q");
-      nextCard.scrollIntoView({ behavior: "smooth", block: "center" });
+      document.getElementById(`card-${next}`).classList.add("current-q");
     }
   }, 500);
 }
