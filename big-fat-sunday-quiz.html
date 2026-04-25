@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta property="og:title" content="The Big Fat Sunday Quiz · Ben's Trivia" />
   <meta property="og:description" content="25 questions · Weekly Sunday Challenge · Try beat my score!" />
@@ -13,6 +15,24 @@
   <title>The Big Fat Sunday Quiz</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* ---- FONTS ---- */
+    .page-title, .score-box .percent, .leaderboard-title {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* ---- ANIMATED BACKGROUND ---- */
+    @keyframes bgShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    body {
+      background: linear-gradient(-45deg, #020713, #041831, #071a3a, #020a18);
+      background-size: 400% 400%;
+      animation: bgShift 18s ease infinite;
+    }
+
+    /* ---- HEADER ---- */
     .global-header {
       position: fixed; top: 0; left: 0; right: 0; z-index: 120;
       padding: 10px 14px 12px;
@@ -24,7 +44,7 @@
     .header-left { display: flex; align-items: center; gap: 12px; }
     .header-logo { height: 52px; width: auto; filter: drop-shadow(0 0 8px var(--neon)) drop-shadow(0 0 18px var(--neon-soft)); }
     .header-row-bottom { margin-top: 6px; text-align: center; }
-    .page-title { margin: 0; font-size: 1.1rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); text-shadow: 0 0 8px var(--neon-soft); }
+    .page-title { margin: 0; font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); text-shadow: 0 0 8px var(--neon-soft); }
     .page-date { display: block; margin-top: 2px; font-size: 0.82rem; color: var(--neon-soft); opacity: 0.9; }
     .global-header #menu-btn {
       background: rgba(0,0,0,.25); border: 1.5px solid var(--neon); color: var(--neon);
@@ -42,7 +62,7 @@
     .menu-dropdown a:hover { background: var(--neon); color: #001; }
 
     body { padding-top: 140px; }
-    main { display: grid; place-items: center; padding: 24px 16px 48px; }
+    main { display: grid; place-items: center; padding: 24px 16px 96px; }
     .quiz-shell { width: min(960px, 100%); }
     .page-subtitle { text-align: center; margin: 0 0 8px; font-size: 1rem; color: var(--neon-soft); opacity: 0.9; }
     .quiz-meta { text-align: center; font-size: 0.85rem; margin-bottom: 14px; opacity: 0.9; }
@@ -50,25 +70,50 @@
 
     .quiz-container { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
 
+    /* ---- QUESTION CARDS: staggered fade-in ---- */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     .question-card {
       background: radial-gradient(circle at top left, #12335a 0, #020a16 55%);
       border-radius: 16px; padding: 14px 14px 12px;
       border: 1px solid rgba(150, 208, 255, 0.35);
       box-shadow: 0 0 12px rgba(0,0,0,0.6), 0 0 18px rgba(55,161,255,0.22);
+      opacity: 0;
+      animation: cardIn 0.45s ease forwards;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    /* pulsing border on current unanswered question */
+    @keyframes pulseNeon {
+      0%,100% { box-shadow: 0 0 12px rgba(0,0,0,0.6), 0 0 14px rgba(55,161,255,0.25); }
+      50%      { box-shadow: 0 0 12px rgba(0,0,0,0.6), 0 0 28px rgba(55,161,255,0.55); }
+    }
+    .question-card.current-q {
+      border-color: rgba(150, 208, 255, 0.65);
+      animation: cardIn 0.45s ease forwards, pulseNeon 2.2s ease-in-out infinite;
+    }
+    /* green flash when correct */
+    @keyframes correctFlash {
+      0%   { border-color: var(--good); box-shadow: 0 0 0 4px rgba(56,239,125,0.35); }
+      60%  { border-color: var(--good); box-shadow: 0 0 0 8px rgba(56,239,125,0.15); }
+      100% { border-color: rgba(150,208,255,0.15); box-shadow: none; }
     }
     .question-card.answered { border-color: rgba(150, 208, 255, 0.15); opacity: 0.85; }
+    .question-card.flash-correct { animation: correctFlash 0.7s ease forwards; }
 
     .question-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; gap: 12px; }
     .question-text { font-size: 0.97rem; font-weight: 500; margin-bottom: 10px; line-height: 1.45; }
     .question-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.6; white-space: nowrap; }
 
+    /* ---- MCQ: full width on mobile ---- */
     .options { margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    @media (max-width: 640px) { .options { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .options { grid-template-columns: 1fr; } }
     .option-btn {
       border-radius: 999px; border: 1px solid rgba(150, 208, 255, 0.3);
-      padding: 8px 14px; font-size: 0.9rem; cursor: pointer;
+      padding: 10px 14px; font-size: 0.9rem; cursor: pointer;
       background: rgba(3, 15, 34, 0.8); color: #e9f4ff;
-      transition: 0.1s ease-out; text-align: left;
+      transition: 0.1s ease-out; text-align: left; width: 100%;
     }
     .option-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 12px rgba(55,161,255,0.45); border-color: var(--neon-soft); }
     .option-btn:disabled { cursor: default; }
@@ -94,40 +139,48 @@
     .feedback.correct { color: var(--good); }
     .feedback.incorrect { color: var(--bad); }
     .feedback.partial { color: #f5c542; }
-
     .year-hint { font-size: 0.75rem; opacity: 0.65; margin-top: 3px; }
 
-
+    /* ---- PROGRESS BAR ---- */
     .progress-wrap { max-width: 480px; margin: 0 auto 14px; text-align: left; font-size: 0.85rem; opacity: 0.9; }
     .progress-label { margin-bottom: 4px; display: flex; justify-content: space-between; gap: 8px; }
     .progress-bar-outer { width: 100%; height: 10px; border-radius: 999px; background: rgba(4,20,40,0.9); border: 1px solid rgba(150,208,255,0.5); overflow: hidden; }
-    .progress-bar-inner { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--neon-soft), var(--good)); box-shadow: 0 0 14px rgba(55,161,255,0.7), 0 0 24px rgba(56,239,125,0.7); transition: width 0.2s ease-out; }
+    .progress-bar-inner { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--neon-soft), var(--good)); transition: width 0.3s ease-out, box-shadow 0.3s ease; }
+
+    /* ---- STICKY SCORE BAR ---- */
+    .sticky-score {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 110;
+      background: linear-gradient(90deg, #020713f0, #041831f0);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(150,208,255,0.25);
+      padding: 8px 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .sticky-score .ss-label { font-size: 0.78rem; opacity: 0.65; }
+    .sticky-score .ss-score { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--neon-soft); text-shadow: 0 0 8px var(--neon-soft); }
+    .sticky-score .ss-bar-outer { flex: 1; height: 6px; border-radius: 999px; background: rgba(4,20,40,0.9); border: 1px solid rgba(150,208,255,0.3); overflow: hidden; }
+    .sticky-score .ss-bar-inner { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--neon-soft), var(--good)); transition: width 0.3s ease-out; }
 
     .btn-secondary { padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(150,208,255,0.6); background: rgba(3,15,34,0.9); color: #e9f4ff; font-size: 0.82rem; cursor: pointer; margin-top: 10px; }
     .btn-secondary:active { transform: translateY(1px); }
 
+    /* ---- SCORE BOX: animated counter ---- */
     .score-box { margin-top: 14px; text-align: center; font-size: 0.9rem; }
-    .score-box .percent { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; color: var(--neon-soft); text-shadow: 0 0 8px var(--neon-soft); }
+    .score-box .percent { font-size: 2rem; font-weight: 700; margin-bottom: 4px; color: var(--neon-soft); text-shadow: 0 0 12px var(--neon-soft); letter-spacing: 0.05em; }
 
     .share-panel { margin-top: 12px; flex-direction: column; align-items: center; gap: 8px; }
     .share-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-
     .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
+
+    /* ---- CONFETTI CANVAS ---- */
+    #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
 
     /* ---- LEADERBOARD ---- */
     .leaderboard-section { margin-top: 28px; border-top: 1px solid rgba(150,208,255,0.2); padding-top: 20px; }
-    .leaderboard-title { text-align: center; font-size: 1rem; font-weight: 600; color: var(--neon-soft); margin-bottom: 14px; letter-spacing: 0.05em; }
+    .leaderboard-title { text-align: center; font-size: 1rem; font-weight: 700; color: var(--neon-soft); margin-bottom: 14px; letter-spacing: 0.08em; text-shadow: 0 0 8px var(--neon-soft); }
     .submit-row { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
-    .name-input {
-      flex: 1; min-width: 140px; padding: 8px 14px; border-radius: 999px;
-      border: 1px solid rgba(150,208,255,0.6); background: rgba(0,8,18,0.85);
-      color: #e9f4ff; font-size: 0.9rem;
-    }
-    .btn-submit-score {
-      padding: 8px 18px; border-radius: 999px; border: 1px solid var(--good);
-      background: rgba(56,239,125,0.1); color: var(--good);
-      font-size: 0.85rem; cursor: pointer; white-space: nowrap; font-weight: 600;
-    }
+    .name-input { flex: 1; min-width: 140px; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(150,208,255,0.6); background: rgba(0,8,18,0.85); color: #e9f4ff; font-size: 0.9rem; }
+    .btn-submit-score { padding: 8px 18px; border-radius: 999px; border: 1px solid var(--good); background: rgba(56,239,125,0.1); color: var(--good); font-size: 0.85rem; cursor: pointer; white-space: nowrap; font-weight: 600; }
     .btn-submit-score:hover { background: var(--good); color: #001; }
     .btn-submit-score:disabled { opacity: 0.4; cursor: default; }
     .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -144,12 +197,18 @@
 
     @media (max-width: 480px) {
       .header-logo { height: 44px; }
-      .page-title { font-size: 0.95rem; }
+      .page-title { font-size: 0.82rem; }
     }
   </style>
 </head>
 
 <body>
+  <canvas id="confetti-canvas"></canvas>
+  <div class="sticky-score" id="sticky-score">
+    <span class="ss-label">Score</span>
+    <div class="ss-bar-outer"><div class="ss-bar-inner" id="ss-bar"></div></div>
+    <span class="ss-score" id="ss-score">0%</span>
+  </div>
   <header class="global-header">
     <div class="header-row-top">
       <div class="header-left">
@@ -330,8 +389,9 @@ function renderQuiz() {
   container.innerHTML = "";
   questions.forEach((q, i) => {
     const card = document.createElement("div");
-    card.className = "question-card";
+    card.className = "question-card" + (i === 0 ? " current-q" : "");
     card.id = `card-${i}`;
+    card.style.animationDelay = `${i * 60}ms`;
 
     const header = document.createElement("div");
     header.className = "question-header";
@@ -433,12 +493,30 @@ function renderYear(card, q, i) {
 }
 
 /* ---- CHECK FUNCTIONS ---- */
-function lockCard(i) {
+function lockCard(i, wasCorrect) {
   const card = document.getElementById(`card-${i}`);
   card.querySelectorAll("input, button.option-btn, button.btn-check").forEach(el => el.disabled = true);
-  card.classList.add("answered");
+  card.classList.remove("current-q");
+
+  if (wasCorrect) {
+    card.classList.add("flash-correct");
+    setTimeout(() => { card.classList.remove("flash-correct"); card.classList.add("answered"); }, 700);
+  } else {
+    card.classList.add("answered");
+  }
+
   states[i].checked = true;
   updateProgress();
+
+  /* Auto-scroll to next unanswered after short delay */
+  setTimeout(() => {
+    const next = states.findIndex((s, idx) => idx > i && !s.checked);
+    if (next !== -1) {
+      const nextCard = document.getElementById(`card-${next}`);
+      nextCard.classList.add("current-q");
+      nextCard.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, 500);
 }
 
 function setFeedback(i, msg, type) {
@@ -456,13 +534,14 @@ function checkMCQ(i, chosen) {
     if (bi === q.correctIndex)  btn.classList.add("correct");
     else if (bi === chosen)     btn.classList.add("wrong");
   });
-  if (chosen === q.correctIndex) {
+  const mcqCorrect = chosen === q.correctIndex;
+  if (mcqCorrect) {
     states[i].points = q.maxPoints;
     setFeedback(i, "✓ Correct!", "correct");
   } else {
     setFeedback(i, `✗ The answer was: ${q.options[q.correctIndex]}`, "incorrect");
   }
-  lockCard(i);
+  lockCard(i, mcqCorrect);
 }
 
 function checkTextExact(i) {
@@ -473,13 +552,14 @@ function checkTextExact(i) {
 
   if (!val.trim()) { setFeedback(i, "Please type an answer first.", ""); return; }
 
-  if (isCorrect(val, q)) {
+  const textCorrect = isCorrect(val, q);
+  if (textCorrect) {
     states[i].points = q.maxPoints;
     setFeedback(i, "\u2713 Correct!", "correct");
   } else {
     setFeedback(i, `\u2717 The answer was: ${q.correctAnswer}`, "incorrect");
   }
-  lockCard(i);
+  lockCard(i, textCorrect);
 }
 
 function checkNumeric(i) {
@@ -490,13 +570,14 @@ function checkNumeric(i) {
 
   if (isNaN(val)) { setFeedback(i, "Please enter a number.", ""); return; }
 
-  if (val === q.correctNumber) {
+  const numCorrect = val === q.correctNumber;
+  if (numCorrect) {
     states[i].points = q.maxPoints;
     setFeedback(i, "✓ Correct!", "correct");
   } else {
     setFeedback(i, `✗ The answer was: ${q.correctNumber}`, "incorrect");
   }
-  lockCard(i);
+  lockCard(i, numCorrect);
 }
 
 function checkYear(i) {
@@ -521,29 +602,96 @@ function checkYear(i) {
   } else {
     setFeedback(i, `✗ The answer was: ${q.correctYear}`, "incorrect");
   }
-  lockCard(i);
+  lockCard(i, pts > 0);
 }
 
 /* ---- PROGRESS + SCORE ---- */
+let _animFrame = null;
 function updateProgress() {
   const answered = states.filter(s => s.checked).length;
   const total    = states.length;
   const earned   = states.reduce((s, x) => s + x.points, 0);
   const maxPts   = states.reduce((s, x) => s + x.maxPoints, 0);
   const pct      = maxPts ? Math.round((earned / maxPts) * 100) : 0;
+  const progPct  = total ? Math.round((answered / total) * 100) : 0;
 
   progText.textContent = `${answered} / ${total} answered`;
-  progBar.style.width  = total ? (answered / total * 100) + "%" : "0%";
+  progBar.style.width  = progPct + "%";
 
-  scoreBox.innerHTML = `
-    <div class="percent">${pct}%</div>
-    <div>${earned} / ${maxPts} points &nbsp;·&nbsp; ${answered} / ${total} answered</div>
-  `;
+  /* Dynamic glow based on progress */
+  const glowAlpha = 0.3 + (progPct / 100) * 0.7;
+  progBar.style.boxShadow = `0 0 ${8 + progPct * 0.18}px rgba(55,161,255,${glowAlpha}), 0 0 ${14 + progPct * 0.2}px rgba(56,239,125,${glowAlpha})`;
+
+  /* Sticky score bar */
+  document.getElementById("ss-bar").style.width = pct + "%";
+  document.getElementById("ss-score").textContent = pct + "%";
+
+  /* Animated score counter */
+  const percentEl = scoreBox.querySelector(".percent");
+  const currentPct = percentEl ? (parseInt(percentEl.textContent) || 0) : 0;
+  if (_animFrame) cancelAnimationFrame(_animFrame);
+  scoreBox.innerHTML = `<div class="percent">${currentPct}%</div><div>${earned} / ${maxPts} points &nbsp;·&nbsp; ${answered} / ${total} answered</div>`;
+  animateCounter(scoreBox.querySelector(".percent"), currentPct, pct);
 
   if (answered === total && total > 0) {
     document.getElementById("share-panel").style.display = "flex";
     showLeaderboard();
+    if (pct >= 60) launchConfetti(pct);
   }
+}
+
+function animateCounter(el, from, to) {
+  const duration = 600;
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(from + (to - from) * ease) + "%";
+    if (t < 1) _animFrame = requestAnimationFrame(step);
+  }
+  _animFrame = requestAnimationFrame(step);
+}
+
+/* ---- CONFETTI ---- */
+function launchConfetti(pct) {
+  const canvas = document.getElementById("confetti-canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const count = Math.floor(80 + pct * 1.2);
+  const colours = ["#37a1ff","#96d0ff","#38ef7d","#ffd700","#ff4266","#fff"];
+  const pieces = Array.from({ length: count }, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * 200,
+    r: 4 + Math.random() * 6,
+    d: 2 + Math.random() * 4,
+    col: colours[Math.floor(Math.random() * colours.length)],
+    tilt: Math.random() * 10 - 5,
+    tiltSpeed: 0.1 + Math.random() * 0.15,
+    angle: 0
+  }));
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.angle += p.tiltSpeed;
+      p.y += p.d;
+      p.x += Math.sin(p.angle) * 1.5;
+      p.tilt = Math.sin(p.angle) * 12;
+      ctx.beginPath();
+      ctx.lineWidth = p.r;
+      ctx.strokeStyle = p.col;
+      ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+      ctx.stroke();
+    });
+    frame++;
+    if (frame < 180) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
 }
 
 /* ---- JUMP TO UNANSWERED ---- */
