@@ -189,6 +189,15 @@
     .lb-tab { padding: 5px 14px; border-radius: 999px; border: 1px solid rgba(150,208,255,0.3); background: transparent; color: var(--neon-soft); font-size: 0.8rem; cursor: pointer; }
     .lb-tab.active { background: var(--neon); color: #001; border-color: var(--neon); }
 
+    .btn-restart {
+      padding: 8px 20px; border-radius: 999px;
+      border: 1px solid rgba(150,208,255,0.4);
+      background: transparent; color: rgba(150,208,255,0.7);
+      font-size: 0.82rem; cursor: pointer; margin-top: 4px;
+      transition: 0.15s;
+    }
+    .btn-restart:hover { border-color: var(--neon-soft); color: var(--neon-soft); background: rgba(150,208,255,0.05); }
+
     @media (max-width: 480px) {
       .header-logo { height: 44px; }
       .page-title { font-size: 0.82rem; }
@@ -250,6 +259,10 @@
           <button class="btn-secondary" id="copy-result">Copy result</button>
         </div>
         <div id="share-status" style="font-size:11px;opacity:0.8;margin-top:6px;"></div>
+        <div style="margin-top:16px;border-top:1px solid rgba(150,208,255,0.15);padding-top:14px;text-align:center;">
+          <button class="btn-restart" id="btn-restart">↺ Restart Quiz</button>
+          <div style="font-size:0.75rem;opacity:0.5;margin-top:6px;">This will clear your answers and start fresh</div>
+        </div>
       </div>
       <!-- LEADERBOARD -->
       <div class="leaderboard-section" id="leaderboard-section" style="display:none;">
@@ -407,7 +420,7 @@ function clearOldSaves(currentTitle, allTitles) {
     if (saved && saved.states && saved.states.length === questions.length) {
       states = saved.states;
     } else {
-      states = questions.map(q => ({ checked: false, points: 0, maxPoints: q.maxPoints || 1 }));
+      states = questions.map(q => ({ checked: false, points: 0, maxPoints: q.maxPoints || 1, chosenIndex: null, chosenValue: null }));
     }
 
     renderQuiz();
@@ -435,19 +448,35 @@ function restoreAnswers() {
       const btns = card.querySelectorAll(".option-btn");
       btns.forEach((btn, bi) => {
         if (bi === q.correctIndex) btn.classList.add("correct");
+        else if (s.chosenIndex !== null && bi === s.chosenIndex) btn.classList.add("wrong");
       });
       if (s.points === 0) {
-        /* Can't know which wrong option they picked, just show correct */
-        setFeedback(i, `Answer: ${q.options[q.correctIndex]}`, "incorrect");
+        setFeedback(i, `✗ The answer was: ${q.options[q.correctIndex]}`, "incorrect");
       } else {
         setFeedback(i, "✓ Correct!", "correct");
       }
-    } else if (q.type === "text-exact" || q.type === "numeric") {
-      setFeedback(i, s.points > 0 ? "✓ Correct!" : `Answer: ${q.correctAnswer || q.correctNumber}`, s.points > 0 ? "correct" : "incorrect");
+    } else if (q.type === "text-exact") {
+      if (s.points > 0) {
+        setFeedback(i, "✓ Correct!", "correct");
+      } else {
+        const inp = card.querySelector(".question-input");
+        if (inp && s.chosenValue) inp.value = s.chosenValue;
+        setFeedback(i, `✗ The answer was: ${q.correctAnswer}`, "incorrect");
+      }
+    } else if (q.type === "numeric") {
+      if (s.points > 0) {
+        setFeedback(i, "✓ Correct!", "correct");
+      } else {
+        const inp = card.querySelector(".question-input");
+        if (inp && s.chosenValue !== null) inp.value = s.chosenValue;
+        setFeedback(i, `✗ The answer was: ${q.correctNumber}`, "incorrect");
+      }
     } else if (q.type === "year") {
+      const inp = card.querySelector(".question-input");
+      if (inp && s.chosenValue !== null) inp.value = s.chosenValue;
       if (s.points === 2) setFeedback(i, `✓ Correct! ${q.correctYear} — full 2 points!`, "correct");
       else if (s.points === 1) setFeedback(i, `Almost! The answer was ${q.correctYear} — 1 point.`, "partial");
-      else setFeedback(i, `Answer: ${q.correctYear}`, "incorrect");
+      else setFeedback(i, `✗ The answer was: ${q.correctYear}`, "incorrect");
     }
 
     /* Lock the card */
@@ -620,6 +649,7 @@ function checkMCQ(i, chosen) {
     else if (bi === chosen)     btn.classList.add("wrong");
   });
   const mcqCorrect = chosen === q.correctIndex;
+  states[i].chosenIndex = chosen;
   if (mcqCorrect) {
     states[i].points = q.maxPoints;
     setFeedback(i, "✓ Correct!", "correct");
@@ -638,6 +668,7 @@ function checkTextExact(i) {
   if (!val.trim()) { setFeedback(i, "Please type an answer first.", ""); return; }
 
   const textCorrect = isCorrect(val, q);
+  states[i].chosenValue = val.trim();
   if (textCorrect) {
     states[i].points = q.maxPoints;
     setFeedback(i, "\u2713 Correct!", "correct");
@@ -656,6 +687,7 @@ function checkNumeric(i) {
   if (isNaN(val)) { setFeedback(i, "Please enter a number.", ""); return; }
 
   const numCorrect = val === q.correctNumber;
+  states[i].chosenValue = val;
   if (numCorrect) {
     states[i].points = q.maxPoints;
     setFeedback(i, "✓ Correct!", "correct");
@@ -673,6 +705,7 @@ function checkYear(i) {
 
   if (isNaN(val)) { setFeedback(i, "Please enter a year.", ""); return; }
 
+  states[i].chosenValue = val;
   const diff = Math.abs(val - q.correctYear);
   let pts = 0;
   if (diff === 0)      pts = 2;
@@ -952,6 +985,27 @@ document.getElementById("player-name").addEventListener("keydown", e => {
 function escapeHtml(str) {
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
+
+/* ---- RESTART ---- */
+document.getElementById("btn-restart").addEventListener("click", () => {
+  const quizTitle = document.getElementById("quiz-title").textContent;
+  /* Clear saved progress */
+  try { localStorage.removeItem(getSaveKey(quizTitle)); } catch(e) {}
+  /* Reset states */
+  states = questions.map(q => ({ checked: false, points: 0, maxPoints: q.maxPoints || 1, chosenIndex: null, chosenValue: null }));
+  scoreSubmitted = false;
+  /* Hide end panels */
+  document.getElementById("share-panel").style.display = "none";
+  document.getElementById("leaderboard-section").style.display = "none";
+  /* Reset sticky bar */
+  document.getElementById("ss-bar").style.width = "0%";
+  document.getElementById("ss-score").textContent = "0%";
+  /* Re-render and reset score */
+  renderQuiz();
+  updateProgress();
+  /* Scroll to top */
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
 
 /* Store start_date globally so leaderboard can access it */
 let data_start_date = "2026-04-19";
