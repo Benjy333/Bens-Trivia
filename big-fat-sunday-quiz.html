@@ -71,17 +71,11 @@
     .quiz-container { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
 
     /* ---- QUESTION CARDS: staggered fade-in ---- */
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
     .question-card {
       background: radial-gradient(circle at top left, #12335a 0, #020a16 55%);
       border-radius: 16px; padding: 14px 14px 12px;
       border: 1px solid rgba(150, 208, 255, 0.35);
       box-shadow: 0 0 12px rgba(0,0,0,0.6), 0 0 18px rgba(55,161,255,0.22);
-      opacity: 0;
-      animation: cardIn 0.45s ease forwards;
       transition: border-color 0.3s, box-shadow 0.3s;
     }
     /* pulsing border on current unanswered question */
@@ -91,7 +85,7 @@
     }
     .question-card.current-q {
       border-color: rgba(150, 208, 255, 0.65);
-      animation: cardIn 0.45s ease forwards, pulseNeon 2.2s ease-in-out infinite;
+      animation: pulseNeon 2.2s ease-in-out infinite;
     }
     /* green flash when correct */
     @keyframes correctFlash {
@@ -391,7 +385,6 @@ function renderQuiz() {
     const card = document.createElement("div");
     card.className = "question-card" + (i === 0 ? " current-q" : "");
     card.id = `card-${i}`;
-    card.style.animationDelay = `${i * 60}ms`;
 
     const header = document.createElement("div");
     header.className = "question-header";
