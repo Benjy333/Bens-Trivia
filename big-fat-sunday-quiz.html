@@ -352,6 +352,35 @@ function isCorrect(val, q) {
   return accepted.some(target => fuzzyMatch(input, target));
 }
 
+/* ---- LOCALSTORAGE HELPERS ---- */
+function getSaveKey(quizTitle) {
+  return `bens-trivia-progress:${quizTitle}`;
+}
+
+function saveProgress(quizTitle) {
+  const save = {
+    savedAt: Date.now(),
+    states: states.map(s => ({ checked: s.checked, points: s.points, maxPoints: s.maxPoints }))
+  };
+  try { localStorage.setItem(getSaveKey(quizTitle), JSON.stringify(save)); } catch(e) {}
+}
+
+function loadSavedProgress(quizTitle) {
+  try {
+    const raw = localStorage.getItem(getSaveKey(quizTitle));
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function clearOldSaves(currentTitle, allTitles) {
+  /* Remove saved progress for any quiz that isn't the current one */
+  allTitles.forEach(title => {
+    if (title !== currentTitle) {
+      try { localStorage.removeItem(getSaveKey(title)); } catch(e) {}
+    }
+  });
+}
+
 /* ---- LOAD QUIZ ---- */
 (async function loadQuiz() {
   try {
@@ -369,14 +398,78 @@ function isCorrect(val, q) {
     document.getElementById("quiz-week-info").textContent =
       `Week ${weekIdx + 1} · ${questions.length} questions`;
 
-    states = questions.map(q => ({ checked: false, points: 0, maxPoints: q.maxPoints || 1 }));
+    /* Clear saved progress from old weeks */
+    const allTitles = data.weekly_quizzes.map(q => q.title);
+    clearOldSaves(quiz.title, allTitles);
+
+    /* Check for saved progress from this week */
+    const saved = loadSavedProgress(quiz.title);
+    if (saved && saved.states && saved.states.length === questions.length) {
+      states = saved.states;
+    } else {
+      states = questions.map(q => ({ checked: false, points: 0, maxPoints: q.maxPoints || 1 }));
+    }
+
     renderQuiz();
+
+    /* Restore answered state visually */
+    if (saved && saved.states) restoreAnswers();
+
     updateProgress();
   } catch(err) {
     console.error("Failed to load quiz:", err);
     document.getElementById("quiz-week-info").textContent = "Error loading quiz – check console.";
   }
 })();
+
+/* ---- RESTORE SAVED ANSWERS ---- */
+function restoreAnswers() {
+  states.forEach((s, i) => {
+    if (!s.checked) return;
+    const q = questions[i];
+    const card = document.getElementById(`card-${i}`);
+    if (!card) return;
+
+    /* Show correct answer visually per type */
+    if (q.type === "mcq") {
+      const btns = card.querySelectorAll(".option-btn");
+      btns.forEach((btn, bi) => {
+        if (bi === q.correctIndex) btn.classList.add("correct");
+      });
+      if (s.points === 0) {
+        /* Can't know which wrong option they picked, just show correct */
+        setFeedback(i, `Answer: ${q.options[q.correctIndex]}`, "incorrect");
+      } else {
+        setFeedback(i, "✓ Correct!", "correct");
+      }
+    } else if (q.type === "text-exact" || q.type === "numeric") {
+      setFeedback(i, s.points > 0 ? "✓ Correct!" : `Answer: ${q.correctAnswer || q.correctNumber}`, s.points > 0 ? "correct" : "incorrect");
+    } else if (q.type === "year") {
+      if (s.points === 2) setFeedback(i, `✓ Correct! ${q.correctYear} — full 2 points!`, "correct");
+      else if (s.points === 1) setFeedback(i, `Almost! The answer was ${q.correctYear} — 1 point.`, "partial");
+      else setFeedback(i, `Answer: ${q.correctYear}`, "incorrect");
+    }
+
+    /* Lock the card */
+    card.querySelectorAll("input, button.option-btn, button.btn-check").forEach(el => el.disabled = true);
+    card.classList.remove("current-q");
+    card.classList.add("answered");
+  });
+
+  /* Set pulsing border on first unanswered */
+  const firstUnanswered = states.findIndex(s => !s.checked);
+  if (firstUnanswered !== -1) {
+    const card = document.getElementById(`card-${firstUnanswered}`);
+    if (card) card.classList.add("current-q");
+  }
+
+  /* If all answered, show share + leaderboard */
+  const allDone = states.every(s => s.checked);
+  if (allDone) {
+    document.getElementById("share-panel").style.display = "flex";
+    showLeaderboard();
+  }
+}
 
 /* ---- RENDER ---- */
 function renderQuiz() {
@@ -499,6 +592,7 @@ function lockCard(i, wasCorrect) {
   }
 
   states[i].checked = true;
+  saveProgress(document.getElementById("quiz-title").textContent);
   updateProgress();
 
   /* Update pulsing border to next unanswered question */
