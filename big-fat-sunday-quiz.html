@@ -294,6 +294,25 @@
           </tbody>
         </table>
       </div>
+
+      <!-- INSTAGRAM HANDLE -->
+      <div id="instagram-handle" style="display:none; text-align:center; margin-top:20px; padding:16px; border-top:1px solid rgba(150,208,255,0.15);">
+        <div style="font-size:0.78rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Want to see the weekly leaderboard?</div>
+        <a href="https://instagram.com/benstrivia" target="_blank" style="
+          display:inline-flex; align-items:center; gap:8px;
+          padding:10px 20px; border-radius:999px;
+          border:1.5px solid rgba(150,208,255,0.5);
+          background:rgba(3,15,34,0.9); color:#e9f4ff;
+          text-decoration:none; font-size:0.95rem; font-weight:600;
+          box-shadow:0 0 12px rgba(55,161,255,0.25);
+          transition:0.15s;
+        " onmouseover="this.style.background='var(--neon)';this.style.color='#001';"
+           onmouseout="this.style.background='rgba(3,15,34,0.9)';this.style.color='#e9f4ff';">
+          📸 Follow @benstrivia
+        </a>
+        <div style="font-size:0.72rem; opacity:0.45; margin-top:8px;">New quiz every Sunday 🍺</div>
+      </div>
+
     </section>
   </main>
 
@@ -758,6 +777,7 @@ function updateProgress() {
 
   if (answered === total && total > 0) {
     document.getElementById("share-panel").style.display = "flex";
+    document.getElementById("instagram-handle").style.display = "block";
     showLeaderboard();
     if (pct >= 60) launchConfetti(pct);
   }
@@ -1011,6 +1031,7 @@ document.getElementById("btn-restart").addEventListener("click", () => {
   /* Hide end panels */
   document.getElementById("share-panel").style.display = "none";
   document.getElementById("leaderboard-section").style.display = "none";
+  document.getElementById("instagram-handle").style.display = "none";
   /* Reset sticky bar */
   document.getElementById("ss-bar").style.width = "0%";
   document.getElementById("ss-score").textContent = "0%";
