@@ -58,7 +58,7 @@
         { "id": "dead-body-line", "type": "text-exact", "tag": "Movies", "text": "Which movie opens with the line 'I was 12 going on 13 the first time I saw a dead human being'?", "correctAnswer": "stand by me", "maxPoints": 1 },
         { "id": "pixar-dvd", "type": "mcq", "tag": "Movies", "text": "Which Pixar movie is the best-selling DVD of all time?", "options": ["Finding Nemo", "Toy Story", "The Incredibles", "Cars"], "correctIndex": 0, "maxPoints": 1 },
         { "id": "einstein", "type": "text-exact", "tag": "Science", "text": "In Einstein's famous equation, E=MC², the constant C stands for what?", "correctAnswer": "speed of light","acceptedAnswers": [ "The Speed of light","light speed", "lightspeed"], "maxPoints": 1 },
-        { "id": "maths", "type": "text-exact", "tag": "Maths", "text": "There are 100 houses on the street and Tess is delivering newspapers to each house. How many houses have the number 2 in them?", "correctAnswer": "19","acceptedAnswers": [ "Nineteen"], "maxPoints": 1 }
+        { "id": "maths", "type": "text-exact", "tag": "Maths", "text": "There are 100 houses on the street and Tess is delivering newspapers to each house. How many houses have the number 2 in them?", "correctAnswer": "19","acceptedAnswers": ["19", "Nineteen"], "maxPoints": 1 }
       ]
     },
     {
