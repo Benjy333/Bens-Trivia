@@ -958,10 +958,11 @@ async function loadLeaderboard() {
     });
 
     const medals = ["🥇","🥈","🥉"];
-    const top3 = rows.slice(0, 3);
 
-    /* Show only top 3 */
-    tbody.innerHTML = top3.map((r, i) => `
+    /* Show top 3 ranks but include all tied players on the podium */
+    const podium = rows.filter((r, i) => ranks[i] <= 2);
+
+    tbody.innerHTML = podium.map((r, i) => `
       <tr>
         <td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td>
         <td>${escapeHtml(r.player_name)}</td>
@@ -980,7 +981,8 @@ async function loadLeaderboard() {
         r.score === earned &&
         r.max_score === maxPts
       );
-      if (userIdx >= 3) {
+      const podiumSize = rows.filter((r, i) => ranks[i] <= 2).length;
+      if (userIdx >= podiumSize) {
         const userRank = ranks[userIdx] + 1;
         const total = rows.length;
         const suffix = userRank === 1 ? "st" : userRank === 2 ? "nd" : userRank === 3 ? "rd" : "th";
@@ -995,7 +997,7 @@ async function loadLeaderboard() {
           <tr><td colspan="4" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:4px 0;">${total} players this week</td></tr>
         `;
       } else if (userIdx !== -1) {
-        /* User is in top 3, just show total count */
+        /* User is on the podium, just show total count */
         tbody.innerHTML += `<tr><td colspan="4" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} players this week</td></tr>`;
       }
     } else if (rows.length > 3) {
