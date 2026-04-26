@@ -13,7 +13,7 @@
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(150, 208, 255, 0.3);
     }
-    .header-row-top { display: flex; align-items: center; gap: 12px; }
+    .header-row-top { display: flex; align-items: center; justify-content: space-between; }
     .header-logo { height: 52px; width: auto; filter: drop-shadow(0 0 8px var(--neon)) drop-shadow(0 0 18px var(--neon-soft)); }
     .header-row-bottom { margin-top: 6px; text-align: center; }
     .page-title { margin: 0; font-size: 1.1rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); text-shadow: 0 0 8px var(--neon-soft); }
@@ -115,7 +115,7 @@
   <header class="global-header">
     <div class="header-row-top">
       <button id="menu-btn">☰</button>
-      <img src="logo.png" class="header-logo" alt="Ben's Trivia Logo">
+      <img src="logo.png" class="header-logo" alt="Ben's Trivia Logo" style="position:absolute;left:50%;transform:translateX(-50%);">
       <div style="width:52px;"></div>
     </div>
     <div class="header-row-bottom">
