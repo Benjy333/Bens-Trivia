@@ -879,6 +879,32 @@ function showLeaderboard() {
   document.getElementById("leaderboard-section").style.display = "block";
   currentQuizTitle = document.getElementById("quiz-title").textContent;
   loadLeaderboard();
+  autoSubmitQuestionStats();
+}
+
+/* Silently submit question stats without requiring a name */
+let questionStatsSubmitted = false;
+async function autoSubmitQuestionStats() {
+  if (questionStatsSubmitted) return;
+  questionStatsSubmitted = true;
+  try {
+    const questionRows = questions.map((q, i) => ({
+      quiz_title: currentQuizTitle,
+      question_id: q.id,
+      correct: states[i].points > 0,
+      points_earned: states[i].points
+    }));
+    await fetch(`${SUPA_URL}/rest/v1/question_stats`, {
+      method: "POST",
+      headers: {
+        "apikey": SUPA_KEY,
+        "Authorization": `Bearer ${SUPA_KEY}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(questionRows)
+    });
+  } catch(e) { /* silent fail */ }
 }
 
 /* Switch between This Week / All Time tabs */
@@ -895,10 +921,10 @@ async function loadLeaderboard() {
   tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>`;
 
   try {
-    let url = `${SUPA_URL}/rest/v1/leaderboard?select=player_name,score,max_score,percent,submitted_at&order=score.desc,percent.desc&limit=10`;
+    /* Fetch all scores for the week so we can calculate user's rank */
+    let url = `${SUPA_URL}/rest/v1/leaderboard?select=player_name,score,max_score,percent,submitted_at&order=score.desc,percent.desc&limit=100`;
 
     if (currentTab === "week") {
-      /* filter to current week based on start_date */
       const start = new Date(data_start_date);
       const diffDays = Math.floor((Date.now() - start) / 86400000);
       const weekIdx = Math.floor(diffDays / 7);
@@ -921,7 +947,6 @@ async function loadLeaderboard() {
       return;
     }
 
-    const medals = ["🥇","🥈","🥉"];
     /* Assign ranks accounting for ties */
     let ranks = [];
     let currentRank = 0;
@@ -931,7 +956,12 @@ async function loadLeaderboard() {
       }
       ranks.push(currentRank);
     });
-    tbody.innerHTML = rows.map((r, i) => `
+
+    const medals = ["🥇","🥈","🥉"];
+    const top3 = rows.slice(0, 3);
+
+    /* Show only top 3 */
+    tbody.innerHTML = top3.map((r, i) => `
       <tr>
         <td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td>
         <td>${escapeHtml(r.player_name)}</td>
@@ -939,6 +969,39 @@ async function loadLeaderboard() {
         <td>${r.percent}%</td>
       </tr>
     `).join("");
+
+    /* Show user's own rank if they submitted and are outside top 3 */
+    const submittedName = document.getElementById("player-name").value.trim();
+    if (submittedName && scoreSubmitted) {
+      const earned = states.reduce((s, x) => s + x.points, 0);
+      const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
+      const userIdx = rows.findIndex(r =>
+        r.player_name === submittedName &&
+        r.score === earned &&
+        r.max_score === maxPts
+      );
+      if (userIdx >= 3) {
+        const userRank = ranks[userIdx] + 1;
+        const total = rows.length;
+        const suffix = userRank === 1 ? "st" : userRank === 2 ? "nd" : userRank === 3 ? "rd" : "th";
+        tbody.innerHTML += `
+          <tr><td colspan="4" style="text-align:center;opacity:0.4;padding:6px 0;font-size:0.75rem;">···</td></tr>
+          <tr style="opacity:0.85;">
+            <td style="color:var(--neon-soft);">${userRank}${suffix}</td>
+            <td style="color:var(--neon-soft);">${escapeHtml(submittedName)} (you)</td>
+            <td>${earned} / ${maxPts}</td>
+            <td>${maxPts ? Math.round((earned/maxPts)*100) : 0}%</td>
+          </tr>
+          <tr><td colspan="4" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:4px 0;">${total} players this week</td></tr>
+        `;
+      } else if (userIdx !== -1) {
+        /* User is in top 3, just show total count */
+        tbody.innerHTML += `<tr><td colspan="4" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} players this week</td></tr>`;
+      }
+    } else if (rows.length > 3) {
+      tbody.innerHTML += `<tr><td colspan="4" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} players this week</td></tr>`;
+    }
+
   } catch(err) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Could not load scores.</td></tr>`;
   }
@@ -979,23 +1042,6 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
 
     if (res.ok) {
       scoreSubmitted = true;
-      /* Also log per-question stats */
-      const questionRows = questions.map((q, i) => ({
-        quiz_title: currentQuizTitle,
-        question_id: q.id,
-        correct: states[i].points > 0,
-        points_earned: states[i].points
-      }));
-      fetch(`${SUPA_URL}/rest/v1/question_stats`, {
-        method: "POST",
-        headers: {
-          "apikey": SUPA_KEY,
-          "Authorization": `Bearer ${SUPA_KEY}`,
-          "Content-Type": "application/json",
-          "Prefer": "return=minimal"
-        },
-        body: JSON.stringify(questionRows)
-      });
       document.getElementById("submit-status").textContent = `✓ Score submitted! Good luck, ${name}!`;
       document.getElementById("submit-row").style.display = "none";
       loadLeaderboard();
@@ -1028,6 +1074,7 @@ document.getElementById("btn-restart").addEventListener("click", () => {
   /* Reset states */
   states = questions.map(q => ({ checked: false, points: 0, maxPoints: q.maxPoints || 1, chosenIndex: null, chosenValue: null }));
   scoreSubmitted = false;
+  questionStatsSubmitted = false;
   /* Hide end panels */
   document.getElementById("share-panel").style.display = "none";
   document.getElementById("leaderboard-section").style.display = "none";
