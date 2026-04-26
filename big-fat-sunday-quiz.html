@@ -879,32 +879,6 @@ function showLeaderboard() {
   document.getElementById("leaderboard-section").style.display = "block";
   currentQuizTitle = document.getElementById("quiz-title").textContent;
   loadLeaderboard();
-  autoSubmitQuestionStats();
-}
-
-/* Silently submit question stats without requiring a name */
-let questionStatsSubmitted = false;
-async function autoSubmitQuestionStats() {
-  if (questionStatsSubmitted) return;
-  questionStatsSubmitted = true;
-  try {
-    const questionRows = questions.map((q, i) => ({
-      quiz_title: currentQuizTitle,
-      question_id: q.id,
-      correct: states[i].points > 0,
-      points_earned: states[i].points
-    }));
-    await fetch(`${SUPA_URL}/rest/v1/question_stats`, {
-      method: "POST",
-      headers: {
-        "apikey": SUPA_KEY,
-        "Authorization": `Bearer ${SUPA_KEY}`,
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal"
-      },
-      body: JSON.stringify(questionRows)
-    });
-  } catch(e) { /* silent fail */ }
 }
 
 /* Switch between This Week / All Time tabs */
@@ -1044,6 +1018,23 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
 
     if (res.ok) {
       scoreSubmitted = true;
+      /* Log per-question stats tied to this leaderboard submission */
+      const questionRows = questions.map((q, i) => ({
+        quiz_title: currentQuizTitle,
+        question_id: q.id,
+        correct: states[i].points > 0,
+        points_earned: states[i].points
+      }));
+      fetch(`${SUPA_URL}/rest/v1/question_stats`, {
+        method: "POST",
+        headers: {
+          "apikey": SUPA_KEY,
+          "Authorization": `Bearer ${SUPA_KEY}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(questionRows)
+      });
       document.getElementById("submit-status").textContent = `✓ Score submitted! Good luck, ${name}!`;
       document.getElementById("submit-row").style.display = "none";
       loadLeaderboard();
@@ -1076,7 +1067,6 @@ document.getElementById("btn-restart").addEventListener("click", () => {
   /* Reset states */
   states = questions.map(q => ({ checked: false, points: 0, maxPoints: q.maxPoints || 1, chosenIndex: null, chosenValue: null }));
   scoreSubmitted = false;
-  questionStatsSubmitted = false;
   /* Hide end panels */
   document.getElementById("share-panel").style.display = "none";
   document.getElementById("leaderboard-section").style.display = "none";
