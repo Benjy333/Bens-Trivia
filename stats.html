@@ -263,7 +263,7 @@ async function loadStats(quizTitle) {
 
 /* Work out the start/end of a given week for date filtering */
 function getWeekRange(quizTitle) {
-  const start    = new Date("2026-04-19");
+  const start    = new Date("2026-04-18");
   const diffDays = Math.floor((Date.now() - start) / 86400000);
   const weekIdx  = Math.min(Math.floor(diffDays / 7), 9);
   /* Find which week index this quiz title corresponds to */
@@ -330,9 +330,17 @@ function renderLeaderboard(lb) {
     return;
   }
   const medals = ["🥇","🥈","🥉"];
+  let ranks = [];
+  let currentRank = 0;
+  lb.forEach((r, i) => {
+    if (i === 0 || r.score !== lb[i-1].score || r.percent !== lb[i-1].percent) {
+      currentRank = i;
+    }
+    ranks.push(currentRank);
+  });
   tbody.innerHTML = lb.map((r, i) => `
     <tr>
-      <td>${medals[i] || (i+1)}</td>
+      <td>${medals[ranks[i]] || (ranks[i]+1)}</td>
       <td>${escapeHtml(r.player_name)}</td>
       <td>${r.score} / ${r.max_score}</td>
       <td>${r.percent}%</td>
