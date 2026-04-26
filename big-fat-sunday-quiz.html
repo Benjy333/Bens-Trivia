@@ -359,10 +359,14 @@ function fuzzyMatch(input, target) {
 /* Main check: tests the player's input against all accepted answers */
 function isCorrect(val, q) {
   const input = val.trim().toLowerCase();
-  /* build list: acceptedAnswers array takes priority, falls back to correctAnswer */
-  const accepted = (q.acceptedAnswers && q.acceptedAnswers.length > 0)
-    ? q.acceptedAnswers.map(a => a.toLowerCase())
-    : [q.correctAnswer.toLowerCase()];
+  /* Always include correctAnswer PLUS any acceptedAnswers */
+  const accepted = [q.correctAnswer.toLowerCase()];
+  if (q.acceptedAnswers && q.acceptedAnswers.length > 0) {
+    q.acceptedAnswers.forEach(a => {
+      const lower = a.toLowerCase();
+      if (!accepted.includes(lower)) accepted.push(lower);
+    });
+  }
   return accepted.some(target => fuzzyMatch(input, target));
 }
 
