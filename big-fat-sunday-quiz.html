@@ -495,6 +495,7 @@ function clearOldSaves(currentTitle, allTitles) {
     renderQuiz();
 
     /* Restore answered state visually */
+    currentQuizTitle = quiz.title;
     if (saved && saved.states) restoreAnswers();
 
     updateProgress();
@@ -568,7 +569,7 @@ function restoreAnswers() {
     document.getElementById("instagram-handle").style.display = "block";
     showLeaderboard();
     /* Restore submitted state if they already submitted this week */
-    const savedName = loadSubmission(quiz.title);
+    const savedName = loadSubmission(currentQuizTitle);
     if (savedName) {
       scoreSubmitted = true;
       document.getElementById("player-name").value = savedName;
@@ -955,15 +956,12 @@ async function loadLeaderboard() {
     let url = `${SUPA_URL}/rest/v1/leaderboard?select=player_name,score,max_score,percent,submitted_at&order=score.desc,percent.desc&limit=100`;
 
     if (currentTab === "week") {
-      /* Use Brisbane-anchored week boundaries (1am Sunday AEST = 15:00 Sat UTC) */
-      const BRISBANE_OFFSET_MS = 10 * 60 * 60 * 1000;
-      const nowBrisbane = new Date(Date.now() + BRISBANE_OFFSET_MS);
-      const dayOfWeek = nowBrisbane.getUTCDay();
-      const weekStart = new Date(nowBrisbane);
-      weekStart.setUTCDate(weekStart.getUTCDate() - dayOfWeek);
-      weekStart.setUTCHours(15, 0, 0, 0); /* 1am Sunday Brisbane */
-      if (Date.now() < weekStart.getTime()) weekStart.setUTCDate(weekStart.getUTCDate() - 7);
-      const weekEnd = new Date(weekStart.getTime() + 7 * 86400000);
+      /* Brisbane-anchored: base is 2026-04-18 15:00 UTC = 1am Sun 19 Apr Brisbane */
+      const base = new Date("2026-04-18T15:00:00Z");
+      const diffMs = Date.now() - base.getTime();
+      const weekIdx = Math.max(Math.floor(diffMs / (7 * 86400000)), 0);
+      const weekStart = new Date(base.getTime() + weekIdx * 7 * 86400000);
+      const weekEnd   = new Date(weekStart.getTime() + 7 * 86400000);
       url += `&quiz_title=eq.${encodeURIComponent(currentQuizTitle)}`;
       url += `&submitted_at=gte.${weekStart.toISOString()}`;
       url += `&submitted_at=lt.${weekEnd.toISOString()}`;
