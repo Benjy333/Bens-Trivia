@@ -275,24 +275,32 @@
         </div>
         <div id="submit-status" class="lb-status"></div>
 
-        <div class="lb-tabs">
-          <button class="lb-tab active" id="tab-week" onclick="switchTab('week')">This Week</button>
-          <button class="lb-tab" id="tab-all" onclick="switchTab('all')">All Time</button>
+        <!-- Leaderboard locked until name submitted -->
+        <div id="leaderboard-locked" style="text-align:center;padding:24px 16px;opacity:0.7;">
+          <div style="font-size:1.5rem;margin-bottom:8px;">🔒</div>
+          <div style="font-size:0.88rem;">Enter your name and submit your score to unlock the leaderboard</div>
         </div>
 
-        <table class="leaderboard-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Score</th>
-              <th>%</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-body">
-            <tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
-          </tbody>
-        </table>
+        <div id="leaderboard-unlocked" style="display:none;">
+          <div class="lb-tabs">
+            <button class="lb-tab active" id="tab-week" onclick="switchTab('week')">This Week</button>
+            <button class="lb-tab" id="tab-all" onclick="switchTab('all')">All Time</button>
+          </div>
+
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+              <tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- INSTAGRAM HANDLE -->
@@ -425,10 +433,32 @@ function clearOldSaves(currentTitle, allTitles) {
     const data = await res.json();
 
     data_start_date = data.start_date;
-    const start    = new Date(data.start_date);
-    const diffDays = Math.floor((Date.now() - start) / 86400000);
-    const weekIdx  = Math.min(Math.floor(diffDays / 7), data.weekly_quizzes.length - 1);
-    const quiz     = data.weekly_quizzes[weekIdx];
+
+    /* Lock switchover to 1am Sunday Brisbane time (AEST = UTC+10) */
+    const BRISBANE_OFFSET_MS = 10 * 60 * 60 * 1000;
+    const nowBrisbane = new Date(Date.now() + BRISBANE_OFFSET_MS);
+
+    /* Find the most recent Sunday 1am Brisbane time */
+    function getLastSunday1amBrisbane() {
+      const d = new Date(nowBrisbane);
+      /* Roll back to Sunday */
+      const dayOfWeek = d.getUTCDay(); /* 0=Sun in Brisbane-shifted time */
+      d.setUTCDate(d.getUTCDate() - dayOfWeek);
+      /* Set to 1am Brisbane = 3pm Saturday UTC */
+      d.setUTCHours(15, 0, 0, 0);
+      /* If we haven't reached 1am Sunday Brisbane yet, go back a week */
+      if (Date.now() < d.getTime() - BRISBANE_OFFSET_MS) {
+        d.setUTCDate(d.getUTCDate() - 7);
+      }
+      return d;
+    }
+
+    const start         = new Date(data.start_date + "T15:00:00Z"); /* 1am Sunday Brisbane = 3pm Sat UTC */
+    const lastSunday    = getLastSunday1amBrisbane();
+    const diffMs        = lastSunday.getTime() - start.getTime();
+    const diffWeeks     = Math.floor(diffMs / (7 * 86400000));
+    const weekIdx       = Math.min(Math.max(diffWeeks, 0), data.weekly_quizzes.length - 1);
+    const quiz          = data.weekly_quizzes[weekIdx];
 
     questions = quiz.questions;
     document.getElementById("quiz-title").textContent = quiz.title;
@@ -899,11 +929,15 @@ async function loadLeaderboard() {
     let url = `${SUPA_URL}/rest/v1/leaderboard?select=player_name,score,max_score,percent,submitted_at&order=score.desc,percent.desc&limit=100`;
 
     if (currentTab === "week") {
-      const start = new Date(data_start_date);
-      const diffDays = Math.floor((Date.now() - start) / 86400000);
-      const weekIdx = Math.floor(diffDays / 7);
-      const weekStart = new Date(start.getTime() + weekIdx * 7 * 86400000);
-      const weekEnd   = new Date(weekStart.getTime() + 7 * 86400000);
+      /* Use Brisbane-anchored week boundaries (1am Sunday AEST = 15:00 Sat UTC) */
+      const BRISBANE_OFFSET_MS = 10 * 60 * 60 * 1000;
+      const nowBrisbane = new Date(Date.now() + BRISBANE_OFFSET_MS);
+      const dayOfWeek = nowBrisbane.getUTCDay();
+      const weekStart = new Date(nowBrisbane);
+      weekStart.setUTCDate(weekStart.getUTCDate() - dayOfWeek);
+      weekStart.setUTCHours(15, 0, 0, 0); /* 1am Sunday Brisbane */
+      if (Date.now() < weekStart.getTime()) weekStart.setUTCDate(weekStart.getUTCDate() - 7);
+      const weekEnd = new Date(weekStart.getTime() + 7 * 86400000);
       url += `&quiz_title=eq.${encodeURIComponent(currentQuizTitle)}`;
       url += `&submitted_at=gte.${weekStart.toISOString()}`;
       url += `&submitted_at=lt.${weekEnd.toISOString()}`;
@@ -1037,6 +1071,9 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
       });
       document.getElementById("submit-status").textContent = `✓ Score submitted! Good luck, ${name}!`;
       document.getElementById("submit-row").style.display = "none";
+      /* Unlock leaderboard */
+      document.getElementById("leaderboard-locked").style.display = "none";
+      document.getElementById("leaderboard-unlocked").style.display = "block";
       loadLeaderboard();
     } else {
       btn.disabled = false;
@@ -1070,6 +1107,8 @@ document.getElementById("btn-restart").addEventListener("click", () => {
   /* Hide end panels */
   document.getElementById("share-panel").style.display = "none";
   document.getElementById("leaderboard-section").style.display = "none";
+  document.getElementById("leaderboard-locked").style.display = "block";
+  document.getElementById("leaderboard-unlocked").style.display = "none";
   document.getElementById("instagram-handle").style.display = "none";
   /* Reset sticky bar */
   document.getElementById("ss-bar").style.width = "0%";
