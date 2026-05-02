@@ -212,10 +212,10 @@ let allQuestions = {};  /* quiz_title -> array of question objects */
     const picker = document.getElementById("quiz-picker");
     picker.innerHTML = '<option value="">— Select a quiz —</option>';
 
-    /* Work out which quiz is current this week */
-    const start    = new Date(data.start_date);
-    const diffDays = Math.floor((Date.now() - start) / 86400000);
-    const weekIdx  = Math.min(Math.floor(diffDays / 7), data.weekly_quizzes.length - 1);
+    /* Work out which quiz is current using Brisbane time anchor (1am Sun AEST = 15:00 Sat UTC) */
+    const base = new Date("2026-04-18T15:00:00Z");
+    const diffMs = Date.now() - base.getTime();
+    const weekIdx = Math.min(Math.max(Math.floor(diffMs / (7 * 86400000)), 0), data.weekly_quizzes.length - 1);
     const currentTitle = data.weekly_quizzes[weekIdx].title;
 
     data.weekly_quizzes.forEach(q => {
