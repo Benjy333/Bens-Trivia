@@ -264,15 +264,13 @@ async function loadStats(quizTitle) {
 
 /* Work out the start/end of a given week for date filtering */
 function getWeekRange(quizTitle) {
-  const start    = new Date("2026-04-18");
-  const diffDays = Math.floor((Date.now() - start) / 86400000);
-  const weekIdx  = Math.min(Math.floor(diffDays / 7), 9);
-  /* Find which week index this quiz title corresponds to */
+  /* Base: 1am Sunday Brisbane (AEST UTC+10) = 15:00 Saturday UTC */
+  const base = new Date("2026-04-18T15:00:00Z");
   const picker = document.getElementById("quiz-picker");
   const opts   = [...picker.options].filter(o => o.value);
   const selIdx = opts.findIndex(o => o.value === quizTitle);
-  const idx    = selIdx >= 0 ? selIdx : weekIdx;
-  const weekStart = new Date(start.getTime() + idx * 7 * 86400000);
+  const idx    = selIdx >= 0 ? selIdx : 0;
+  const weekStart = new Date(base.getTime() + idx * 7 * 86400000);
   const weekEnd   = new Date(weekStart.getTime() + 7 * 86400000);
   return { weekStart, weekEnd };
 }
