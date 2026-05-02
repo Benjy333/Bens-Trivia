@@ -449,31 +449,11 @@ function clearOldSaves(currentTitle, allTitles) {
 
     data_start_date = data.start_date;
 
-    /* Lock switchover to 1am Sunday Brisbane time (AEST = UTC+10) */
-    const BRISBANE_OFFSET_MS = 10 * 60 * 60 * 1000;
-    const nowBrisbane = new Date(Date.now() + BRISBANE_OFFSET_MS);
-
-    /* Find the most recent Sunday 1am Brisbane time */
-    function getLastSunday1amBrisbane() {
-      const d = new Date(nowBrisbane);
-      /* Roll back to Sunday */
-      const dayOfWeek = d.getUTCDay(); /* 0=Sun in Brisbane-shifted time */
-      d.setUTCDate(d.getUTCDate() - dayOfWeek);
-      /* Set to 1am Brisbane = 3pm Saturday UTC */
-      d.setUTCHours(15, 0, 0, 0);
-      /* If we haven't reached 1am Sunday Brisbane yet, go back a week */
-      if (Date.now() < d.getTime() - BRISBANE_OFFSET_MS) {
-        d.setUTCDate(d.getUTCDate() - 7);
-      }
-      return d;
-    }
-
-    const start         = new Date(data.start_date + "T15:00:00Z"); /* 1am Sunday Brisbane = 3pm Sat UTC */
-    const lastSunday    = getLastSunday1amBrisbane();
-    const diffMs        = lastSunday.getTime() - start.getTime();
-    const diffWeeks     = Math.floor(diffMs / (7 * 86400000));
-    const weekIdx       = Math.min(Math.max(diffWeeks, 0), data.weekly_quizzes.length - 1);
-    const quiz          = data.weekly_quizzes[weekIdx];
+    /* Quiz switches at 1am Sunday Brisbane (AEST = UTC+10) = 15:00 Saturday UTC */
+    const base    = new Date("2026-04-18T15:00:00Z");
+    const diffMs  = Date.now() - base.getTime();
+    const weekIdx = Math.min(Math.max(Math.floor(diffMs / (7 * 86400000)), 0), data.weekly_quizzes.length - 1);
+    const quiz    = data.weekly_quizzes[weekIdx];
 
     questions = quiz.questions;
     document.getElementById("quiz-title").textContent = quiz.title;
