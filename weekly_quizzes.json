@@ -158,41 +158,32 @@
         { "id": "simpsons-beatle", "type": "mcq", "tag": "TV", "text": "In an episode of The Simpsons, Marge belatedly receives a letter from which Beatle?", "options": ["John Lennon", "Paul McCartney", "George Harrison", "Ringo Starr"], "correctIndex": 3, "maxPoints": 1 },
         { "id": "nictitating-membrane", "type": "text-exact", "tag": "Animals", "text": "Found in many animals, the nictitating membrane is also known as the third … what?", "correctAnswer": "eyelid", "acceptedAnswers": ["eyelid", "the third eyelid"], "maxPoints": 1 },
         { "id": "pulp-fiction-anagram", "type": "text-exact", "tag": "Wordplay", "text": "This film features a glowing briefcase. Its title is an anagram of 'UPLIFT ICON'. What is the film?", "correctAnswer": "pulp fiction", "acceptedAnswers": ["pulp fiction"], "maxPoints": 1 },
-       
         { "id": "yellow-pages-slogan", "type": "text-exact", "tag": "General knowledge", "text": "An ad slogan for Yellow Pages was 'Let your fingers do the … ' what?", "correctAnswer": "walking", "acceptedAnswers": ["walking", "...walking"], "maxPoints": 1 },
         { "id": "glamping-portmanteau", "type": "text-exact", "tag": "Language", "text": "'Glamping' is a portmanteau of which two words?", "correctAnswer": "glamorous and camping", "acceptedAnswers": ["glamorous and camping", "glamorous camping", "glamour and camping"], "maxPoints": 1 },
         { "id": "siniristilippu-finland", "type": "text-exact", "tag": "Geography", "text": "'Siniristilippu' (Blue Cross) is the flag of which country?", "correctAnswer": "finland", "acceptedAnswers": ["finland"], "maxPoints": 1 },
         { "id": "great-leap-forward", "type": "text-exact", "tag": "History", "text": "In which country did the Great Leap Forward take place?", "correctAnswer": "china", "acceptedAnswers": ["china"], "maxPoints": 1 },
         { "id": "year-1969", "type": "year", "tag": "Year", "text": "In what year did Neil Armstrong walk on the Moon, did the Woodstock music festival take place, and did Monty Python's Flying Circus first air on the BBC?", "correctYear": 1969, "maxPoints": 2 },
-       
         { "id": "oates-last-words", "type": "text-exact", "tag": "History", "text": "What were Lawrence Oates' last words during Scott's Antarctic expedition in 1912?", "correctAnswer": "i am just going outside and may be some time", "acceptedAnswers": ["i am just going outside and may be some time", "i am just going outside and i may be some time", "i'm just going outside and may be some time"], "maxPoints": 1 },
         { "id": "donkey-kong-lawsuit", "type": "text-exact", "tag": "Gaming", "text": "Which video game was the subject of a 1983 lawsuit between Nintendo and Universal Studios?", "correctAnswer": "donkey kong", "acceptedAnswers": ["donkey kong"], "maxPoints": 1 },
         { "id": "mon-dieu-translation", "type": "text-exact", "tag": "Language", "text": "What is the English translation of the French 'Mon Dieu!'?", "correctAnswer": "my god", "acceptedAnswers": ["my god", "oh my god", "my god!"], "maxPoints": 1 },
         { "id": "uk-coat-of-arms", "type": "text-exact", "tag": "General knowledge", "text": "Which two creatures are depicted on the United Kingdom's coat of arms?", "correctAnswer": "a lion and a unicorn", "acceptedAnswers": ["a lion and a unicorn", "lion and unicorn", "unicorn and lion", "a unicorn and a lion"], "maxPoints": 1 },
         { "id": "oscars-vs-world-cup", "type": "mcq", "tag": "History", "text": "Which came first — the first FIFA World Cup or the first Academy Awards ceremony?", "options": ["FIFA World Cup", "Academy Awards"], "correctIndex": 1, "maxPoints": 1 },
-        
         { "id": "roblox-old-name", "type": "text-exact", "tag": "Tech", "text": "Which online game platform was called DynaBlocks before officially launching in 2006?", "correctAnswer": "roblox", "acceptedAnswers": ["roblox"], "maxPoints": 1 },
         { "id": "penicillin-cocktail", "type": "text-exact", "tag": "Food", "text": "What is the base spirit in a Penicillin cocktail?", "correctAnswer": "scotch whisky", "acceptedAnswers": ["scotch whisky", "scotch", "whisky", "whiskey"], "maxPoints": 1 },
         { "id": "doppler-effect", "type": "text-exact", "tag": "Science", "text": "What phenomenon causes an ambulance siren to fall in pitch as it passes the listener?", "correctAnswer": "the doppler effect", "acceptedAnswers": ["the doppler effect", "doppler effect", "doppler shift", "the doppler shift"], "maxPoints": 1 },
         { "id": "grist-to-the-mill", "type": "text-exact", "tag": "Phrases", "text": "Proverbially speaking, useful experience is grist to the … what?", "correctAnswer": "mill", "acceptedAnswers": ["mill", "the mill"], "maxPoints": 1 },
         { "id": "disney-vs-deniro", "type": "mcq", "tag": "General knowledge", "text": "Which is more — the number of Disney animated feature films or the number of Robert De Niro movies?", "options": ["Disney animated features", "Robert De Niro movies"], "correctIndex": 1, "maxPoints": 1 },
-        
         { "id": "rosso-corsa-colour", "type": "text-exact", "tag": "General knowledge", "text": "Italian racing cars are painted a shade known as rosso corsa, meaning what in English?", "correctAnswer": "racing red", "acceptedAnswers": ["racing red", "red", "race red"], "maxPoints": 1 },
-        { "id": "kleenex-decade", "type": "mcq", "tag": "General knowledge", "text": "In which decade were Kleenex tissues invented?", "options": ["1900s", "1910s", "1920s", "1930s"], "correctIndex": 2, "maxPoints": 1 },
-        { "id": "kutjera-bush-tomato", "type": "text-exact", "tag": "General knowledge", "text": "A common type of bush tomato, the kutjera is also known as the desert … what?", "correctAnswer": "raisin", "acceptedAnswers": ["raisin", "desert raisin"], "maxPoints": 1 },
         { "id": "most-common-letter", "type": "text-exact", "tag": "Language", "text": "What is the most commonly used letter in the English alphabet?", "correctAnswer": "e", "acceptedAnswers": ["e"], "maxPoints": 1 },
         { "id": "capital-algeria", "type": "text-exact", "tag": "Geography", "text": "What is the capital of Algeria?", "correctAnswer": "algiers", "acceptedAnswers": ["algiers"], "maxPoints": 1 },
         { "id": "colour-blindness-gender", "type": "mcq", "tag": "Biology", "text": "Is colour-blindness more prevalent in men or women?", "options": ["Men", "Women"], "correctIndex": 0, "maxPoints": 1 },
-       
-       
-        
-       
         { "id": "paper-folding-layers", "type": "mcq", "tag": "Maths", "text": "If you fold a piece of paper in half 10 times, how many layers thick is it?", "options": ["512", "1,024", "2,048", "4,096"], "correctIndex": 1, "maxPoints": 1 }
         
     ] },
     { "title": "Big Fat Sunday Quiz #7", "questions": [
 
-      
+            { "id": "kleenex-decade", "type": "mcq", "tag": "General knowledge", "text": "In which decade were Kleenex tissues invented?", "options": ["1900s", "1910s", "1920s", "1930s"], "correctIndex": 2, "maxPoints": 1 },
+        { "id": "kutjera-bush-tomato", "type": "text-exact", "tag": "General knowledge", "text": "A common type of bush tomato, the kutjera is also known as the desert … what?", "correctAnswer": "raisin", "acceptedAnswers": ["raisin", "desert raisin"], "maxPoints": 1 },
     ] },
     { "title": "Big Fat Sunday Quiz #8", "questions": [] },
     { "title": "Big Fat Sunday Quiz #9", "questions": [] },
