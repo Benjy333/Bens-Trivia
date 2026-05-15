@@ -183,7 +183,7 @@
     { "title": "Big Fat Sunday Quiz #7", "questions": [
 
             { "id": "kleenex-decade", "type": "mcq", "tag": "General knowledge", "text": "In which decade were Kleenex tissues invented?", "options": ["1900s", "1910s", "1920s", "1930s"], "correctIndex": 2, "maxPoints": 1 },
-        { "id": "kutjera-bush-tomato", "type": "text-exact", "tag": "General knowledge", "text": "A common type of bush tomato, the kutjera is also known as the desert … what?", "correctAnswer": "raisin", "acceptedAnswers": ["raisin", "desert raisin"], "maxPoints": 1 },
+        { "id": "kutjera-bush-tomato", "type": "text-exact", "tag": "General knowledge", "text": "A common type of bush tomato, the kutjera is also known as the desert … what?", "correctAnswer": "raisin", "acceptedAnswers": ["raisin", "desert raisin"], "maxPoints": 1 }
     ] },
     { "title": "Big Fat Sunday Quiz #8", "questions": [] },
     { "title": "Big Fat Sunday Quiz #9", "questions": [] },
