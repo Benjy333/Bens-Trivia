@@ -158,7 +158,6 @@
         { "id": "simpsons-beatle", "type": "mcq", "tag": "TV", "text": "In an episode of The Simpsons, Marge belatedly receives a letter from which Beatle?", "options": ["John Lennon", "Paul McCartney", "George Harrison", "Ringo Starr"], "correctIndex": 3, "maxPoints": 1 },
         { "id": "nictitating-membrane", "type": "text-exact", "tag": "Animals", "text": "Found in many animals, the nictitating membrane is also known as the third … what?", "correctAnswer": "eyelid", "acceptedAnswers": ["eyelid", "the third eyelid"], "maxPoints": 1 },
         { "id": "pulp-fiction-anagram", "type": "text-exact", "tag": "Wordplay", "text": "This film features a glowing briefcase. Its title is an anagram of 'UPLIFT ICON'. What is the film?", "correctAnswer": "pulp fiction", "acceptedAnswers": ["pulp fiction"], "maxPoints": 1 },
-        { "id": "yellow-pages-slogan", "type": "text-exact", "tag": "General knowledge", "text": "An ad slogan for Yellow Pages was 'Let your fingers do the … ' what?", "correctAnswer": "walking", "acceptedAnswers": ["walking", "...walking"], "maxPoints": 1 },
         { "id": "glamping-portmanteau", "type": "text-exact", "tag": "Language", "text": "'Glamping' is a portmanteau of which two words?", "correctAnswer": "glamorous and camping", "acceptedAnswers": ["glamorous and camping", "glamorous camping", "glamour and camping"], "maxPoints": 1 },
         { "id": "siniristilippu-finland", "type": "text-exact", "tag": "Geography", "text": "'Siniristilippu' (Blue Cross) is the flag of which country?", "correctAnswer": "finland", "acceptedAnswers": ["finland"], "maxPoints": 1 },
         { "id": "great-leap-forward", "type": "text-exact", "tag": "History", "text": "In which country did the Great Leap Forward take place?", "correctAnswer": "china", "acceptedAnswers": ["china"], "maxPoints": 1 },
@@ -169,7 +168,6 @@
         { "id": "uk-coat-of-arms", "type": "text-exact", "tag": "General knowledge", "text": "Which two creatures are depicted on the United Kingdom's coat of arms?", "correctAnswer": "a lion and a unicorn", "acceptedAnswers": ["a lion and a unicorn", "lion and unicorn", "unicorn and lion", "a unicorn and a lion"], "maxPoints": 1 },
         { "id": "oscars-vs-world-cup", "type": "mcq", "tag": "History", "text": "Which came first — the first FIFA World Cup or the first Academy Awards ceremony?", "options": ["FIFA World Cup", "Academy Awards"], "correctIndex": 1, "maxPoints": 1 },
         { "id": "roblox-old-name", "type": "text-exact", "tag": "Tech", "text": "Which online game platform was called DynaBlocks before officially launching in 2006?", "correctAnswer": "roblox", "acceptedAnswers": ["roblox"], "maxPoints": 1 },
-        { "id": "penicillin-cocktail", "type": "text-exact", "tag": "Food", "text": "What is the base spirit in a Penicillin cocktail?", "correctAnswer": "scotch whisky", "acceptedAnswers": ["scotch whisky", "scotch", "whisky", "whiskey"], "maxPoints": 1 },
         { "id": "doppler-effect", "type": "text-exact", "tag": "Science", "text": "What phenomenon causes an ambulance siren to fall in pitch as it passes the listener?", "correctAnswer": "the doppler effect", "acceptedAnswers": ["the doppler effect", "doppler effect", "doppler shift", "the doppler shift"], "maxPoints": 1 },
         { "id": "grist-to-the-mill", "type": "text-exact", "tag": "Phrases", "text": "Proverbially speaking, useful experience is grist to the … what?", "correctAnswer": "mill", "acceptedAnswers": ["mill", "the mill"], "maxPoints": 1 },
         { "id": "disney-vs-deniro", "type": "mcq", "tag": "General knowledge", "text": "Which is more — the number of Disney animated feature films or the number of Robert De Niro movies?", "options": ["Disney animated features", "Robert De Niro movies"], "correctIndex": 1, "maxPoints": 1 },
@@ -183,6 +181,8 @@
     { "title": "Big Fat Sunday Quiz #7", "questions": [
 
             { "id": "kleenex-decade", "type": "mcq", "tag": "General knowledge", "text": "In which decade were Kleenex tissues invented?", "options": ["1900s", "1910s", "1920s", "1930s"], "correctIndex": 2, "maxPoints": 1 },
+       { "id": "penicillin-cocktail", "type": "text-exact", "tag": "Food", "text": "What is the base spirit in a Penicillin cocktail?", "correctAnswer": "scotch whisky", "acceptedAnswers": ["scotch whisky", "scotch", "whisky", "whiskey"], "maxPoints": 1 },
+      { "id": "yellow-pages-slogan", "type": "text-exact", "tag": "General knowledge", "text": "An ad slogan for Yellow Pages was 'Let your fingers do the … ' what?", "correctAnswer": "walking", "acceptedAnswers": ["walking", "...walking"], "maxPoints": 1 },
         { "id": "kutjera-bush-tomato", "type": "text-exact", "tag": "General knowledge", "text": "A common type of bush tomato, the kutjera is also known as the desert … what?", "correctAnswer": "raisin", "acceptedAnswers": ["raisin", "desert raisin"], "maxPoints": 1 }
     ] },
     { "title": "Big Fat Sunday Quiz #8", "questions": [] },
