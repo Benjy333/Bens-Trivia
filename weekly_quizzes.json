@@ -371,7 +371,7 @@
 { "id": "overtake-second", "type": "numeric", "tag": "Maths", "text": "If you overtake the person in second place in a race, what position are you in?", "correctNumber": 2, "maxPoints": 1 },
 { "id": "two-coins-30-cents", "type": "text-exact", "tag": "Maths", "text": "A man has 2 coins totalling 30 cents. One is not a 20-cent coin. What are the two coins?", "correctAnswer": "a 20-cent coin and a 10-cent coin", "acceptedAnswers": ["a 20-cent coin and a 10-cent coin", "20 cents and 10 cents", "20 and 10", "10 and 20"], "maxPoints": 1 },
 { "id": "odd-number-letter", "type": "text-exact", "tag": "Wordplay", "text": "I am an odd number. Take away one letter and I become even. What number am I?", "correctAnswer": "seven", "acceptedAnswers": ["seven", "7"], "maxPoints": 1 },
-{ "id": "counterfeit-coin", "type": "numeric", "tag": "Maths", "text": "You have 9 coins — one is counterfeit and lighter. Using a balance scale, what is the minimum number of weighings needed to find it?", "correctNumber": 2, "maxPoints": 1 },
+{ "id": "counterfeit-coin", "type": "numeric", "tag": "Maths", "text": "You have 9 coins — one is counterfeit and lighter. Using a balance scale, what is the minimum number of weighings needed to find it?", "correctNumber": 2, "maxPoints": 1 }
 
       
     ] }
