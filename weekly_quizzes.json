@@ -122,7 +122,7 @@
         { "id": "school-sports-neither", "type": "numeric", "tag": "Maths", "text": "A school has 120 students. 75 play baseball, 60 play soccer, and 30 play both. How many students play neither sport?", "correctNumber": 15, "maxPoints": 1 }
       ]},
     { "title": "Big Fat Sunday Quiz #5", 
-      "description": "This week we are doing a 10-themed round to celebrate 10 Instagram followers! Good luck! 🎱",
+      "description": "This week we are doing a 10-themed round to celebrate 10 Instagram followers! Good luck! ",
       "questions": [
     
         { "id": "top-dog-breeds", "type": "multi-text", "tag": "Animals", "text": "Name the 5 most popular dog breeds found around the world", "answers": ["french bulldog", "german shepherd", "poodle", "golden retreiver", "labrador"], "acceptedAnswers": [["french bulldog", "french bull dog"], ["german shepherd", "alsatian"], ["poodle"], ["golden retreiver", "retreiver", "golden retriever", "retriever"], ["labrador", "golden labrador"]], "maxPoints": 5 },
@@ -148,7 +148,7 @@
         { "id": "danube-countries", "type": "text-exact", "tag": "Geography", "text": "Which river forms part of the border between Austria and Slovakia and flows through 10 countries overall?", "correctAnswer": "the danube", "acceptedAnswers": ["the danube", "danube", "danube river"], "maxPoints": 1 },
         { "id": "extra-fingers-toes", "type": "text-exact", "tag": "General knowledge", "text": "What is the medical term for someone born with more than 10 fingers or toes?", "correctAnswer": "polydactyly", "acceptedAnswers": ["polydactyly", "polydactyl"], "maxPoints": 1 },
         { "id": "fast-furious-10", "type": "text-exact", "tag": "Movies", "text": "What is the name of the 10th instalment of the Fast & Furious series?", "correctAnswer": "Fast x", "acceptedAnswers": ["fast x", "fast 10"], "maxPoints": 1 },
-        { "id": "radiocarbon-dating", "type": "text-exact", "tag": "Archaeology", "text": "Irish bog bodies such as Clonycavan Man have been dated to within 10 years using which scientific technique?", "correctAnswer": "Carbon dating", "acceptedAnswers": ["radiocarbon dating", "carbon dating", "carbon-14 dating", "c14 dating"], "maxPoints": 1, "shoutout": "Big shoutout to Andrew for this question! 🙌" },
+        { "id": "radiocarbon-dating", "type": "text-exact", "tag": "Archaeology", "text": "Irish bog bodies such as Clonycavan Man have been dated to within 10 years using which scientific technique?", "correctAnswer": "Carbon dating", "acceptedAnswers": ["radiocarbon dating", "carbon dating", "carbon-14 dating", "c14 dating"], "maxPoints": 1, "shoutout": "Big shoutout to Andrew for this question! " },
         { "id": "decagon-angle", "type": "numeric", "tag": "Maths", "text": "What is the interior angle of a regular decagon (10-sided shape)? Hint: it's over 90 degrees.", "correctNumber": 144, "maxPoints": 1 }
     ] },
     { "title": "Big Fat Sunday Quiz #6", "questions": [
