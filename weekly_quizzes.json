@@ -178,15 +178,234 @@
         { "id": "paper-folding-layers", "type": "mcq", "tag": "Maths", "text": "If you fold a piece of paper in half 10 times, how many layers thick is it?", "options": ["512", "1,024", "2,048", "4,096"], "correctIndex": 1, "maxPoints": 1 }
         
     ] },
-    { "title": "Big Fat Sunday Quiz #7", "questions": [
-
-            { "id": "kleenex-decade", "type": "mcq", "tag": "General knowledge", "text": "In which decade were Kleenex tissues invented?", "options": ["1900s", "1910s", "1920s", "1930s"], "correctIndex": 2, "maxPoints": 1 },
-       { "id": "penicillin-cocktail", "type": "text-exact", "tag": "Food", "text": "What is the base spirit in a Penicillin cocktail?", "correctAnswer": "scotch whisky", "acceptedAnswers": ["scotch whisky", "scotch", "whisky", "whiskey"], "maxPoints": 1 },
-      { "id": "yellow-pages-slogan", "type": "text-exact", "tag": "General knowledge", "text": "An ad slogan for Yellow Pages was 'Let your fingers do the … ' what?", "correctAnswer": "walking", "acceptedAnswers": ["walking", "...walking"], "maxPoints": 1 },
-        { "id": "kutjera-bush-tomato", "type": "text-exact", "tag": "General knowledge", "text": "A common type of bush tomato, the kutjera is also known as the desert … what?", "correctAnswer": "raisin", "acceptedAnswers": ["raisin", "desert raisin"], "maxPoints": 1 }
+       { "title": "Big Fat Sunday Quiz #7", "questions": [
+         
+      { "id": "biggest-apps", "type": "multi-text", "tag": "Tech", "text": "Name the 5 biggest apps in the world by monthly active users", "answers": ["facebook", "instagram", "whatsapp", "youtube", "tiktok"], "acceptedAnswers": [["facebook"], ["instagram"], ["whatsapp", "whats app"], ["youtube"], ["tiktok", "tik tok"]], "maxPoints": 5 },
+      { "id": "hairstyles-pageboy", "type": "text-exact", "tag": "General knowledge", "text": "The pageboy, beehive and fauxhawk are all … what?", "correctAnswer": "hairstyles", "acceptedAnswers": ["hairstyles", "haircuts", "hairstyles/haircuts"], "maxPoints": 1 },
+      { "id": "henry-viii-wives", "type": "text-exact", "tag": "History", "text": "Henry VIII married how many women named Catherine, Anne and Jane respectively?", "correctAnswer": "three catherines, two annes, one jane", "acceptedAnswers": ["three catherines, two annes, one jane", "3 catherines, 2 annes, 1 jane", "3, 2, 1"], "maxPoints": 1 },
+      { "id": "bood-up-slang", "type": "text-exact", "tag": "Language", "text": "According to Gen-Z slang, what am I if I'm 'boo'd up'?", "correctAnswer": "in a romantic relationship", "acceptedAnswers": ["in a romantic relationship", "in a relationship", "dating someone", "taken"], "maxPoints": 1 },
+      { "id": "kylie-anagram", "type": "text-exact", "tag": "Wordplay", "text": "This pop princess sang 'Spinning Around'. Her name is an anagram of 'MELON UIYGIK'. Who is she?", "correctAnswer": "kylie minogue", "acceptedAnswers": ["kylie minogue", "kylie"], "maxPoints": 1 },
+      
+      { "id": "sherlock-final-problem", "type": "text-exact", "tag": "Literature", "text": "Which literary character met his apparent end in the story 'The Adventure of the Final Problem'?", "correctAnswer": "sherlock holmes", "acceptedAnswers": ["sherlock holmes", "holmes", "sherlock"], "maxPoints": 1 },
+      { "id": "candiru-river", "type": "text-exact", "tag": "Animals", "text": "The candiru, or vampire fish, is native to which river basin?", "correctAnswer": "the amazon", "acceptedAnswers": ["the amazon", "amazon", "amazon river"], "maxPoints": 1 },
+      { "id": "kokomo-beach-boys", "type": "text-exact", "tag": "Music", "text": "'Aruba, Jamaica, ooh I wanna take ya' is the opening line of which Beach Boys song?", "correctAnswer": "kokomo", "acceptedAnswers": ["kokomo"], "maxPoints": 1 },
+      { "id": "nitrogen-periodic", "type": "text-exact", "tag": "Science", "text": "What chemical element is between carbon and oxygen on the periodic table?", "correctAnswer": "nitrogen", "acceptedAnswers": ["nitrogen"], "maxPoints": 1 },
+      { "id": "year-1989", "type": "year", "tag": "Year", "text": "In what year did the Berlin Wall fall, did the Eiffel Tower celebrate its 100th birthday, and was Taylor Swift born?", "correctYear": 1989, "maxPoints": 2 },
+     
+      { "id": "bridget-brennan-tv", "type": "text-exact", "tag": "TV", "text": "Bridget Brennan co-hosts which TV program?", "correctAnswer": "abc news breakfast", "acceptedAnswers": ["abc news breakfast", "news breakfast"], "maxPoints": 1 },
+      { "id": "hobart-river-derwent", "type": "text-exact", "tag": "Geography", "text": "Which Australian city is located on the estuary of the River Derwent?", "correctAnswer": "hobart", "acceptedAnswers": ["hobart"], "maxPoints": 1 },
+      { "id": "grisham-springer-clinton", "type": "text-exact", "tag": "General knowledge", "text": "John Grisham, Jerry Springer and Hillary Clinton were all one-time members of which profession?", "correctAnswer": "legal", "acceptedAnswers": ["legal", "lawyers", "law", "they were lawyers"], "maxPoints": 1 },
+      { "id": "shiatsu-massage", "type": "text-exact", "tag": "General knowledge", "text": "Which form of massage translates from the Japanese as 'finger pressure'?", "correctAnswer": "shiatsu", "acceptedAnswers": ["shiatsu"], "maxPoints": 1 },
+      { "id": "denmark-vs-london", "type": "mcq", "tag": "General knowledge", "text": "Which has a bigger population — Denmark or London?", "options": ["Denmark", "London"], "correctIndex": 1, "maxPoints": 1 },
+      
+      { "id": "mai-tai-spirit", "type": "text-exact", "tag": "Food", "text": "Which spirit is the base for a Mai Tai cocktail?", "correctAnswer": "rum", "acceptedAnswers": ["rum"], "maxPoints": 1 },
+      { "id": "serengeti-country", "type": "text-exact", "tag": "Geography", "text": "Serengeti National Park is located in which country?", "correctAnswer": "tanzania", "acceptedAnswers": ["tanzania"], "maxPoints": 1 },
+      { "id": "soccer-ball-panels", "type": "mcq", "tag": "Sport", "text": "Most soccer balls are stitched from how many panels?", "options": ["12", "24", "32"], "correctIndex": 2, "maxPoints": 1 },
+      { "id": "arboreal-animals", "type": "text-exact", "tag": "Animals", "text": "Where do arboreal animals live?", "correctAnswer": "trees", "acceptedAnswers": ["trees", "in trees"], "maxPoints": 1 },
+      
+      { "id": "ulixes-odysseus", "type": "text-exact", "tag": "Mythology", "text": "What is the Latin name for Odysseus, the Greek king of Ithaca?", "correctAnswer": "ulixes", "acceptedAnswers": ["ulixes", "ulysses"], "maxPoints": 1 },
+      { "id": "landlords-game-monopoly", "type": "text-exact", "tag": "General knowledge", "text": "Patented in 1903, The Landlord's Game was the model for which popular board game?", "correctAnswer": "monopoly", "acceptedAnswers": ["monopoly"], "maxPoints": 1 },
+      { "id": "gizzard-rhyme-lizard", "type": "text-exact", "tag": "General knowledge", "text": "What rhymes with 'lizard' and is the part of a bird's stomach that grinds food?", "correctAnswer": "gizzard", "acceptedAnswers": ["gizzard"], "maxPoints": 1 },
+      { "id": "weeknd-spotify-100m", "type": "text-exact", "tag": "Music", "text": "Who was the first artist to surpass 100 million monthly listeners on Spotify?", "correctAnswer": "the weeknd", "acceptedAnswers": ["the weeknd", "weeknd"], "maxPoints": 1 },
+      { "id": "fibonacci-next", "type": "numeric", "tag": "Maths", "text": "What comes next in this sequence: 1, 1, 2, 3, 5, 8, 13…?", "correctNumber": 21, "maxPoints": 1 },
+      
+      
+         
     ] },
-    { "title": "Big Fat Sunday Quiz #8", "questions": [] },
-    { "title": "Big Fat Sunday Quiz #9", "questions": [] },
-    { "title": "Big Fat Sunday Quiz #10", "questions": [] }
+    { "title": "Big Fat Sunday Quiz #8", "questions": [
+      
+      { "id": "animated-sequels-2", "type": "multi-text", "tag": "Movies", "text": "Name the 5 biggest animated sequel movies with the number 2 in the title", "answers": ["frozen 2", "incredibles 2", "inside out 2", "zootopia 2", "moana 2"], "acceptedAnswers": [["frozen 2", "frozen ii"], ["incredibles 2", "the incredibles 2"], ["inside out 2"], ["zootopia 2"], ["moana 2"]], "maxPoints": 5 },
+      { "id": "prayer-bones-knees", "type": "text-exact", "tag": "General knowledge", "text": "The archaic expression 'prayer bones' refers to which body parts?", "correctAnswer": "knees", "acceptedAnswers": ["knees", "kneecaps"], "maxPoints": 1 },
+      { "id": "montevideo-capital", "type": "text-exact", "tag": "Geography", "text": "Montevideo is the capital of which country?", "correctAnswer": "uruguay", "acceptedAnswers": ["uruguay"], "maxPoints": 1 },
+      { "id": "godzilla-nakajima", "type": "text-exact", "tag": "Movies", "text": "Actor Haruo Nakajima lost nine kilograms playing the title role in which 1954 Japanese film?", "correctAnswer": "godzilla", "acceptedAnswers": ["godzilla"], "maxPoints": 1 },
+      { "id": "anagram-argentina", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this country: 'RANTING EAG'", "correctAnswer": "argentina", "acceptedAnswers": ["argentina"], "maxPoints": 1 },
+      
+      { "id": "kleenex-decade", "type": "mcq", "tag": "General knowledge", "text": "In which decade were Kleenex tissues invented?", "options": ["1900s", "1910s", "1920s", "1930s"], "correctIndex": 2, "maxPoints": 1 },
+      { "id": "penicillin-cocktail", "type": "text-exact", "tag": "Food", "text": "What is the base spirit in a Penicillin cocktail?", "correctAnswer": "scotch whisky", "acceptedAnswers": ["scotch whisky", "scotch", "whisky", "whiskey"], "maxPoints": 1 },
+      { "id": "yellow-pages-slogan", "type": "text-exact", "tag": "General knowledge", "text": "An ad slogan for Yellow Pages was 'Let your fingers do the … ' what?", "correctAnswer": "walking", "acceptedAnswers": ["walking", "...walking"], "maxPoints": 1 },
+      { "id": "kutjera-bush-tomato", "type": "text-exact", "tag": "General knowledge", "text": "A common type of bush tomato, the kutjera is also known as the desert … what?", "correctAnswer": "raisin", "acceptedAnswers": ["raisin", "desert raisin"], "maxPoints": 1 },
+      { "id": "year-1977", "type": "year", "tag": "Year", "text": "In what year was Star Wars released for the first time, did Elvis Presley die at Graceland, and did the first Apple II computer go on sale?", "correctYear": 1977, "maxPoints": 2 },
+      
+      { "id": "silver-anniversary", "type": "numeric", "tag": "General knowledge", "text": "How many years of marriage does a silver anniversary signify?", "correctNumber": 25, "maxPoints": 1 },
+      { "id": "coober-pedy-state", "type": "text-exact", "tag": "Geography", "text": "Famous for its opal mines, the town of Coober Pedy is in which state or territory?", "correctAnswer": "south australia", "acceptedAnswers": ["south australia", "sa"], "maxPoints": 1 },
+      { "id": "barkaa-rapper", "type": "text-exact", "tag": "Music", "text": "What is the stage name of the Malyangapa and Barkindji rapper, Chloe Quayle?", "correctAnswer": "barkaa", "acceptedAnswers": ["barkaa"], "maxPoints": 1 },
+      { "id": "mortadella-type", "type": "mcq", "tag": "Food", "text": "Is mortadella a type of cured meat, cream cheese or dessert wine?", "options": ["Cured meat", "Cream cheese", "Dessert wine"], "correctIndex": 0, "maxPoints": 1 },
+      { "id": "oprah-vs-madonna", "type": "mcq", "tag": "General knowledge", "text": "Who was born first — Oprah Winfrey or Madonna?", "options": ["Oprah Winfrey", "Madonna"], "correctIndex": 0, "maxPoints": 1 },
+     
+      { "id": "peter-piper-peppers", "type": "text-exact", "tag": "General knowledge", "text": "According to the tongue twister, what did Peter Piper pick a peck of?", "correctAnswer": "pickled peppers", "acceptedAnswers": ["pickled peppers", "pickled pepper"], "maxPoints": 1 },
+      { "id": "volga-flows-into", "type": "text-exact", "tag": "Geography", "text": "Into which body of water does Europe's longest river, the Volga, flow?", "correctAnswer": "the caspian sea", "acceptedAnswers": ["the caspian sea", "caspian sea"], "maxPoints": 1 },
+      { "id": "bach-musical-period", "type": "text-exact", "tag": "Music", "text": "J.S. Bach is associated with which musical period?", "correctAnswer": "baroque", "acceptedAnswers": ["baroque"], "maxPoints": 1 },
+      { "id": "feather-own-nest", "type": "text-exact", "tag": "Phrases", "text": "To provide for one's own interests is to feather one's … what?", "correctAnswer": "nest", "acceptedAnswers": ["nest"], "maxPoints": 1 },
+      { "id": "switzerland-languages", "type": "text-exact", "tag": "Geography", "text": "Which country's official languages are German, French, Italian and Romansh?", "correctAnswer": "switzerland", "acceptedAnswers": ["switzerland"], "maxPoints": 1 },
+      
+      { "id": "nagoya-airport-ngo", "type": "text-exact", "tag": "Travel", "text": "Which Japanese city's airport has the IATA code NGO?", "correctAnswer": "nagoya", "acceptedAnswers": ["nagoya"], "maxPoints": 1 },
+      { "id": "operation-patient-nickname", "type": "mcq", "tag": "General knowledge", "text": "What is the nickname of the patient in the game Operation: Sol Section, Cavity Sam or Holey Pete?", "options": ["Sol Section", "Cavity Sam", "Holey Pete"], "correctIndex": 1, "maxPoints": 1 },
+      { "id": "female-fox-name", "type": "text-exact", "tag": "Animals", "text": "What is the name for a female fox?", "correctAnswer": "vixen", "acceptedAnswers": ["vixen"], "maxPoints": 1 },
+      { "id": "bali-cricket-anagram", "type": "text-exact", "tag": "Wordplay", "text": "The name of which Indonesian island is an anagram of an item of cricket equipment?", "correctAnswer": "bali", "acceptedAnswers": ["bali"], "maxPoints": 1 },
+      { "id": "platonic-solids", "type": "mcq", "tag": "Maths", "text": "How many Platonic solids are there: three, five, or seven?", "options": ["Three", "Five", "Seven"], "correctIndex": 1, "maxPoints": 1 },
+      
+    ] },
+    { "title": "Big Fat Sunday Quiz #9", "questions": [
+
+      { "id": "countries-land-mass", "type": "multi-text", "tag": "Geography", "text": "Name the top 5 countries by land mass", "answers": ["russia", "canada", "united states", "china", "brazil"], "acceptedAnswers": [["russia"], ["canada"], ["united states", "usa", "america", "united states of america"], ["china"], ["brazil"]], "maxPoints": 5 },
+      { "id": "hops-flavouring-beer", "type": "text-exact", "tag": "Food", "text": "Hops are primarily used as flavouring in which drink?", "correctAnswer": "beer", "acceptedAnswers": ["beer"], "maxPoints": 1 },
+      { "id": "bodacious-century", "type": "text-exact", "tag": "General knowledge", "text": "In which century was the term 'bodacious' coined?", "correctAnswer": "19th century", "acceptedAnswers": ["19th century", "1800s", "the 19th century"], "maxPoints": 1 },
+      { "id": "buddha-suburbia-author", "type": "text-exact", "tag": "Literature", "text": "The Buddha of Suburbia (1990) was the debut novel of which British-Pakistani author?", "correctAnswer": "hanif kureishi", "acceptedAnswers": ["hanif kureishi", "kureishi"], "maxPoints": 1 },
+      { "id": "anagram-the-office", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this TV show: 'FICO FHETE'", "correctAnswer": "the office", "acceptedAnswers": ["the office"], "maxPoints": 1 },
+      
+      { "id": "australia-opposite-ocean", "type": "text-exact", "tag": "Geography", "text": "Which ocean is diametrically opposite most of Australia?", "correctAnswer": "the north atlantic", "acceptedAnswers": ["the north atlantic", "north atlantic", "north atlantic ocean"], "maxPoints": 1 },
+      { "id": "first-three-planets-moons", "type": "numeric", "tag": "Science", "text": "The first three planets in our solar system have a total of how many moons?", "correctNumber": 1, "maxPoints": 1 },
+      { "id": "kartoffelsalat-ingredient", "type": "text-exact", "tag": "Food", "text": "What is the main ingredient of the German dish kartoffelsalat?", "correctAnswer": "potatoes", "acceptedAnswers": ["potatoes", "potato"], "maxPoints": 1 },
+      { "id": "elvis-in-the-ghetto-city", "type": "text-exact", "tag": "Music", "text": "In which US city is Elvis Presley's song 'In the Ghetto' set?", "correctAnswer": "chicago", "acceptedAnswers": ["chicago"], "maxPoints": 1 },
+      { "id": "year-2016", "type": "year", "tag": "Year", "text": "In what year was Donald Trump elected US President for the first time, did the UK vote for Brexit, and did Leicester City win the Premier League as 5000-1 outsiders?", "correctYear": 2016, "maxPoints": 2 },
+
+      { "id": "bowhead-minke-animal", "type": "text-exact", "tag": "Animals", "text": "Bowhead and minke are types of what animal?", "correctAnswer": "whale", "acceptedAnswers": ["whale", "whales"], "maxPoints": 1 },
+      { "id": "scrooge-given-name", "type": "text-exact", "tag": "Literature", "text": "In Charles Dickens' A Christmas Carol, what is Scrooge's given name?", "correctAnswer": "ebenezer", "acceptedAnswers": ["ebenezer"], "maxPoints": 1 },
+      { "id": "cochineal-dye-source", "type": "mcq", "tag": "General knowledge", "text": "Is cochineal dye derived from a plant, mineral or insect?", "options": ["Plant", "Mineral", "Insect"], "correctIndex": 2, "maxPoints": 1 },
+      { "id": "midsomer-murders-weapon", "type": "mcq", "tag": "TV", "text": "Which has NOT been used as a deadly weapon in Midsomer Murders: a comic book, slide projector or hovercraft?", "options": ["Comic book", "Slide projector", "Hovercraft"], "correctIndex": 2, "maxPoints": 1 },
+      { "id": "mandela-vs-queen", "type": "mcq", "tag": "History", "text": "Who was born first — Nelson Mandela or Queen Elizabeth II?", "options": ["Nelson Mandela", "Queen Elizabeth II"], "correctIndex": 0, "maxPoints": 1 },
+
+      { "id": "yoke-wooden-frame", "type": "text-exact", "tag": "General knowledge", "text": "What is the word for a wooden frame that joins two oxen?", "correctAnswer": "yoke", "acceptedAnswers": ["yoke"], "maxPoints": 1 },
+      { "id": "postprandial-walk-when", "type": "text-exact", "tag": "General knowledge", "text": "When would I take a postprandial walk?", "correctAnswer": "after a meal", "acceptedAnswers": ["after a meal", "after eating", "after dinner"], "maxPoints": 1 },
+      { "id": "12th-day-christmas-lords", "type": "text-exact", "tag": "Music", "text": "According to the song, on the 10th day of Christmas, my true love gave to me 10 … what?", "correctAnswer": "lords a-leaping", "acceptedAnswers": ["lords a-leaping", "lords a leaping", "leaping lords"], "maxPoints": 1 },
+      { "id": "liquorice-greek-root", "type": "text-exact", "tag": "Food", "text": "Which food's name ultimately derives from the Greek glykyrrhiza, meaning 'sweet root'?", "correctAnswer": "liquorice", "acceptedAnswers": ["liquorice", "licorice"], "maxPoints": 1 },
+      { "id": "great-fire-london-1666", "type": "text-exact", "tag": "History", "text": "What disaster befell London in the year 1666?", "correctAnswer": "the great fire", "acceptedAnswers": ["the great fire", "the great fire of london", "great fire of london", "great fire"], "maxPoints": 1 },
+      
+      { "id": "follow-the-money-film", "type": "text-exact", "tag": "Movies", "text": "The line 'Follow the money' was popularised by which 1976 political film?", "correctAnswer": "all the president's men", "acceptedAnswers": ["all the president's men", "all the presidents men"], "maxPoints": 1 },
+      { "id": "cyprus-kosovo-flags", "type": "text-exact", "tag": "Geography", "text": "Cyprus and Kosovo are the only countries with flags that depict … what?", "correctAnswer": "maps", "acceptedAnswers": ["maps", "a map", "their own map"], "maxPoints": 1 },
+      { "id": "exoplanet-definition", "type": "text-exact", "tag": "Science", "text": "What is the term for any planet that exists beyond our solar system?", "correctAnswer": "exoplanet", "acceptedAnswers": ["exoplanet", "exoplanets"], "maxPoints": 1 },
+      { "id": "radium-symbol-ra", "type": "text-exact", "tag": "Science", "text": "Which chemical element has the symbol Ra?", "correctAnswer": "radium", "acceptedAnswers": ["radium"], "maxPoints": 1 },
+      { "id": "birthday-dec-31", "type": "text-exact", "tag": "Riddles", "text": "The day before yesterday I was 25, next year I will be 28. What day is my birthday?", "correctAnswer": "december 31", "acceptedAnswers": ["december 31", "31st december", "dec 31", "31 december"], "maxPoints": 1 },
+      
+     
+      
+    ] },
+    { "title": "Big Fat Sunday Quiz #10", "questions": [
+     
+      { "id": "sports-most-played", "type": "multi-text", "tag": "Sport", "text": "Name the 5 most played sports in the world by participation", "answers": ["football", "volleyball", "basketball", "tennis", "badminton"], "acceptedAnswers": [["football", "soccer"], ["volleyball"], ["basketball"], ["tennis"], ["badminton"]], "maxPoints": 5 },
+      { "id": "pontiac-potato-colour", "type": "text-exact", "tag": "General knowledge", "text": "What colour is the skin of a pontiac potato?", "correctAnswer": "red", "acceptedAnswers": ["red"], "maxPoints": 1 },
+      { "id": "yogi-bear-jellystone", "type": "text-exact", "tag": "TV", "text": "Which cartoon character lives in Jellystone Park?", "correctAnswer": "yogi bear", "acceptedAnswers": ["yogi bear", "yogi"], "maxPoints": 1 },
+      { "id": "traffic-reversal-opinion", "type": "text-exact", "tag": "General knowledge", "text": "Which term relating to traffic also describes a complete reversal of opinion?", "correctAnswer": "u-turn", "acceptedAnswers": ["u-turn", "u turn", "uturn"], "maxPoints": 1 },
+      { "id": "anagram-crocodile", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this reptile: 'CORD OIL ACE'", "correctAnswer": "crocodile", "acceptedAnswers": ["crocodile"], "maxPoints": 1 },
+      
+      { "id": "surd-maths-definition", "type": "mcq", "tag": "Maths", "text": "In mathematics, what is a surd: a rational number, an integer or an irrational number?", "options": ["Rational number", "Integer", "Irrational number"], "correctIndex": 2, "maxPoints": 1 },
+      { "id": "scrabble-last-word-zzz", "type": "text-exact", "tag": "General knowledge", "text": "What three-letter word is the last entry in the official Scrabble dictionary?", "correctAnswer": "zzz", "acceptedAnswers": ["zzz"], "maxPoints": 1 },
+      { "id": "mr-inbetween-protagonist", "type": "text-exact", "tag": "TV", "text": "Which Australian TV series' protagonist is hitman Ray Shoesmith?", "correctAnswer": "mr inbetween", "acceptedAnswers": ["mr inbetween", "mr. inbetween"], "maxPoints": 1 },
+      { "id": "acrostic-poem-definition", "type": "text-exact", "tag": "Literature", "text": "What is a poem in which the first letter of each line spells out a word or message?", "correctAnswer": "acrostic", "acceptedAnswers": ["acrostic", "an acrostic", "acrostic poem"], "maxPoints": 1 },
+      { "id": "year-1994", "type": "year", "tag": "Year", "text": "In what year did Nelson Mandela become President of South Africa, did the Channel Tunnel open, and did Friends premiere on NBC?", "correctYear": 1994, "maxPoints": 2 },
+      
+      { "id": "immaculate-pure-snow", "type": "text-exact", "tag": "Phrases", "text": "Something immaculate can be described as being pure as the driven … what?", "correctAnswer": "snow", "acceptedAnswers": ["snow"], "maxPoints": 1 },
+      { "id": "lifetime-teeth", "type": "numeric", "tag": "General knowledge", "text": "How many teeth will the average person have in their lifetime?", "correctNumber": 52, "maxPoints": 1 },
+      { "id": "pacific-vs-land", "type": "mcq", "tag": "Geography", "text": "Which is bigger — the Pacific Ocean or all land on Earth combined?", "options": ["The Pacific Ocean", "All land on Earth combined"], "correctIndex": 0, "maxPoints": 1 },
+      { "id": "congo-river-deepest", "type": "text-exact", "tag": "Geography", "text": "Which African river is the world's deepest?", "correctAnswer": "the congo", "acceptedAnswers": ["the congo", "congo", "congo river", "the congo river"], "maxPoints": 1 },
+      { "id": "ww1-vs-first-movie", "type": "mcq", "tag": "History", "text": "Which came first — World War I or the world's first feature-length movie?", "options": ["World War I", "The first feature-length movie"], "correctIndex": 1, "maxPoints": 1 },
+      
+      { "id": "aeolus-ruler-of-wind", "type": "text-exact", "tag": "Mythology", "text": "In Greek mythology, Aeolus was the ruler of which natural phenomenon?", "correctAnswer": "wind", "acceptedAnswers": ["wind", "the wind"], "maxPoints": 1 },
+      { "id": "saint-lucia-named-after-woman", "type": "text-exact", "tag": "Geography", "text": "Which Caribbean island state is the only country named after a woman?", "correctAnswer": "saint lucia", "acceptedAnswers": ["saint lucia", "st lucia", "st. lucia"], "maxPoints": 1 },
+      { "id": "emily-dickinson-truth", "type": "text-exact", "tag": "Literature", "text": "Which American poet wrote 'The Truth must dazzle gradually / Or every man be blind'?", "correctAnswer": "emily dickinson", "acceptedAnswers": ["emily dickinson", "dickinson"], "maxPoints": 1 },
+     { "id": "russia-google-fine", "type": "text-exact", "tag": "Tech", "text": "Russia recently imposed a fine of $US20 decillion (a two followed by 33 zeros) on which company?", "correctAnswer": "google", "acceptedAnswers": ["google"], "maxPoints": 1 },
+      { "id": "majestic-fanfare-theme", "type": "text-exact", "tag": "Music", "text": "Composed by Charles Williams in 1935, Majestic Fanfare is best known in Australia as the theme to … what?", "correctAnswer": "world series cricket", "acceptedAnswers": ["world series cricket", "cricket", "channel nine cricket"], "maxPoints": 1 },
+     
+      { "id": "cirrhosis-organ", "type": "text-exact", "tag": "Biology", "text": "Which organ is affected by cirrhosis?", "correctAnswer": "liver", "acceptedAnswers": ["liver", "the liver"], "maxPoints": 1 },
+      { "id": "mrbeast-youtuber-video", "type": "text-exact", "tag": "Tech", "text": "Which YouTuber's breakthrough video was titled 'I Counted To 100,000!'?", "correctAnswer": "mrbeast", "acceptedAnswers": ["mrbeast", "mr beast", "jimmy donaldson"], "maxPoints": 1 },
+      { "id": "indian-ocean-australia-africa", "type": "text-exact", "tag": "Geography", "text": "Which ocean separates Australia and Africa?", "correctAnswer": "the indian ocean", "acceptedAnswers": ["the indian ocean", "indian ocean"], "maxPoints": 1 },
+      { "id": "russet-colour", "type": "text-exact", "tag": "General knowledge", "text": "Russet is a reddish shade of which colour?", "correctAnswer": "brown", "acceptedAnswers": ["brown"], "maxPoints": 1 },
+      { "id": "workers-holes", "type": "numeric", "tag": "Maths", "text": "If it takes 5 workers 5 days to dig 5 holes, how many days does it take 1 worker to dig 1 hole?", "correctNumber": 5, "maxPoints": 1 }
+    
+  ] },
+    { "title": "Big Fat Sunday Quiz #11", "questions": [
+
+
+  { "id": "top-video-game-franchises", "type": "multi-text", "tag": "Gaming", "text": "Name the top 5 biggest video game franchises by total sales", "answers": ["mario", "pokemon", "call of duty", "grand theft auto", "fifa"], "acceptedAnswers": [["mario", "super mario"], ["pokemon", "pokémon"], ["call of duty", "cod"], ["grand theft auto", "gta"], ["fifa", "ea sports fc"]], "maxPoints": 5 },
+  { "id": "voltaire-tussaud", "type": "text-exact", "tag": "History", "text": "Which French philosopher was the subject of Madame Tussaud's first wax figure?", "correctAnswer": "voltaire", "acceptedAnswers": ["voltaire"], "maxPoints": 1 },
+  { "id": "orangelo-citrus-cross", "type": "text-exact", "tag": "Food", "text": "The orangelo is a cross between an orange and which other citrus fruit?", "correctAnswer": "grapefruit", "acceptedAnswers": ["grapefruit"], "maxPoints": 1 },
+  { "id": "canada-female-pm", "type": "mcq", "tag": "Politics", "text": "Has Canada had a female prime minister?", "options": ["Yes", "No"], "correctIndex": 0, "maxPoints": 1 },
+  { "id": "sean-connery-anagram", "type": "text-exact", "tag": "Wordplay", "text": "Which Scottish actor's name is an anagram of 'on any screen'?", "correctAnswer": "sean connery", "acceptedAnswers": ["sean connery", "connery"], "maxPoints": 1 },
+
+  { "id": "audi-slogan", "type": "text-exact", "tag": "General knowledge", "text": "Which car manufacturer's slogan is 'Vorsprung durch Technik' (Advancement through Technology)?", "correctAnswer": "audi", "acceptedAnswers": ["audi"], "maxPoints": 1 },
+  { "id": "longest-bone-body", "type": "text-exact", "tag": "Biology", "text": "Which is the longest bone in the human body?", "correctAnswer": "femur", "acceptedAnswers": ["femur", "thigh bone", "thighbone"], "maxPoints": 1 },
+  { "id": "richard-osman-link", "type": "text-exact", "tag": "TV", "text": "Who or what links the TV quiz show Pointless and the Thursday Murder Club mystery novels?", "correctAnswer": "richard osman", "acceptedAnswers": ["richard osman", "osman"], "maxPoints": 1 },
+  { "id": "suet-cooking-fat", "type": "text-exact", "tag": "Food", "text": "Used in cooking, what is the hard fat found around the loins and kidneys of cattle and sheep called?", "correctAnswer": "suet", "acceptedAnswers": ["suet"], "maxPoints": 1 },
+  { "id": "year-1997", "type": "year", "tag": "Year", "text": "In what year was Hong Kong handed back to China, did the Spice Girls release Spice World, and was Titanic released in cinemas?", "correctYear": 1997, "maxPoints": 2 },
+
+  { "id": "young-bat-name", "type": "text-exact", "tag": "Animals", "text": "What is the word for a young bat?", "correctAnswer": "pup", "acceptedAnswers": ["pup", "a pup"], "maxPoints": 1 },
+  { "id": "ra-egyptian-sun-god", "type": "text-exact", "tag": "Mythology", "text": "What is the two-letter name of the Ancient Egyptian sun god?", "correctAnswer": "ra", "acceptedAnswers": ["ra", "re"], "maxPoints": 1 },
+  { "id": "groucho-marx-club-quote", "type": "text-exact", "tag": "General knowledge", "text": "Who said 'I don't want to belong to any club that will accept me as a member'?", "correctAnswer": "groucho marx", "acceptedAnswers": ["groucho marx", "groucho"], "maxPoints": 1 },
+  { "id": "microphone-types", "type": "text-exact", "tag": "Science", "text": "Dynamic, condenser and ribbon are the three primary types of … what?", "correctAnswer": "microphones", "acceptedAnswers": ["microphones", "microphone"], "maxPoints": 1 },
+  { "id": "telephone-vs-lightbulb", "type": "mcq", "tag": "History", "text": "Which was invented first — the telephone or the lightbulb?", "options": ["Telephone", "Lightbulb"], "correctIndex": 0, "maxPoints": 1 },
+
+  { "id": "teflon-scientific-name", "type": "text-exact", "tag": "Science", "text": "Polytetrafluoroethylene is the scientific name of which non-stick coating?", "correctAnswer": "teflon", "acceptedAnswers": ["teflon"], "maxPoints": 1 },
+  { "id": "worcestershire-fish", "type": "text-exact", "tag": "Food", "text": "Worcestershire sauce typically contains which fish?", "correctAnswer": "anchovies", "acceptedAnswers": ["anchovies", "anchovy"], "maxPoints": 1 },
+  { "id": "miss-marple-first-name", "type": "text-exact", "tag": "Literature", "text": "What is the first name of the Agatha Christie character Miss Marple?", "correctAnswer": "jane", "acceptedAnswers": ["jane"], "maxPoints": 1 },
+  { "id": "first-cd-player-year", "type": "mcq", "tag": "Tech", "text": "When was the first commercial CD player launched: 1979, 1982 or 1984?", "options": ["1979", "1982", "1984"], "correctIndex": 1, "maxPoints": 1 },
+  { "id": "you-oughta-know-song", "type": "text-exact", "tag": "Music", "text": "Which 1995 hit song has the line 'I hate to bug you in the middle of dinner'?", "correctAnswer": "you oughta know", "acceptedAnswers": ["you oughta know", "you ought to know"], "maxPoints": 1 },
+
+  { "id": "eternity-arthur-stace", "type": "text-exact", "tag": "History", "text": "Starting in 1930, Arthur Stace chalked what word approximately 500,000 times on the footpaths of Sydney?", "correctAnswer": "eternity", "acceptedAnswers": ["eternity"], "maxPoints": 1 },
+  { "id": "stasi-east-germany", "type": "text-exact", "tag": "History", "text": "By what name was East Germany's Ministry for State Security commonly known?", "correctAnswer": "the stasi", "acceptedAnswers": ["the stasi", "stasi"], "maxPoints": 1 },
+  { "id": "dachshund-bred-for", "type": "mcq", "tag": "Animals", "text": "True or false: dachshunds were originally bred to hunt hedgehogs?", "options": ["True", "False"], "correctIndex": 1, "maxPoints": 1 },
+  { "id": "knitting-s1-k1", "type": "text-exact", "tag": "General knowledge", "text": "In knitting, what does the abbreviation S1, K1 stand for?", "correctAnswer": "slip one, knit one", "acceptedAnswers": ["slip one, knit one", "slip 1 knit 1", "slip one knit one"], "maxPoints": 1 },
+  { "id": "17-sheep", "type": "numeric", "tag": "Maths", "text": "A man has 17 sheep. All but 8 die of sickness. How many are left?", "correctNumber": 8, "maxPoints": 1 },
+      
+      ] },
+    
+    { "title": "Big Fat Sunday Quiz #12", "questions": [
+
+{ "id": "shakespeare-hearts-attorney", "type": "text-exact", "tag": "Literature", "text": "What body part does a Shakespeare poem call 'the heart's attorney'?", "correctAnswer": "the tongue", "acceptedAnswers": ["the tongue", "tongue"], "maxPoints": 1 },
+{ "id": "karen-walker-designers-country", "type": "text-exact", "tag": "Fashion", "text": "Designers Karen Walker, Trelise Cooper and Kate Sylvester are from which country?", "correctAnswer": "new zealand", "acceptedAnswers": ["new zealand", "nz"], "maxPoints": 1 },
+{ "id": "hod-building-site", "type": "text-exact", "tag": "General knowledge", "text": "What would a hod typically be used for on a building site?", "correctAnswer": "carrying bricks", "acceptedAnswers": ["carrying bricks", "bricks", "transporting bricks"], "maxPoints": 1 },
+{ "id": "cicada-not-a-type", "type": "mcq", "tag": "Animals", "text": "Which is NOT a type of cicada: Black Prince, Green Grocer or Brown Treecreeper?", "options": ["Black Prince", "Green Grocer", "Brown Treecreeper"], "correctIndex": 2, "maxPoints": 1 },
+
+
+
+{ "id": "ben-holly-tv-series", "type": "text-exact", "tag": "TV", "text": "Which TV series features the Wise Old Elf, King Thistle and Nanny Plum?", "correctAnswer": "ben and holly's little kingdom", "acceptedAnswers": ["ben and holly's little kingdom", "ben & holly's little kingdom", "ben and holly"], "maxPoints": 1 },
+
+{ "id": "petabyte-largest", "type": "mcq", "tag": "Tech", "text": "What is larger: a gigabyte, petabyte or terabyte?", "options": ["Gigabyte", "Petabyte", "Terabyte"], "correctIndex": 1, "maxPoints": 1 },
+
+{ "id": "psycho-longlegs-link", "type": "text-exact", "tag": "Movies", "text": "Who links the horror films Psycho (1960) and Longlegs (2024)?", "correctAnswer": "oz perkins", "acceptedAnswers": ["oz perkins", "osgood perkins", "the perkins family", "anthony perkins and oz perkins"], "maxPoints": 1 },
+{ "id": "charger-phone-horse", "type": "text-exact", "tag": "Wordplay", "text": "What word is both a phone accessory and a horse used in battle?", "correctAnswer": "charger", "acceptedAnswers": ["charger"], "maxPoints": 1 },
+
+      
+  { "id": "box-office-actors", "type": "multi-text", "tag": "Movies", "text": "Name the top 5 highest-grossing movie stars of all time by worldwide box office", "answers": ["zoe saldana", "scarlett johansson", "samuel l jackson", "chris pratt", "robert downey jr"], "acceptedAnswers": [["zoe saldana", "zoe saldaña"], ["scarlett johansson"], ["samuel l jackson", "samuel jackson"], ["chris pratt"], ["robert downey jr", "robert downey junior", "rdj"]], "maxPoints": 5 },
+  { "id": "biggest-land-animals", "type": "multi-text", "tag": "Animals", "text": "Name the 5 biggest land animals by size", "answers": ["elephant", "hippopotamus", "rhinoceros", "giraffe", "gaur"], "acceptedAnswers": [["african elephant", "elephant"], ["hippopotamus", "hippo"], ["white rhinoceros", "rhinoceros", "rhino", "white rhino"], ["giraffe"], ["gaur", "bison", "buffalo"]], "maxPoints": 5 },
+  { "id": "biggest-car-brands", "type": "multi-text", "tag": "General knowledge", "text": "Name the top 5 biggest selling car brands in the world", "answers": ["toyota", "volkswagen", "ford", "honda", "chevrolet"], "acceptedAnswers": [["toyota"], ["volkswagen", "vw"], ["ford"], ["honda"], ["chevrolet", "chevy"]], "maxPoints": 5 },
+  { "id": "top-netflix-shows", "type": "multi-text", "tag": "TV", "text": "Name the top 5 most viewed Netflix TV shows of all time", "answers": ["squid game", "stranger things", "wednesday", "dahmer", "the night agent"], "acceptedAnswers": [["squid game"], ["stranger things"], ["wednesday"], ["dahmer", "monster"], ["the night agent", "night agent"]], "maxPoints": 5 },
+  { "id": "instagram-followers", "type": "multi-text", "tag": "Social Media", "text": "Name the top 5 Instagram accounts by most followers", "answers": ["instagram", "cristiano ronaldo", "lionel messi", "selena gomez", "kylie jenner"], "acceptedAnswers": [["instagram"], ["cristiano ronaldo", "ronaldo", "cr7"], ["lionel messi", "messi", "leo messi"], ["selena gomez", "selena"], ["kylie jenner", "kylie"]], "maxPoints": 5 },
+  { "id": "tennis-grand-slams", "type": "multi-text", "tag": "Sport", "text": "Name the top 3 men's and top 3 women's tennis players by Grand Slam singles titles won (6 answers total)", "answers": ["novak djokovic", "rafael nadal", "roger federer", "margaret court", "serena williams", "steffi graf"], "acceptedAnswers": [["novak djokovic", "djokovic"], ["rafael nadal", "nadal"], ["roger federer", "federer"], ["margaret court", "court"], ["serena williams", "serena"], ["steffi graf", "graf"]], "maxPoints": 6 },
+
+
+{ "id": "year-2001", "type": "year", "tag": "Year", "text": "In what year was Wikipedia launched, did Apple release the first iPod, and did the September 11 attacks occur?", "correctYear": 2001, "maxPoints": 2 },
+{ "id": "year-2008", "type": "year", "tag": "Year", "text": "In what year was Barack Obama elected US President, were the Beijing Olympics held, and did the global financial crisis begin?", "correctYear": 2008, "maxPoints": 2 },
+{ "id": "year-1912", "type": "year", "tag": "Year", "text": "In what year did the Titanic sink on its maiden voyage, was the first Monaco Grand Prix held, and did Arizona and New Mexico become US states?", "correctYear": 1912, "maxPoints": 2 },
+{ "id": "year-2012", "type": "year", "tag": "Year", "text": "In what year were the London Olympics held, did Facebook buy Instagram for $1 billion, and did Felix Baumgartner jump from the stratosphere breaking the sound barrier?", "correctYear": 2012, "maxPoints": 2 },
+{ "id": "year-1963", "type": "year", "tag": "Year", "text": "In what year was JFK assassinated in Dallas, did The Beatles release their debut album Please Please Me, and did Martin Luther King Jr. deliver his 'I Have a Dream' speech?", "correctYear": 1963, "maxPoints": 2 },
+{ "id": "year-1986", "type": "year", "tag": "Year", "text": "In what year did the Chernobyl nuclear disaster occur, did Maradona score the Hand of God goal against England, and did the Space Shuttle Challenger explode 73 seconds after launch?", "correctYear": 1986, "maxPoints": 2 },
+{ "id": "year-2003", "type": "year", "tag": "Year", "text": "In what year did the US invade Iraq, did Concorde make its final commercial flight, and was Finding Nemo released by Pixar?", "correctYear": 2003, "maxPoints": 2 },
+
+{ "id": "anagram-breaking-bad", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this TV show: 'BRAID BANG KE'", "correctAnswer": "breaking bad", "acceptedAnswers": ["breaking bad"], "maxPoints": 1 },
+{ "id": "anagram-beyonce", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this singer: 'CONEY BEY'", "correctAnswer": "beyonce", "acceptedAnswers": ["beyonce", "beyoncé"], "maxPoints": 1 },
+{ "id": "anagram-eminem", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this singer: 'MINEME'", "correctAnswer": "eminem", "acceptedAnswers": ["eminem"], "maxPoints": 1 },
+{ "id": "anagram-elephant", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this animal: 'PLEA THEN'", "correctAnswer": "elephant", "acceptedAnswers": ["elephant"], "maxPoints": 1 },
+{ "id": "anagram-flamingo", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this animal: 'FILMANGO'", "correctAnswer": "flamingo", "acceptedAnswers": ["flamingo"], "maxPoints": 1 },
+{ "id": "anagram-portugal", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this country: 'GLOAT RUP'", "correctAnswer": "portugal", "acceptedAnswers": ["portugal"], "maxPoints": 1 },
+{ "id": "anagram-game-of-thrones", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this TV show: 'FAME GO HOT RENS'", "correctAnswer": "game of thrones", "acceptedAnswers": ["game of thrones"], "maxPoints": 1 },
+      
+{ "id": "kilimanjaro-vs-mont-blanc", "type": "mcq", "tag": "Geography", "text": "Which is taller — Mount Kilimanjaro or Mont Blanc?", "options": ["Mount Kilimanjaro", "Mont Blanc"], "correctIndex": 0, "maxPoints": 1 },
+{ "id": "coca-cola-vs-pepsi", "type": "mcq", "tag": "History", "text": "Which came first — Coca-Cola or Pepsi?", "options": ["Coca-Cola", "Pepsi"], "correctIndex": 0, "maxPoints": 1 },
+{ "id": "opera-house-vs-harbour-bridge", "type": "mcq", "tag": "History", "text": "Which opened first — the Sydney Opera House or the Sydney Harbour Bridge?", "options": ["Sydney Opera House", "Sydney Harbour Bridge"], "correctIndex": 1, "maxPoints": 1 },
+{ "id": "moon-vs-australia", "type": "mcq", "tag": "Science", "text": "Which has a larger surface area — the Moon or Australia?", "options": ["The Moon", "Australia"], "correctIndex": 0, "maxPoints": 1 },
+{ "id": "mcdonalds-vs-kfc", "type": "mcq", "tag": "General knowledge", "text": "Which came first — McDonald's or KFC?", "options": ["McDonald's", "KFC"], "correctIndex": 1, "maxPoints": 1 },
+{ "id": "facebook-vs-youtube", "type": "mcq", "tag": "Tech", "text": "Which came first — Facebook or YouTube?", "options": ["Facebook", "YouTube"], "correctIndex": 0, "maxPoints": 1 },
+
+{ "id": "sum-1-to-100", "type": "numeric", "tag": "Maths", "text": "What is the sum of all whole numbers from 1 to 100?", "correctNumber": 5050, "maxPoints": 1 },
+{ "id": "shirt-discount", "type": "numeric", "tag": "Maths", "text": "A shirt costs $80 and is discounted by 25%. What is the sale price in dollars?", "correctNumber": 60, "maxPoints": 1 },
+{ "id": "perfect-square-digits", "type": "numeric", "tag": "Maths", "text": "I am a two-digit perfect square whose digits also sum to a perfect square. What number am I?", "correctNumber": 81, "maxPoints": 1 },
+{ "id": "multiply-0-to-9", "type": "numeric", "tag": "Maths", "text": "If you multiply all the numbers from 0 to 9 together, what do you get?", "correctNumber": 0, "maxPoints": 1 },
+{ "id": "overtake-second", "type": "numeric", "tag": "Maths", "text": "If you overtake the person in second place in a race, what position are you in?", "correctNumber": 2, "maxPoints": 1 },
+{ "id": "two-coins-30-cents", "type": "text-exact", "tag": "Maths", "text": "A man has 2 coins totalling 30 cents. One is not a 20-cent coin. What are the two coins?", "correctAnswer": "a 20-cent coin and a 10-cent coin", "acceptedAnswers": ["a 20-cent coin and a 10-cent coin", "20 cents and 10 cents", "20 and 10", "10 and 20"], "maxPoints": 1 },
+{ "id": "odd-number-letter", "type": "text-exact", "tag": "Wordplay", "text": "I am an odd number. Take away one letter and I become even. What number am I?", "correctAnswer": "seven", "acceptedAnswers": ["seven", "7"], "maxPoints": 1 },
+{ "id": "counterfeit-coin", "type": "numeric", "tag": "Maths", "text": "You have 9 coins — one is counterfeit and lighter. Using a balance scale, what is the minimum number of weighings needed to find it?", "correctNumber": 2, "maxPoints": 1 },
+
+      
+    ] }
   ]
 }
