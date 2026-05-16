@@ -152,7 +152,10 @@
         { "id": "decagon-angle", "type": "numeric", "tag": "Maths", "text": "What is the interior angle of a regular decagon (10-sided shape)? Hint: it's over 90 degrees.", "correctNumber": 144, "maxPoints": 1 }
     ] },
 
-     { "title": "Big Fat Sunday Quiz #6", "questions": [
+     { "title": "Big Fat Sunday Quiz #6", 
+       "description": "This week we are doing a 10-themed round to celebrate 10 Instagram followers! Good luck! ",
+       
+       "questions": [
 
         {"id": "top-5-musicals","type": "multi-text","tag": "Musicals","text": "Name the 5 biggest Broadway musicals of all time (1 point each)", "answers": ["the lion king", "wicked", "hamilton", "chicago", "the phantom of the opera"],"acceptedAnswers": [ ["the lion king", "lion king"],["wicked"],["hamilton"], ["chicago"],["the phantom of the opera", "phantom of the opera", "phantom"] ], "maxPoints": 5},
         { "id": "no-land-border-russia", "type": "mcq", "tag": "Geography", "text": "Which country has no land border with Russia: Mongolia, North Korea, Norway or Uzbekistan?", "options": ["Mongolia", "North Korea", "Norway", "Uzbekistan"], "correctIndex": 3, "maxPoints": 1 },
