@@ -185,24 +185,20 @@
       { "id": "henry-viii-wives", "type": "text-exact", "tag": "History", "text": "Henry VIII married how many women named Catherine, Anne and Jane respectively?", "correctAnswer": "three catherines, two annes, one jane", "acceptedAnswers": ["three catherines, two annes, one jane", "3 catherines, 2 annes, 1 jane", "3, 2, 1"], "maxPoints": 1 },
       { "id": "bood-up-slang", "type": "text-exact", "tag": "Language", "text": "According to Gen-Z slang, what am I if I'm 'boo'd up'?", "correctAnswer": "in a romantic relationship", "acceptedAnswers": ["in a romantic relationship", "in a relationship", "dating someone", "taken"], "maxPoints": 1 },
       { "id": "kylie-anagram", "type": "text-exact", "tag": "Wordplay", "text": "This pop princess sang 'Spinning Around'. Her name is an anagram of 'MELON UIYGIK'. Who is she?", "correctAnswer": "kylie minogue", "acceptedAnswers": ["kylie minogue", "kylie"], "maxPoints": 1 },
-      
       { "id": "sherlock-final-problem", "type": "text-exact", "tag": "Literature", "text": "Which literary character met his apparent end in the story 'The Adventure of the Final Problem'?", "correctAnswer": "sherlock holmes", "acceptedAnswers": ["sherlock holmes", "holmes", "sherlock"], "maxPoints": 1 },
       { "id": "candiru-river", "type": "text-exact", "tag": "Animals", "text": "The candiru, or vampire fish, is native to which river basin?", "correctAnswer": "the amazon", "acceptedAnswers": ["the amazon", "amazon", "amazon river"], "maxPoints": 1 },
       { "id": "kokomo-beach-boys", "type": "text-exact", "tag": "Music", "text": "'Aruba, Jamaica, ooh I wanna take ya' is the opening line of which Beach Boys song?", "correctAnswer": "kokomo", "acceptedAnswers": ["kokomo"], "maxPoints": 1 },
       { "id": "nitrogen-periodic", "type": "text-exact", "tag": "Science", "text": "What chemical element is between carbon and oxygen on the periodic table?", "correctAnswer": "nitrogen", "acceptedAnswers": ["nitrogen"], "maxPoints": 1 },
       { "id": "year-1989", "type": "year", "tag": "Year", "text": "In what year did the Berlin Wall fall, did the Eiffel Tower celebrate its 100th birthday, and was Taylor Swift born?", "correctYear": 1989, "maxPoints": 2 },
-     
       { "id": "bridget-brennan-tv", "type": "text-exact", "tag": "TV", "text": "Bridget Brennan co-hosts which TV program?", "correctAnswer": "abc news breakfast", "acceptedAnswers": ["abc news breakfast", "news breakfast"], "maxPoints": 1 },
       { "id": "hobart-river-derwent", "type": "text-exact", "tag": "Geography", "text": "Which Australian city is located on the estuary of the River Derwent?", "correctAnswer": "hobart", "acceptedAnswers": ["hobart"], "maxPoints": 1 },
       { "id": "grisham-springer-clinton", "type": "text-exact", "tag": "General knowledge", "text": "John Grisham, Jerry Springer and Hillary Clinton were all one-time members of which profession?", "correctAnswer": "legal", "acceptedAnswers": ["legal", "lawyers", "law", "they were lawyers"], "maxPoints": 1 },
       { "id": "shiatsu-massage", "type": "text-exact", "tag": "General knowledge", "text": "Which form of massage translates from the Japanese as 'finger pressure'?", "correctAnswer": "shiatsu", "acceptedAnswers": ["shiatsu"], "maxPoints": 1 },
       { "id": "denmark-vs-london", "type": "mcq", "tag": "General knowledge", "text": "Which has a bigger population — Denmark or London?", "options": ["Denmark", "London"], "correctIndex": 1, "maxPoints": 1 },
-      
       { "id": "mai-tai-spirit", "type": "text-exact", "tag": "Food", "text": "Which spirit is the base for a Mai Tai cocktail?", "correctAnswer": "rum", "acceptedAnswers": ["rum"], "maxPoints": 1 },
       { "id": "serengeti-country", "type": "text-exact", "tag": "Geography", "text": "Serengeti National Park is located in which country?", "correctAnswer": "tanzania", "acceptedAnswers": ["tanzania"], "maxPoints": 1 },
       { "id": "soccer-ball-panels", "type": "mcq", "tag": "Sport", "text": "Most soccer balls are stitched from how many panels?", "options": ["12", "24", "32"], "correctIndex": 2, "maxPoints": 1 },
       { "id": "arboreal-animals", "type": "text-exact", "tag": "Animals", "text": "Where do arboreal animals live?", "correctAnswer": "trees", "acceptedAnswers": ["trees", "in trees"], "maxPoints": 1 },
-      
       { "id": "ulixes-odysseus", "type": "text-exact", "tag": "Mythology", "text": "What is the Latin name for Odysseus, the Greek king of Ithaca?", "correctAnswer": "ulixes", "acceptedAnswers": ["ulixes", "ulysses"], "maxPoints": 1 },
       { "id": "landlords-game-monopoly", "type": "text-exact", "tag": "General knowledge", "text": "Patented in 1903, The Landlord's Game was the model for which popular board game?", "correctAnswer": "monopoly", "acceptedAnswers": ["monopoly"], "maxPoints": 1 },
       { "id": "gizzard-rhyme-lizard", "type": "text-exact", "tag": "General knowledge", "text": "What rhymes with 'lizard' and is the part of a bird's stomach that grinds food?", "correctAnswer": "gizzard", "acceptedAnswers": ["gizzard"], "maxPoints": 1 },
@@ -219,25 +215,21 @@
       { "id": "montevideo-capital", "type": "text-exact", "tag": "Geography", "text": "Montevideo is the capital of which country?", "correctAnswer": "uruguay", "acceptedAnswers": ["uruguay"], "maxPoints": 1 },
       { "id": "godzilla-nakajima", "type": "text-exact", "tag": "Movies", "text": "Actor Haruo Nakajima lost nine kilograms playing the title role in which 1954 Japanese film?", "correctAnswer": "godzilla", "acceptedAnswers": ["godzilla"], "maxPoints": 1 },
       { "id": "anagram-argentina", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this country: 'RANTING EAG'", "correctAnswer": "argentina", "acceptedAnswers": ["argentina"], "maxPoints": 1 },
-      
       { "id": "kleenex-decade", "type": "mcq", "tag": "General knowledge", "text": "In which decade were Kleenex tissues invented?", "options": ["1900s", "1910s", "1920s", "1930s"], "correctIndex": 2, "maxPoints": 1 },
       { "id": "penicillin-cocktail", "type": "text-exact", "tag": "Food", "text": "What is the base spirit in a Penicillin cocktail?", "correctAnswer": "scotch whisky", "acceptedAnswers": ["scotch whisky", "scotch", "whisky", "whiskey"], "maxPoints": 1 },
       { "id": "yellow-pages-slogan", "type": "text-exact", "tag": "General knowledge", "text": "An ad slogan for Yellow Pages was 'Let your fingers do the … ' what?", "correctAnswer": "walking", "acceptedAnswers": ["walking", "...walking"], "maxPoints": 1 },
       { "id": "kutjera-bush-tomato", "type": "text-exact", "tag": "General knowledge", "text": "A common type of bush tomato, the kutjera is also known as the desert … what?", "correctAnswer": "raisin", "acceptedAnswers": ["raisin", "desert raisin"], "maxPoints": 1 },
       { "id": "year-1977", "type": "year", "tag": "Year", "text": "In what year was Star Wars released for the first time, did Elvis Presley die at Graceland, and did the first Apple II computer go on sale?", "correctYear": 1977, "maxPoints": 2 },
-      
       { "id": "silver-anniversary", "type": "numeric", "tag": "General knowledge", "text": "How many years of marriage does a silver anniversary signify?", "correctNumber": 25, "maxPoints": 1 },
       { "id": "coober-pedy-state", "type": "text-exact", "tag": "Geography", "text": "Famous for its opal mines, the town of Coober Pedy is in which state or territory?", "correctAnswer": "south australia", "acceptedAnswers": ["south australia", "sa"], "maxPoints": 1 },
       { "id": "barkaa-rapper", "type": "text-exact", "tag": "Music", "text": "What is the stage name of the Malyangapa and Barkindji rapper, Chloe Quayle?", "correctAnswer": "barkaa", "acceptedAnswers": ["barkaa"], "maxPoints": 1 },
       { "id": "mortadella-type", "type": "mcq", "tag": "Food", "text": "Is mortadella a type of cured meat, cream cheese or dessert wine?", "options": ["Cured meat", "Cream cheese", "Dessert wine"], "correctIndex": 0, "maxPoints": 1 },
       { "id": "oprah-vs-madonna", "type": "mcq", "tag": "General knowledge", "text": "Who was born first — Oprah Winfrey or Madonna?", "options": ["Oprah Winfrey", "Madonna"], "correctIndex": 0, "maxPoints": 1 },
-     
       { "id": "peter-piper-peppers", "type": "text-exact", "tag": "General knowledge", "text": "According to the tongue twister, what did Peter Piper pick a peck of?", "correctAnswer": "pickled peppers", "acceptedAnswers": ["pickled peppers", "pickled pepper"], "maxPoints": 1 },
       { "id": "volga-flows-into", "type": "text-exact", "tag": "Geography", "text": "Into which body of water does Europe's longest river, the Volga, flow?", "correctAnswer": "the caspian sea", "acceptedAnswers": ["the caspian sea", "caspian sea"], "maxPoints": 1 },
       { "id": "bach-musical-period", "type": "text-exact", "tag": "Music", "text": "J.S. Bach is associated with which musical period?", "correctAnswer": "baroque", "acceptedAnswers": ["baroque"], "maxPoints": 1 },
       { "id": "feather-own-nest", "type": "text-exact", "tag": "Phrases", "text": "To provide for one's own interests is to feather one's … what?", "correctAnswer": "nest", "acceptedAnswers": ["nest"], "maxPoints": 1 },
       { "id": "switzerland-languages", "type": "text-exact", "tag": "Geography", "text": "Which country's official languages are German, French, Italian and Romansh?", "correctAnswer": "switzerland", "acceptedAnswers": ["switzerland"], "maxPoints": 1 },
-      
       { "id": "nagoya-airport-ngo", "type": "text-exact", "tag": "Travel", "text": "Which Japanese city's airport has the IATA code NGO?", "correctAnswer": "nagoya", "acceptedAnswers": ["nagoya"], "maxPoints": 1 },
       { "id": "operation-patient-nickname", "type": "mcq", "tag": "General knowledge", "text": "What is the nickname of the patient in the game Operation: Sol Section, Cavity Sam or Holey Pete?", "options": ["Sol Section", "Cavity Sam", "Holey Pete"], "correctIndex": 1, "maxPoints": 1 },
       { "id": "female-fox-name", "type": "text-exact", "tag": "Animals", "text": "What is the name for a female fox?", "correctAnswer": "vixen", "acceptedAnswers": ["vixen"], "maxPoints": 1 },
@@ -252,7 +244,6 @@
       { "id": "bodacious-century", "type": "text-exact", "tag": "General knowledge", "text": "In which century was the term 'bodacious' coined?", "correctAnswer": "19th century", "acceptedAnswers": ["19th century", "1800s", "the 19th century"], "maxPoints": 1 },
       { "id": "buddha-suburbia-author", "type": "text-exact", "tag": "Literature", "text": "The Buddha of Suburbia (1990) was the debut novel of which British-Pakistani author?", "correctAnswer": "hanif kureishi", "acceptedAnswers": ["hanif kureishi", "kureishi"], "maxPoints": 1 },
       { "id": "anagram-the-office", "type": "text-exact", "tag": "Wordplay", "text": "Unscramble this TV show: 'FICO FHETE'", "correctAnswer": "the office", "acceptedAnswers": ["the office"], "maxPoints": 1 },
-      
       { "id": "australia-opposite-ocean", "type": "text-exact", "tag": "Geography", "text": "Which ocean is diametrically opposite most of Australia?", "correctAnswer": "the north atlantic", "acceptedAnswers": ["the north atlantic", "north atlantic", "north atlantic ocean"], "maxPoints": 1 },
       { "id": "first-three-planets-moons", "type": "numeric", "tag": "Science", "text": "The first three planets in our solar system have a total of how many moons?", "correctNumber": 1, "maxPoints": 1 },
       { "id": "kartoffelsalat-ingredient", "type": "text-exact", "tag": "Food", "text": "What is the main ingredient of the German dish kartoffelsalat?", "correctAnswer": "potatoes", "acceptedAnswers": ["potatoes", "potato"], "maxPoints": 1 },
