@@ -297,7 +297,7 @@
       { "id": "workers-holes", "type": "numeric", "tag": "Maths", "text": "If it takes 5 workers 5 days to dig 5 holes, how many days does it take 1 worker to dig 1 hole?", "correctNumber": 5, "maxPoints": 1 }
     
   ] }
-      
-    ] }
+
+  
   ]
 }
