@@ -203,7 +203,7 @@
       { "id": "landlords-game-monopoly", "type": "text-exact", "tag": "General knowledge", "text": "Patented in 1903, The Landlord's Game was the model for which popular board game?", "correctAnswer": "monopoly", "acceptedAnswers": ["monopoly"], "maxPoints": 1 },
       { "id": "gizzard-rhyme-lizard", "type": "text-exact", "tag": "General knowledge", "text": "What rhymes with 'lizard' and is the part of a bird's stomach that grinds food?", "correctAnswer": "gizzard", "acceptedAnswers": ["gizzard"], "maxPoints": 1 },
       { "id": "weeknd-spotify-100m", "type": "text-exact", "tag": "Music", "text": "Who was the first artist to surpass 100 million monthly listeners on Spotify?", "correctAnswer": "the weeknd", "acceptedAnswers": ["the weeknd", "weeknd"], "maxPoints": 1 },
-      { "id": "fibonacci-next", "type": "numeric", "tag": "Maths", "text": "What comes next in this sequence: 1, 1, 2, 3, 5, 8, 13…?", "correctNumber": 21, "maxPoints": 1 },
+      { "id": "fibonacci-next", "type": "numeric", "tag": "Maths", "text": "What comes next in this sequence: 1, 1, 2, 3, 5, 8, 13…?", "correctNumber": 21, "maxPoints": 1 }
       
       
          
@@ -234,7 +234,7 @@
       { "id": "operation-patient-nickname", "type": "mcq", "tag": "General knowledge", "text": "What is the nickname of the patient in the game Operation: Sol Section, Cavity Sam or Holey Pete?", "options": ["Sol Section", "Cavity Sam", "Holey Pete"], "correctIndex": 1, "maxPoints": 1 },
       { "id": "female-fox-name", "type": "text-exact", "tag": "Animals", "text": "What is the name for a female fox?", "correctAnswer": "vixen", "acceptedAnswers": ["vixen"], "maxPoints": 1 },
       { "id": "bali-cricket-anagram", "type": "text-exact", "tag": "Wordplay", "text": "The name of which Indonesian island is an anagram of an item of cricket equipment?", "correctAnswer": "bali", "acceptedAnswers": ["bali"], "maxPoints": 1 },
-      { "id": "platonic-solids", "type": "mcq", "tag": "Maths", "text": "How many Platonic solids are there: three, five, or seven?", "options": ["Three", "Five", "Seven"], "correctIndex": 1, "maxPoints": 1 },
+      { "id": "platonic-solids", "type": "mcq", "tag": "Maths", "text": "How many Platonic solids are there: three, five, or seven?", "options": ["Three", "Five", "Seven"], "correctIndex": 1, "maxPoints": 1 }
       
     ] },
     { "title": "Big Fat Sunday Quiz #9", "questions": [
