@@ -282,6 +282,16 @@ p {
   color: var(--neon-soft);
 }
 
+/* ========= QUESTION FUNFACT ========= */
+
+.question-funfact {
+  font-size: 0.82rem;
+  opacity: 0.75;
+  margin-top: 6px;
+  font-style: italic;
+  color: var(--neon-soft);
+}
+
 /* ========= FOOTER ========= */
 
 footer {
