@@ -697,6 +697,22 @@ document.getElementById("copy-result").addEventListener("click", () => { navigat
 const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
 const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
 let currentTab = "week"; let currentQuizTitle = ""; let scoreSubmitted = false;
+let detectedCountry = "";
+
+/* Auto-detect country via free IP lookup */
+(async function detectCountry() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+    if (data && data.country_code) detectedCountry = data.country_code;
+  } catch(e) { detectedCountry = ""; }
+})();
+
+/* Convert country code to flag emoji */
+function countryFlag(code) {
+  if (!code || code.length !== 2) return "";
+  return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) + " ";
+}
 
 function showLeaderboard() { document.getElementById("leaderboard-section").style.display = "block"; currentQuizTitle = document.getElementById("quiz-title").textContent; loadLeaderboard(); }
 function switchTab(tab) { currentTab = tab; document.getElementById("tab-week").classList.toggle("active", tab === "week"); document.getElementById("tab-all").classList.toggle("active", tab === "all"); loadLeaderboard(); }
@@ -705,7 +721,7 @@ async function loadLeaderboard() {
   const tbody = document.getElementById("leaderboard-body");
   tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>`;
   try {
-    let url = `${SUPA_URL}/rest/v1/leaderboard?select=player_name,score,max_score,percent,submitted_at&order=score.desc,percent.desc&limit=100`;
+    let url = `${SUPA_URL}/rest/v1/leaderboard?select=player_name,score,max_score,percent,submitted_at,country&order=score.desc,percent.desc&limit=100`;
     if (currentTab === "week") {
       const now = getNow();
       const diffMs = now.getTime() - BASE_DATE.getTime();
@@ -720,7 +736,7 @@ async function loadLeaderboard() {
     let ranks = []; let currentRank = 0;
     rows.forEach((r, i) => { if (i === 0 || r.score !== rows[i-1].score || r.percent !== rows[i-1].percent) { currentRank = i; } ranks.push(currentRank); });
     const medals = ["🥇","🥈","🥉"]; const podium = rows.filter((r, i) => ranks[i] <= 2);
-    tbody.innerHTML = podium.map((r, i) => `<tr><td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td><td>${escapeHtml(r.player_name)}</td><td>${r.score} / ${r.max_score}</td><td>${r.percent}%</td></tr>`).join("");
+    tbody.innerHTML = podium.map((r, i) => `<tr><td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td><td>${countryFlag(r.country)}${escapeHtml(r.player_name)}</td><td>${r.score} / ${r.max_score}</td><td>${r.percent}%</td></tr>`).join("");
     tbody.innerHTML += `<tr><td colspan="4" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} player${rows.length !== 1 ? "s" : ""} this week</td></tr>`;
     const submittedName = document.getElementById("player-name").value.trim();
     if (submittedName && scoreSubmitted) {
@@ -728,7 +744,7 @@ async function loadLeaderboard() {
       const podiumSize = rows.filter((r, i) => ranks[i] <= 2).length;
       if (userIdx !== -1 && userIdx >= podiumSize) {
         const userRank = ranks[userIdx] + 1; const suffix = userRank === 1 ? "st" : userRank === 2 ? "nd" : userRank === 3 ? "rd" : "th";
-        tbody.innerHTML += `<tr><td colspan="4" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-weight:600;">${escapeHtml(submittedName)} (you)</td><td style="color:var(--neon-soft);">${rows[userIdx].score} / ${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td></tr>`;
+        tbody.innerHTML += `<tr><td colspan="4" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-weight:600;">${countryFlag(rows[userIdx].country)}${escapeHtml(submittedName)} (you)</td><td style="color:var(--neon-soft);">${rows[userIdx].score} / ${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td></tr>`;
       }
     }
   } catch(err) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Could not load scores.</td></tr>`; }
@@ -741,7 +757,7 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
   const earned = states.reduce((s, x) => s + x.points, 0); const maxPts = states.reduce((s, x) => s + x.maxPoints, 0); const pct = maxPts ? Math.round((earned / maxPts) * 100) : 0;
   const btn = document.getElementById("btn-submit-score"); btn.disabled = true; btn.textContent = "Submitting…";
   try {
-    const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard`, { method: "POST", headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal" }, body: JSON.stringify({ player_name: name, quiz_title: currentQuizTitle, score: earned, max_score: maxPts, percent: pct }) });
+    const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard`, { method: "POST", headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal" }, body: JSON.stringify({ player_name: name, quiz_title: currentQuizTitle, score: earned, max_score: maxPts, percent: pct, country: detectedCountry }) });
     if (res.ok) {
       scoreSubmitted = true; saveSubmission(currentQuizTitle, name);
       const questionRows = questions.map((q, i) => ({ quiz_title: currentQuizTitle, question_id: q.id, correct: states[i].points > 0, points_earned: states[i].points }));
