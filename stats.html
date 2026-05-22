@@ -157,10 +157,10 @@
         <div class="section-heading">Top Scores</div>
         <table class="lb-table">
           <thead>
-            <tr><th>#</th><th>Name</th><th>Score</th><th>%</th><th>Date</th></tr>
+            <tr><th>#</th><th>Flag</th><th>Name</th><th>Score</th><th>%</th><th>Date</th></tr>
           </thead>
           <tbody id="lb-body">
-            <tr><td colspan="5" class="loading-msg">Select a quiz above</td></tr>
+            <tr><td colspan="6" class="loading-msg">Select a quiz above</td></tr>
           </tbody>
         </table>
       </div>
@@ -239,7 +239,7 @@ let allQuestions = {};
 
 async function loadStats(quizTitle) {
   document.getElementById("question-list").innerHTML = '<div class="loading-msg">Loading…</div>';
-  document.getElementById("lb-body").innerHTML = '<tr><td colspan="5" class="loading-msg">Loading…</td></tr>';
+  document.getElementById("lb-body").innerHTML = '<tr><td colspan="6" class="loading-msg">Loading…</td></tr>';
   document.getElementById("highlights").style.display = "none";
 
   const [lbData, qData] = await Promise.all([
@@ -312,7 +312,7 @@ function renderSummary(lb) {
 function renderLeaderboard(lb) {
   const tbody = document.getElementById("lb-body");
   if (!lb.length) {
-    tbody.innerHTML = '<tr><td colspan="5" class="loading-msg">No scores yet</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="loading-msg">No scores yet</td></tr>';
     return;
   }
   const medals = ["🥇","🥈","🥉"];
@@ -337,7 +337,8 @@ function renderLeaderboard(lb) {
     return `
       <tr style="${rowStyle}">
         <td>${rankDisplay}</td>
-        <td>${flag}${escapeHtml(r.player_name)}</td>
+        <td style="font-size:1.1rem;">${flag}</td>
+        <td>${escapeHtml(r.player_name)}</td>
         <td>${r.score} / ${r.max_score}</td>
         <td>${r.percent}%</td>
         <td style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString()}</td>
@@ -345,7 +346,7 @@ function renderLeaderboard(lb) {
     `;
   }).join("");
 
-  html += `<tr><td colspan="5" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${lb.length} players total</td></tr>`;
+  html += `<tr><td colspan="6" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${lb.length} players total</td></tr>`;
   tbody.innerHTML = html;
 }
 
