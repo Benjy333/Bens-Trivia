@@ -469,10 +469,44 @@ function renderQuiz() {
   });
 }
 
+function addSkipButton(card, q, i) {
+  const skip = document.createElement("button");
+  skip.className = "btn-skip"; skip.id = `skip-${i}`; skip.textContent = "Skip question";
+  skip.onclick = () => skipQuestion(i);
+  card.appendChild(skip);
+}
+
+function skipQuestion(i) {
+  if (states[i].checked) return;
+  const q = questions[i];
+  const card = document.getElementById(`card-${i}`);
+  states[i].points = 0;
+  // reveal the correct answer based on type
+  if (q.type === "mcq") {
+    const btns = card.querySelectorAll(".option-btn");
+    btns.forEach((btn, bi) => { if (bi === q.correctIndex) btn.classList.add("correct"); });
+    setFeedback(i, `Skipped · The answer was: ${q.options[q.correctIndex]}`, "skipped");
+  } else if (q.type === "text-exact") {
+    setFeedback(i, `Skipped · The answer was: ${q.correctAnswer}`, "skipped");
+  } else if (q.type === "numeric") {
+    setFeedback(i, `Skipped · The answer was: ${q.correctNumber}`, "skipped");
+  } else if (q.type === "year") {
+    setFeedback(i, `Skipped · The answer was: ${q.correctYear}`, "skipped");
+  } else if (q.type === "multi-text") {
+    const correctList = q.answers.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(", ");
+    const answersDiv = document.createElement("div"); answersDiv.className = "multi-text-answers"; answersDiv.textContent = `Answers: ${correctList}`;
+    card.querySelector(".multi-text-grid").after(answersDiv);
+    setFeedback(i, `Skipped · 0/${q.maxPoints} points`, "skipped");
+  }
+  if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; card.appendChild(ff); }
+  lockCard(i, false);
+}
+
 function renderMCQ(card, q, i) {
   const grid = document.createElement("div"); grid.className = "options";
   q.options.forEach((opt, oi) => { const btn = document.createElement("button"); btn.className = "option-btn"; btn.textContent = opt; btn.onclick = () => checkMCQ(i, oi); grid.appendChild(btn); });
   card.appendChild(grid);
+  addSkipButton(card, q, i);
 }
 function renderTextExact(card, q, i) {
   const row = document.createElement("div"); row.className = "input-row";
@@ -480,6 +514,7 @@ function renderTextExact(card, q, i) {
   input.addEventListener("keydown", e => { if (e.key === "Enter") checkTextExact(i); });
   const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check"; btn.onclick = () => checkTextExact(i);
   row.appendChild(input); row.appendChild(btn); card.appendChild(row);
+  addSkipButton(card, q, i);
 }
 function renderNumeric(card, q, i) {
   const row = document.createElement("div"); row.className = "input-row";
@@ -487,6 +522,7 @@ function renderNumeric(card, q, i) {
   input.addEventListener("keydown", e => { if (e.key === "Enter") checkNumeric(i); });
   const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check"; btn.onclick = () => checkNumeric(i);
   row.appendChild(input); row.appendChild(btn); card.appendChild(row);
+  addSkipButton(card, q, i);
 }
 function renderYear(card, q, i) {
   const hint = document.createElement("div"); hint.className = "year-hint"; hint.textContent = "Exact year = 2 pts · 1 year off = 1 pt"; card.appendChild(hint);
@@ -495,6 +531,7 @@ function renderYear(card, q, i) {
   input.addEventListener("keydown", e => { if (e.key === "Enter") checkYear(i); });
   const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check"; btn.onclick = () => checkYear(i);
   row.appendChild(input); row.appendChild(btn); card.appendChild(row);
+  addSkipButton(card, q, i);
 }
 function renderMultiText(card, q, i) {
   const hint = document.createElement("div"); hint.className = "multi-text-hint";
@@ -510,6 +547,7 @@ function renderMultiText(card, q, i) {
   card.appendChild(grid);
   const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check answers"; btn.style.marginTop = "12px";
   btn.onclick = () => checkMultiText(i); card.appendChild(btn);
+  addSkipButton(card, q, i);
 }
 
 /* ---- CHECK FUNCTIONS (with funfact support) ---- */
