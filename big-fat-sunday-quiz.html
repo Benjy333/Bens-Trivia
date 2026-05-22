@@ -218,9 +218,9 @@
             <button class="lb-tab" id="tab-all" onclick="switchTab('all')">All Time</button>
           </div>
           <table class="leaderboard-table">
-            <thead><tr><th>#</th><th>Name</th><th>Score</th><th>%</th></tr></thead>
+            <thead><tr><th>#</th><th>Flag</th><th>Name</th><th>Score</th><th>%</th></tr></thead>
             <tbody id="leaderboard-body">
-              <tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
+              <tr><td colspan="5" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
             </tbody>
           </table>
         </div>
@@ -719,7 +719,7 @@ function switchTab(tab) { currentTab = tab; document.getElementById("tab-week").
 
 async function loadLeaderboard() {
   const tbody = document.getElementById("leaderboard-body");
-  tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>`;
   try {
     let url = `${SUPA_URL}/rest/v1/leaderboard?select=player_name,score,max_score,percent,submitted_at,country&order=score.desc,percent.desc&limit=100`;
     if (currentTab === "week") {
@@ -732,22 +732,22 @@ async function loadLeaderboard() {
     } else { url += `&quiz_title=eq.${encodeURIComponent(currentQuizTitle)}`; }
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     const rows = await res.json();
-    if (!rows.length) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">No scores yet — be the first!</td></tr>`; return; }
+    if (!rows.length) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;opacity:0.5;padding:16px;">No scores yet — be the first!</td></tr>`; return; }
     let ranks = []; let currentRank = 0;
     rows.forEach((r, i) => { if (i === 0 || r.score !== rows[i-1].score || r.percent !== rows[i-1].percent) { currentRank = i; } ranks.push(currentRank); });
     const medals = ["🥇","🥈","🥉"]; const podium = rows.filter((r, i) => ranks[i] <= 2);
-    tbody.innerHTML = podium.map((r, i) => `<tr><td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td><td>${countryFlag(r.country)}${escapeHtml(r.player_name)}</td><td>${r.score} / ${r.max_score}</td><td>${r.percent}%</td></tr>`).join("");
-    tbody.innerHTML += `<tr><td colspan="4" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} player${rows.length !== 1 ? "s" : ""} this week</td></tr>`;
+    tbody.innerHTML = podium.map((r, i) => `<tr><td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td><td style="font-size:1.1rem;">${countryFlag(r.country)}</td><td>${escapeHtml(r.player_name)}</td><td>${r.score} / ${r.max_score}</td><td>${r.percent}%</td></tr>`).join("");
+    tbody.innerHTML += `<tr><td colspan="5" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} player${rows.length !== 1 ? "s" : ""} this week</td></tr>`;
     const submittedName = document.getElementById("player-name").value.trim();
     if (submittedName && scoreSubmitted) {
       const userIdx = rows.findIndex(r => r.player_name === submittedName);
       const podiumSize = rows.filter((r, i) => ranks[i] <= 2).length;
       if (userIdx !== -1 && userIdx >= podiumSize) {
         const userRank = ranks[userIdx] + 1; const suffix = userRank === 1 ? "st" : userRank === 2 ? "nd" : userRank === 3 ? "rd" : "th";
-        tbody.innerHTML += `<tr><td colspan="4" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-weight:600;">${countryFlag(rows[userIdx].country)}${escapeHtml(submittedName)} (you)</td><td style="color:var(--neon-soft);">${rows[userIdx].score} / ${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td></tr>`;
+        tbody.innerHTML += `<tr><td colspan="5" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-size:1.1rem;">${countryFlag(rows[userIdx].country)}</td><td style="color:var(--neon-soft);font-weight:600;">${escapeHtml(submittedName)} (you)</td><td style="color:var(--neon-soft);">${rows[userIdx].score} / ${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td></tr>`;
       }
     }
-  } catch(err) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Could not load scores.</td></tr>`; }
+  } catch(err) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;opacity:0.5;padding:16px;">Could not load scores.</td></tr>`; }
 }
 
 document.getElementById("btn-submit-score").addEventListener("click", async () => {
