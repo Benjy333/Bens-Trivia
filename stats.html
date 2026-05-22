@@ -36,7 +36,6 @@
     main { display: grid; place-items: center; padding: 24px 16px 48px; }
     .stats-shell { width: min(960px, 100%); display: flex; flex-direction: column; gap: 20px; }
 
-    /* Quiz selector */
     .quiz-select-wrap { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .quiz-select-wrap label { font-size: 0.85rem; opacity: 0.7; }
     select.quiz-picker {
@@ -45,7 +44,6 @@
       color: #e9f4ff; font-size: 0.9rem; cursor: pointer; flex: 1;
     }
 
-    /* Summary cards */
     .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
     .stat-card {
       background: radial-gradient(circle at top left, #12335a 0, #020a16 70%);
@@ -55,14 +53,12 @@
     .stat-card .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--neon-soft); text-shadow: 0 0 8px var(--neon-soft); }
     .stat-card .stat-label { font-size: 0.75rem; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
 
-    /* Section headings */
     .section-heading {
       font-size: 0.85rem; font-weight: 600; letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--neon-soft); opacity: 0.8;
       margin-bottom: 10px;
     }
 
-    /* Question bars */
     .question-list { display: flex; flex-direction: column; gap: 10px; }
     .q-row {
       background: rgba(3,15,34,0.7); border-radius: 12px;
@@ -81,7 +77,6 @@
     .q-bar-inner.hard { background: var(--bad); box-shadow: 0 0 8px rgba(255,66,102,0.5); }
     .q-tag { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.5; }
 
-    /* Highlight cards */
     .highlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     @media (max-width: 500px) { .highlight-grid { grid-template-columns: 1fr; } }
     .highlight-card {
@@ -98,7 +93,6 @@
     .highlight-card.hardest .highlight-pct { color: var(--bad); }
     .highlight-card.easiest .highlight-pct { color: var(--good); }
 
-    /* Leaderboard table */
     .lb-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     .lb-table th { text-align: left; padding: 6px 10px; color: var(--neon-soft); opacity: 0.7; font-weight: 500; border-bottom: 1px solid rgba(150,208,255,0.15); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
     .lb-table td { padding: 9px 10px; border-bottom: 1px solid rgba(150,208,255,0.07); }
@@ -130,7 +124,6 @@
   <main>
     <div class="stats-shell">
 
-      <!-- Quiz picker -->
       <div class="card">
         <div class="quiz-select-wrap">
           <label for="quiz-picker">Showing stats for:</label>
@@ -140,7 +133,6 @@
         </div>
       </div>
 
-      <!-- Summary cards -->
       <div class="summary-grid" id="summary-grid">
         <div class="stat-card"><div class="stat-value" id="stat-players">—</div><div class="stat-label">Players</div></div>
         <div class="stat-card"><div class="stat-value" id="stat-avg">—</div><div class="stat-label">Avg Score</div></div>
@@ -148,7 +140,6 @@
         <div class="stat-card"><div class="stat-value" id="stat-avg-pct">—</div><div class="stat-label">Avg %</div></div>
       </div>
 
-      <!-- Hardest / Easiest highlights -->
       <div class="highlight-grid" id="highlights" style="display:none;">
         <div class="highlight-card hardest">
           <div class="highlight-label">🔴 Hardest Question</div>
@@ -162,7 +153,6 @@
         </div>
       </div>
 
-      <!-- Leaderboard -->
       <div class="card">
         <div class="section-heading">Top Scores</div>
         <table class="lb-table">
@@ -175,7 +165,6 @@
         </table>
       </div>
 
-      <!-- Per-question breakdown -->
       <div class="card">
         <div class="section-heading">Question Breakdown</div>
         <div class="question-list" id="question-list">
@@ -202,8 +191,13 @@ document.addEventListener("click", e => {
     menuDropdown.style.display = "none";
 });
 
-/* ---- Load quiz list from weekly_quizzes.json ---- */
-let allQuestions = {};  /* quiz_title -> array of question objects */
+/* Convert country code to flag emoji */
+function countryFlag(code) {
+  if (!code || code.length !== 2) return "";
+  return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) + " ";
+}
+
+let allQuestions = {};
 
 (async function init() {
   try {
@@ -212,7 +206,6 @@ let allQuestions = {};  /* quiz_title -> array of question objects */
     const picker = document.getElementById("quiz-picker");
     picker.innerHTML = '<option value="">— Select a quiz —</option>';
 
-    /* Work out which quiz is current using Brisbane time anchor (1am Sun AEST = 15:00 Sat UTC) */
     const base = new Date("2026-04-18T15:00:00Z");
     const diffMs = Date.now() - base.getTime();
     const weekIdx = Math.min(Math.max(Math.floor(diffMs / (7 * 86400000)), 0), data.weekly_quizzes.length - 1);
@@ -232,12 +225,10 @@ let allQuestions = {};  /* quiz_title -> array of question objects */
       if (picker.value) loadStats(picker.value);
     });
 
-    /* Auto-select the current week's quiz */
     if (allQuestions[currentTitle]) {
       picker.value = currentTitle;
       loadStats(currentTitle);
     } else {
-      /* Fallback to most recent with questions */
       const latest = data.weekly_quizzes.filter(q => q.questions.length > 0).pop();
       if (latest) { picker.value = latest.title; loadStats(latest.title); }
     }
@@ -246,7 +237,6 @@ let allQuestions = {};  /* quiz_title -> array of question objects */
   }
 })();
 
-/* ---- Load stats for selected quiz ---- */
 async function loadStats(quizTitle) {
   document.getElementById("question-list").innerHTML = '<div class="loading-msg">Loading…</div>';
   document.getElementById("lb-body").innerHTML = '<tr><td colspan="5" class="loading-msg">Loading…</td></tr>';
@@ -262,9 +252,7 @@ async function loadStats(quizTitle) {
   renderQuestions(quizTitle, qData);
 }
 
-/* Work out the start/end of a given week for date filtering */
 function getWeekRange(quizTitle) {
-  /* Base: 1am Sunday Brisbane (AEST UTC+10) = 15:00 Saturday UTC */
   const base = new Date("2026-04-18T15:00:00Z");
   const picker = document.getElementById("quiz-picker");
   const opts   = [...picker.options].filter(o => o.value);
@@ -282,6 +270,7 @@ async function fetchLeaderboard(quizTitle) {
       + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
       + `&submitted_at=gte.${weekStart.toISOString()}`
       + `&submitted_at=lt.${weekEnd.toISOString()}`
+      + `&select=player_name,score,max_score,percent,submitted_at,country`
       + `&order=score.desc,percent.desc&limit=100`;
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     return await res.json();
@@ -301,7 +290,6 @@ async function fetchQuestionStats(quizTitle) {
   } catch { return []; }
 }
 
-/* ---- Render summary cards ---- */
 function renderSummary(lb) {
   if (!lb.length) {
     document.getElementById("stat-players").textContent = "0";
@@ -321,7 +309,6 @@ function renderSummary(lb) {
   document.getElementById("stat-avg-pct").textContent = avgPct;
 }
 
-/* ---- Render leaderboard table ---- */
 function renderLeaderboard(lb) {
   const tbody = document.getElementById("lb-body");
   if (!lb.length) {
@@ -338,7 +325,6 @@ function renderLeaderboard(lb) {
     ranks.push(currentRank);
   });
 
-  /* Show top 10 (including all ties within that range) */
   const top10 = lb.filter((r, i) => i < 10 || ranks[i] === ranks[9]);
 
   let html = top10.map((r, i) => {
@@ -347,10 +333,11 @@ function renderLeaderboard(lb) {
     const suffix = (rank+1) === 1 ? "st" : (rank+1) === 2 ? "nd" : (rank+1) === 3 ? "rd" : "th";
     const rankDisplay = medal || `${rank+1}${suffix}`;
     const rowStyle = rank <= 2 ? "" : "opacity:0.8;";
+    const flag = countryFlag(r.country);
     return `
       <tr style="${rowStyle}">
         <td>${rankDisplay}</td>
-        <td>${escapeHtml(r.player_name)}</td>
+        <td>${flag}${escapeHtml(r.player_name)}</td>
         <td>${r.score} / ${r.max_score}</td>
         <td>${r.percent}%</td>
         <td style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString()}</td>
@@ -362,7 +349,6 @@ function renderLeaderboard(lb) {
   tbody.innerHTML = html;
 }
 
-/* ---- Render per-question breakdown ---- */
 function renderQuestions(quizTitle, qData) {
   const qs = allQuestions[quizTitle] || [];
   const list = document.getElementById("question-list");
@@ -372,7 +358,6 @@ function renderQuestions(quizTitle, qData) {
     return;
   }
 
-  /* Group by question_id */
   const byId = {};
   qData.forEach(row => {
     if (!byId[row.question_id]) byId[row.question_id] = { correct: 0, total: 0 };
@@ -380,7 +365,6 @@ function renderQuestions(quizTitle, qData) {
     if (row.correct) byId[row.question_id].correct++;
   });
 
-  /* Build rows matched to question text */
   const rows = qs.map(q => {
     const stats = byId[q.id] || { correct: 0, total: 0 };
     const pct = stats.total ? Math.round((stats.correct / stats.total) * 100) : null;
@@ -392,7 +376,6 @@ function renderQuestions(quizTitle, qData) {
     return;
   }
 
-  /* Find hardest and easiest */
   const withPct = rows.filter(r => r.pct !== null);
   const hardest = withPct.reduce((a, b) => a.pct < b.pct ? a : b);
   const easiest = withPct.reduce((a, b) => a.pct > b.pct ? a : b);
@@ -403,7 +386,6 @@ function renderQuestions(quizTitle, qData) {
   document.getElementById("easiest-pct").textContent = easiest.pct + "% got it right";
   document.getElementById("highlights").style.display = "grid";
 
-  /* Sort by difficulty (hardest first) */
   const sorted = [...rows].sort((a, b) => (a.pct ?? 50) - (b.pct ?? 50));
 
   list.innerHTML = sorted.map(({ q, stats, pct }) => {
