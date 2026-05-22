@@ -75,6 +75,7 @@
     .feedback.incorrect { color: var(--bad); }
     .feedback.partial { color: #f5c542; }
     .year-hint { font-size: 0.75rem; opacity: 0.65; margin-top: 3px; }
+    .question-funfact { font-size: 0.82rem; opacity: 0.75; margin-top: 6px; font-style: italic; color: var(--neon-soft); }
     /* ---- MULTI-TEXT ---- */
     .multi-text-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
     .multi-text-row { display: flex; align-items: center; gap: 8px; }
@@ -137,7 +138,6 @@
 </head>
 <body>
 
-  <!-- DEV DATE OVERRIDE — only visible at ?dev in URL, zero effect for normal players -->
   <div id="dev-panel">
     <span id="dev-badge">DEV</span>
     <label>Simulate date:
@@ -177,10 +177,7 @@
         <strong id="quiz-title">Big Fat Sunday Quiz</strong><br>
         <span id="quiz-week-info">Loading…</span>
       </div>
-
-      <!-- Quiz description — shown only when the JSON has a description field -->
       <div id="quiz-description" class="quiz-description" style="display:none;"></div>
-
       <div class="quiz-container" id="quiz-container"></div>
       <div class="progress-wrap">
         <div class="progress-label">
@@ -238,15 +235,9 @@
   <footer class="global-footer" id="footer-text"></footer>
 
 <script>
-/* ================================================================
-   SINGLE SOURCE OF TRUTH FOR THE BASE DATE
-   ================================================================ */
 const BASE_DATE = new Date("2026-04-18T15:00:00Z");
 const DEV_STORAGE_KEY = "bens-trivia-dev-date";
 
-/* ================================================================
-   DEV PANEL — only active when ?dev is in the URL
-   ================================================================ */
 (function initDevPanel() {
   if (!location.search.includes("dev")) return;
   const panel = document.getElementById("dev-panel");
@@ -280,15 +271,11 @@ const DEV_STORAGE_KEY = "bens-trivia-dev-date";
   }
 })();
 
-/* Returns the effective "now" — real time, or dev override if set */
 function getNow() {
   const override = localStorage.getItem(DEV_STORAGE_KEY);
   return override ? new Date(override) : new Date();
 }
 
-/* ================================================================
-   HEADER / FOOTER
-   ================================================================ */
 (function() {
   const today = getNow();
   const opts = { weekday:"long", day:"numeric", month:"long" };
@@ -308,9 +295,6 @@ const scoreBox  = document.getElementById("score-box");
 const progText  = document.getElementById("progress-text");
 const progBar   = document.getElementById("progress-bar");
 
-/* ================================================================
-   ANSWER MATCHING
-   ================================================================ */
 function levenshtein(a, b) {
   const dp = Array.from({ length: a.length + 1 }, (_, i) => Array.from({ length: b.length + 1 }, (_, j) => i || j));
   for (let i = 1; i <= a.length; i++)
@@ -334,7 +318,6 @@ function isCorrect(val, q) {
   return accepted.some(target => fuzzyMatch(input, target));
 }
 
-/* ---- LOCALSTORAGE ---- */
 function getSaveKey(quizTitle) { return `bens-trivia-progress:${quizTitle}`; }
 function getSubmitKey(quizTitle) { return `bens-trivia-submitted:${quizTitle}`; }
 function saveProgress(quizTitle) {
@@ -347,7 +330,6 @@ function clearSubmission(quizTitle) { try { localStorage.removeItem(getSubmitKey
 function loadSavedProgress(quizTitle) { try { const raw = localStorage.getItem(getSaveKey(quizTitle)); return raw ? JSON.parse(raw) : null; } catch(e) { return null; } }
 function clearOldSaves(currentTitle, allTitles) { allTitles.forEach(title => { if (title !== currentTitle) { try { localStorage.removeItem(getSaveKey(title)); } catch(e) {} } }); }
 
-/* ---- LOAD QUIZ ---- */
 (async function loadQuiz() {
   try {
     const res  = await fetch("weekly_quizzes.json");
@@ -360,8 +342,6 @@ function clearOldSaves(currentTitle, allTitles) { allTitles.forEach(title => { i
     questions = quiz.questions;
     document.getElementById("quiz-title").textContent = quiz.title;
     document.getElementById("quiz-week-info").textContent = `Week ${weekIdx + 1} · ${questions.length} questions`;
-
-    /* Show description if the quiz has one */
     const descEl = document.getElementById("quiz-description");
     if (quiz.description) {
       descEl.textContent = quiz.description;
@@ -369,7 +349,6 @@ function clearOldSaves(currentTitle, allTitles) { allTitles.forEach(title => { i
     } else {
       descEl.style.display = "none";
     }
-
     const allTitles = data.weekly_quizzes.map(q => q.title);
     clearOldSaves(quiz.title, allTitles);
     const saved = loadSavedProgress(quiz.title);
@@ -388,7 +367,6 @@ function clearOldSaves(currentTitle, allTitles) { allTitles.forEach(title => { i
   }
 })();
 
-/* ---- RESTORE SAVED ANSWERS ---- */
 function restoreAnswers() {
   states.forEach((s, i) => {
     if (!s.checked) return;
@@ -414,6 +392,7 @@ function restoreAnswers() {
     } else if (q.type === "multi-text") {
       restoreMultiText(card, q, i, s);
     }
+    if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; card.appendChild(ff); }
     card.querySelectorAll("input, button.option-btn, button.btn-check").forEach(el => el.disabled = true);
     card.classList.remove("current-q");
     card.classList.add("answered");
@@ -462,7 +441,6 @@ function restoreMultiText(card, q, i, s) {
   setFeedback(i, pts === max ? `✓ Perfect! ${pts}/${max} points!` : pts > 0 ? `${pts}/${max} points` : `✗ 0/${max} points`, pts === max ? "correct" : pts > 0 ? "partial" : "incorrect");
 }
 
-/* ---- RENDER ---- */
 function renderQuiz() {
   container.innerHTML = "";
   questions.forEach((q, i) => {
@@ -475,15 +453,12 @@ function renderQuiz() {
     card.appendChild(header);
     const txt = document.createElement("div");
     txt.className = "question-text"; txt.textContent = q.text; card.appendChild(txt);
-
-    /* Shoutout — shown beneath question text if the question has one */
     if (q.shoutout) {
       const so = document.createElement("div");
       so.className = "question-shoutout";
       so.textContent = q.shoutout;
       card.appendChild(so);
     }
-
     if      (q.type === "mcq")        renderMCQ(card, q, i);
     else if (q.type === "text-exact") renderTextExact(card, q, i);
     else if (q.type === "numeric")    renderNumeric(card, q, i);
@@ -537,7 +512,7 @@ function renderMultiText(card, q, i) {
   btn.onclick = () => checkMultiText(i); card.appendChild(btn);
 }
 
-/* ---- CHECK FUNCTIONS ---- */
+/* ---- CHECK FUNCTIONS (with funfact support) ---- */
 function checkMultiText(i) {
   if (states[i].checked) return;
   const q = questions[i]; const card = document.getElementById(`card-${i}`);
@@ -569,6 +544,7 @@ function checkMultiText(i) {
   if (pts === max) setFeedback(i, `✓ Perfect! ${pts}/${max} points!`, "correct");
   else if (pts > 0) setFeedback(i, `${pts}/${max} points`, "partial");
   else setFeedback(i, `✗ 0/${max} points`, "incorrect");
+  if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; card.appendChild(ff); }
   lockCard(i, pts > 0);
 }
 
@@ -593,8 +569,10 @@ function checkMCQ(i, chosen) {
   const mcqCorrect = chosen === q.correctIndex; states[i].chosenIndex = chosen;
   if (mcqCorrect) { states[i].points = q.maxPoints; setFeedback(i, "✓ Correct!", "correct"); }
   else { setFeedback(i, `✗ The answer was: ${q.options[q.correctIndex]}`, "incorrect"); }
+  if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; card.appendChild(ff); }
   lockCard(i, mcqCorrect);
 }
+
 function checkTextExact(i) {
   if (states[i].checked) return;
   const q = questions[i]; const input = document.getElementById(`input-${i}`); const val = input.value;
@@ -602,8 +580,10 @@ function checkTextExact(i) {
   const textCorrect = isCorrect(val, q); states[i].chosenValue = val.trim();
   if (textCorrect) { states[i].points = q.maxPoints; setFeedback(i, "✓ Correct!", "correct"); }
   else { setFeedback(i, `✗ The answer was: ${q.correctAnswer}`, "incorrect"); }
+  if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; document.getElementById(`card-${i}`).appendChild(ff); }
   lockCard(i, textCorrect);
 }
+
 function checkNumeric(i) {
   if (states[i].checked) return;
   const q = questions[i]; const input = document.getElementById(`input-${i}`); const val = parseFloat(input.value);
@@ -611,8 +591,10 @@ function checkNumeric(i) {
   const numCorrect = val === q.correctNumber; states[i].chosenValue = val;
   if (numCorrect) { states[i].points = q.maxPoints; setFeedback(i, "✓ Correct!", "correct"); }
   else { setFeedback(i, `✗ The answer was: ${q.correctNumber}`, "incorrect"); }
+  if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; document.getElementById(`card-${i}`).appendChild(ff); }
   lockCard(i, numCorrect);
 }
+
 function checkYear(i) {
   if (states[i].checked) return;
   const q = questions[i]; const input = document.getElementById(`input-${i}`); const val = parseInt(input.value, 10);
@@ -624,10 +606,10 @@ function checkYear(i) {
   if (diff === 0) setFeedback(i, `✓ Correct! ${q.correctYear} — full 2 points!`, "correct");
   else if (diff === 1) setFeedback(i, `Almost! The answer was ${q.correctYear} — 1 point.`, "partial");
   else setFeedback(i, `✗ The answer was: ${q.correctYear}`, "incorrect");
+  if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; document.getElementById(`card-${i}`).appendChild(ff); }
   lockCard(i, pts > 0);
 }
 
-/* ---- PROGRESS + SCORE ---- */
 let _animFrame = null;
 function updateProgress() {
   const answered = states.filter(s => s.checked).length; const total = states.length;
@@ -654,7 +636,6 @@ function animateCounter(el, from, to) {
   _animFrame = requestAnimationFrame(step);
 }
 
-/* ---- CONFETTI ---- */
 function launchConfetti(pct) {
   const canvas = document.getElementById("confetti-canvas"); const ctx = canvas.getContext("2d");
   canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -667,7 +648,6 @@ function launchConfetti(pct) {
 
 document.getElementById("jump-unanswered").addEventListener("click", () => { const idx = states.findIndex(s => !s.checked); if (idx === -1) scoreBox.scrollIntoView({ behavior: "smooth" }); else document.getElementById(`card-${idx}`).scrollIntoView({ behavior: "smooth", block: "center" }); });
 
-/* ---- SHARE ---- */
 function buildShareText() {
   const earned = states.reduce((s, x) => s + x.points, 0); const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
   const pct = maxPts ? Math.round((earned / maxPts) * 100) : 0; const title = document.getElementById("quiz-title").textContent;
@@ -676,9 +656,6 @@ function buildShareText() {
 document.getElementById("share-whatsapp").addEventListener("click", () => { window.open("https://wa.me/?text=" + encodeURIComponent(buildShareText()), "_blank"); });
 document.getElementById("copy-result").addEventListener("click", () => { navigator.clipboard.writeText(buildShareText()).then(() => { document.getElementById("share-status").textContent = "Copied!"; setTimeout(() => document.getElementById("share-status").textContent = "", 2000); }); });
 
-/* ================================================================
-   SUPABASE LEADERBOARD
-   ================================================================ */
 const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
 const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
 let currentTab = "week"; let currentQuizTitle = ""; let scoreSubmitted = false;
