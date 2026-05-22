@@ -588,12 +588,21 @@ function checkMultiText(i) {
 
 function lockCard(i, wasCorrect) {
   const card = document.getElementById(`card-${i}`);
-  card.querySelectorAll("input, button.option-btn, button.btn-check").forEach(el => el.disabled = true);
+  card.querySelectorAll("input, button.option-btn, button.btn-check, .btn-skip").forEach(el => el.disabled = true);
   card.classList.remove("current-q");
   if (wasCorrect) { card.classList.add("flash-correct"); setTimeout(() => { card.classList.remove("flash-correct"); card.classList.add("answered"); }, 700); }
   else { card.classList.add("answered"); }
   states[i].checked = true;
   saveProgress(document.getElementById("quiz-title").textContent);
+  /* Submit this question's stat immediately — no need to finish the quiz */
+  if (currentQuizTitle) {
+    const q = questions[i];
+    fetch(`${SUPA_URL}/rest/v1/question_stats`, {
+      method: "POST",
+      headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal" },
+      body: JSON.stringify([{ quiz_title: currentQuizTitle, question_id: q.id, correct: states[i].points > 0, points_earned: states[i].points }])
+    });
+  }
   updateProgress();
   setTimeout(() => { const next = states.findIndex((s, idx) => idx > i && !s.checked); if (next !== -1) { document.getElementById(`card-${next}`).classList.add("current-q"); } }, 500);
 }
@@ -760,8 +769,7 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
     const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard`, { method: "POST", headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal" }, body: JSON.stringify({ player_name: name, quiz_title: currentQuizTitle, score: earned, max_score: maxPts, percent: pct, country: detectedCountry }) });
     if (res.ok) {
       scoreSubmitted = true; saveSubmission(currentQuizTitle, name);
-      const questionRows = questions.map((q, i) => ({ quiz_title: currentQuizTitle, question_id: q.id, correct: states[i].points > 0, points_earned: states[i].points }));
-      fetch(`${SUPA_URL}/rest/v1/question_stats`, { method: "POST", headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal" }, body: JSON.stringify(questionRows) });
+      /* Question stats are submitted per-question in lockCard — no bulk submit needed here */
       document.getElementById("submit-status").textContent = `✓ Score submitted! Good luck, ${name}!`;
       document.getElementById("submit-row").style.display = "none";
       document.getElementById("leaderboard-locked").style.display = "none";
