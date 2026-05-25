@@ -253,26 +253,12 @@ async function loadStats(quizTitle) {
   renderQuestions(quizTitle, qData);
 }
 
-function getWeekRange(quizTitle) {
-  const base = new Date("2026-04-18T15:00:00Z");
-  const picker = document.getElementById("quiz-picker");
-  const opts   = [...picker.options].filter(o => o.value);
-  const selIdx = opts.findIndex(o => o.value === quizTitle);
-  const idx    = selIdx >= 0 ? selIdx : 0;
-  const weekStart = new Date(base.getTime() + idx * 7 * 86400000);
-  const weekEnd   = new Date(weekStart.getTime() + 7 * 86400000);
-  return { weekStart, weekEnd };
-}
-
 async function fetchLeaderboard(quizTitle) {
   try {
-    const { weekStart, weekEnd } = getWeekRange(quizTitle);
     const url = `${SUPA_URL}/rest/v1/leaderboard`
       + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
-      + `&submitted_at=gte.${weekStart.toISOString()}`
-      + `&submitted_at=lt.${weekEnd.toISOString()}`
       + `&select=player_name,score,max_score,percent,submitted_at,country`
-      + `&order=score.desc,percent.desc&limit=100`;
+      + `&order=score.desc,percent.desc&limit=1000`;
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     return await res.json();
   } catch { return []; }
@@ -280,11 +266,8 @@ async function fetchLeaderboard(quizTitle) {
 
 async function fetchQuestionStats(quizTitle) {
   try {
-    const { weekStart, weekEnd } = getWeekRange(quizTitle);
     const url = `${SUPA_URL}/rest/v1/question_stats`
       + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
-      + `&submitted_at=gte.${weekStart.toISOString()}`
-      + `&submitted_at=lt.${weekEnd.toISOString()}`
       + `&select=question_id,correct,points_earned`;
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     return await res.json();
