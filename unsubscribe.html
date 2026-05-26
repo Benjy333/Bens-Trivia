@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unsubscribe · Ben's Trivia</title>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    @keyframes bgShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    body {
+      background: linear-gradient(-45deg, #020713, #041831, #071a3a, #020a18);
+      background-size: 400% 400%;
+      animation: bgShift 18s ease infinite;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px 16px;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .card {
+      width: min(480px, 100%);
+      background: radial-gradient(circle at top left, #12335a 0, #020a16 70%);
+      border: 1px solid rgba(150, 208, 255, 0.3);
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #96d0ff;
+      margin-bottom: 32px;
+    }
+    .logo span { color: #38ef7d; }
+    .icon { font-size: 3rem; margin-bottom: 16px; }
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #e9f4ff;
+      margin-bottom: 10px;
+    }
+    .sub {
+      font-size: 0.9rem;
+      color: #96d0ff;
+      opacity: 0.8;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .email-display {
+      font-size: 0.85rem;
+      color: #38ef7d;
+      background: rgba(56,239,125,0.08);
+      border: 1px solid rgba(56,239,125,0.2);
+      border-radius: 999px;
+      padding: 8px 18px;
+      display: inline-block;
+      margin-bottom: 24px;
+      word-break: break-all;
+    }
+    .btn-unsub {
+      padding: 12px 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,66,102,0.5);
+      background: rgba(255,66,102,0.1);
+      color: #ff4266;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+      margin-bottom: 12px;
+      width: 100%;
+      max-width: 260px;
+    }
+    .btn-unsub:hover { background: #ff4266; color: #fff; }
+    .btn-unsub:disabled { opacity: 0.5; cursor: default; }
+    .btn-stay {
+      padding: 12px 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(150,208,255,0.3);
+      background: transparent;
+      color: #96d0ff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.15s;
+      width: 100%;
+      max-width: 260px;
+    }
+    .btn-stay:hover { border-color: var(--neon-soft); color: #e9f4ff; }
+    .status {
+      margin-top: 20px;
+      font-size: 0.88rem;
+      min-height: 20px;
+      line-height: 1.5;
+    }
+    .status.success { color: #38ef7d; }
+    .status.error { color: #ff4266; }
+    .buttons { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .footer-link {
+      margin-top: 28px;
+      font-size: 0.78rem;
+      opacity: 0.45;
+      color: #96d0ff;
+    }
+    .footer-link a { color: #96d0ff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Ben's Trivia<span>.</span></div>
+    <div class="icon" id="icon">📬</div>
+    <h1 id="title">Unsubscribe</h1>
+    <p class="sub" id="subtitle">Are you sure you want to stop receiving the weekly quiz email?</p>
+    <div class="email-display" id="email-display">Loading…</div>
+    <div class="buttons" id="buttons">
+      <button class="btn-unsub" id="btn-unsub">Yes, unsubscribe me</button>
+      <button class="btn-stay" id="btn-stay" onclick="window.location='https://benstrivia.com'">No, keep me subscribed</button>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="footer-link">
+      <a href="https://benstrivia.com">← Back to Ben's Trivia</a>
+    </div>
+  </div>
+
+  <script>
+    const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
+    const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
+
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email") || "";
+
+    const emailDisplay = document.getElementById("email-display");
+    const statusEl = document.getElementById("status");
+
+    if (email) {
+      emailDisplay.textContent = email;
+    } else {
+      emailDisplay.textContent = "No email found";
+      document.getElementById("btn-unsub").disabled = true;
+    }
+
+    document.getElementById("btn-unsub").addEventListener("click", async () => {
+      if (!email) return;
+      const btn = document.getElementById("btn-unsub");
+      btn.disabled = true;
+      btn.textContent = "Unsubscribing…";
+
+      try {
+        const res = await fetch(
+          `${SUPA_URL}/rest/v1/mailing_list?email=eq.${encodeURIComponent(email)}`,
+          {
+            method: "PATCH",
+            headers: {
+              "apikey": SUPA_KEY,
+              "Authorization": `Bearer ${SUPA_KEY}`,
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({ active: false })
+          }
+        );
+
+        if (res.ok) {
+          document.getElementById("icon").textContent = "👋";
+          document.getElementById("title").textContent = "You're unsubscribed";
+          document.getElementById("subtitle").textContent = "Sorry to see you go! You won't receive any more quiz emails.";
+          document.getElementById("buttons").style.display = "none";
+          statusEl.className = "status success";
+          statusEl.textContent = "✓ Successfully unsubscribed.";
+        } else {
+          throw new Error("Failed");
+        }
+      } catch(e) {
+        btn.disabled = false;
+        btn.textContent = "Yes, unsubscribe me";
+        statusEl.className = "status error";
+        statusEl.textContent = "Something went wrong. Please try again.";
+      }
+    });
+  </script>
+</body>
+</html>
