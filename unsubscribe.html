@@ -153,16 +153,14 @@
 
       try {
         const res = await fetch(
-          `${SUPA_URL}/rest/v1/mailing_list?email=eq.${encodeURIComponent(email)}`,
+          "https://cxgndxmvyerwejwyitrf.supabase.co/functions/v1/smooth-action/unsubscribe",
           {
-            method: "PATCH",
+            method: "POST",
             headers: {
-              "apikey": SUPA_KEY,
-              "Authorization": `Bearer ${SUPA_KEY}`,
               "Content-Type": "application/json",
-              "Prefer": "return=minimal"
+              "Authorization": `Bearer ${SUPA_KEY}`
             },
-            body: JSON.stringify({ active: false })
+            body: JSON.stringify({ email })
           }
         );
 
