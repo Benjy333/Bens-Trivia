@@ -266,12 +266,21 @@ async function fetchLeaderboard(quizTitle) {
 
 async function fetchQuestionStats(quizTitle) {
   try {
-    const url = `${SUPA_URL}/rest/v1/question_stats`
-      + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
-      + `&select=question_id,correct,points_earned`
-      + `&limit=10000`;
-    const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
-    return await res.json();
+    const allRows = [];
+    const pageSize = 1000;
+    let offset = 0;
+    while (true) {
+      const url = `${SUPA_URL}/rest/v1/question_stats`
+        + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
+        + `&select=question_id,correct,points_earned`
+        + `&limit=${pageSize}&offset=${offset}`;
+      const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
+      const rows = await res.json();
+      allRows.push(...rows);
+      if (rows.length < pageSize) break;
+      offset += pageSize;
+    }
+    return allRows;
   } catch { return []; }
 }
 
