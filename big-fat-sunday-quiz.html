@@ -264,6 +264,20 @@
           </table>
         </div>
       </div>
+      <div id="mailing-list-signup" style="display:none; margin-top:20px; padding:18px 16px; border:1px solid rgba(150,208,255,0.25); border-radius:16px; background:radial-gradient(circle at top left,#12335a 0,#020a16 70%); text-align:center;">
+        <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">📬 Get the quiz every Sunday</div>
+        <div style="font-size:0.88rem;margin-bottom:12px;opacity:0.85;">Drop your email and we'll send you a link each week</div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+          <input id="signup-email" type="email" placeholder="your@email.com" maxlength="100"
+            style="flex:1;min-width:180px;max-width:280px;padding:8px 14px;border-radius:999px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;" />
+          <button id="signup-btn"
+            style="padding:8px 18px;border-radius:999px;border:1px solid var(--neon);background:rgba(3,15,34,0.9);color:var(--neon);font-size:0.85rem;cursor:pointer;font-weight:600;white-space:nowrap;">
+            Subscribe
+          </button>
+        </div>
+        <div id="signup-status" style="font-size:0.8rem;margin-top:8px;min-height:18px;"></div>
+      </div>
+
       <div id="instagram-handle" style="display:none; text-align:center; margin-top:20px; padding:16px; border-top:1px solid rgba(150,208,255,0.15);">
         <div style="font-size:0.78rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Want to see the weekly leaderboard?</div>
         <a href="https://instagram.com/benstrivia" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:999px; border:1.5px solid rgba(150,208,255,0.5); background:rgba(3,15,34,0.9); color:#e9f4ff; text-decoration:none; font-size:0.95rem; font-weight:600; box-shadow:0 0 12px rgba(55,161,255,0.25); transition:0.15s;" onmouseover="this.style.background='var(--neon)';this.style.color='#001';" onmouseout="this.style.background='rgba(3,15,34,0.9)';this.style.color='#e9f4ff';">📸 Follow @benstrivia</a>
@@ -441,6 +455,7 @@ function restoreAnswers() {
   const allDone = states.every(s => s.checked);
   if (allDone) {
     document.getElementById("instagram-handle").style.display = "block";
+    document.getElementById("mailing-list-signup").style.display = "block";
     showLeaderboard();
     const savedName = loadSubmission(currentQuizTitle);
     if (savedName) {
@@ -709,6 +724,7 @@ function updateProgress() {
   animateCounter(scoreBox.querySelector(".percent"), currentPct, pct);
   if (answered === total && total > 0) {
     document.getElementById("instagram-handle").style.display = "block";
+    document.getElementById("mailing-list-signup").style.display = "block";
     showLeaderboard();
     showHighlight();
     if (pct >= 60) launchConfetti(pct);
@@ -961,6 +977,7 @@ document.getElementById("btn-restart").addEventListener("click", () => {
   states = questions.map(q => ({ checked: false, points: 0, maxPoints: q.maxPoints || 1, chosenIndex: null, chosenValue: null, chosenValues: null }));
   scoreSubmitted = false;
   document.getElementById("highlight-panel").style.display = "none";
+  document.getElementById("mailing-list-signup").style.display = "none";
   document.getElementById("leaderboard-section").style.display = "none";
   document.getElementById("leaderboard-locked").style.display = "block";
   document.getElementById("leaderboard-unlocked").style.display = "none";
@@ -970,6 +987,48 @@ document.getElementById("btn-restart").addEventListener("click", () => {
 });
 
 let data_start_date = "2026-04-18";
+
+/* ---- MAILING LIST SIGNUP ---- */
+document.getElementById("signup-btn").addEventListener("click", async () => {
+  const emailEl = document.getElementById("signup-email");
+  const statusEl = document.getElementById("signup-status");
+  const email = emailEl.value.trim();
+  if (!email || !email.includes("@")) {
+    statusEl.style.color = "var(--bad)";
+    statusEl.textContent = "Please enter a valid email address.";
+    return;
+  }
+  const btn = document.getElementById("signup-btn");
+  btn.disabled = true; btn.textContent = "Subscribing…";
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/mailing_list`, {
+      method: "POST",
+      headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal" },
+      body: JSON.stringify({ email })
+    });
+    if (res.ok) {
+      statusEl.style.color = "var(--good)";
+      statusEl.textContent = "✓ You're subscribed! See you next Sunday 🍺";
+      emailEl.style.display = "none"; btn.style.display = "none";
+    } else if (res.status === 409) {
+      statusEl.style.color = "#f5c542";
+      statusEl.textContent = "You're already subscribed!";
+      btn.disabled = false; btn.textContent = "Subscribe";
+    } else {
+      statusEl.style.color = "var(--bad)";
+      statusEl.textContent = "Something went wrong. Try again.";
+      btn.disabled = false; btn.textContent = "Subscribe";
+    }
+  } catch(e) {
+    statusEl.style.color = "var(--bad)";
+    statusEl.textContent = "Could not connect. Check your internet.";
+    btn.disabled = false; btn.textContent = "Subscribe";
+  }
+});
+
+document.getElementById("signup-email").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("signup-btn").click();
+});
 </script>
 </body>
 </html>
