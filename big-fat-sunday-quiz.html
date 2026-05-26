@@ -851,7 +851,7 @@ async function showHighlight() {
       }
       // Priority 4: Hardest question got right
       else if (hardestCorrect) {
-        headline = `Only ${hardestPct}% got this right`;
+        headline = `I got a question only ${hardestPct}% of people got right!`;
         sub = `"${hardestCorrect.text}"`;
         cssClass = "";
       }
@@ -863,7 +863,7 @@ async function showHighlight() {
     } else {
       // No leaderboard data — fall back to hardest question
       if (hardestCorrect) {
-        headline = `Only ${hardestPct}% got this right`;
+        headline = `I got a question only ${hardestPct}% of people got right!`;
         sub = `"${hardestCorrect.text}"`;
       } else {
         headline = `${myPct}% Score`;
