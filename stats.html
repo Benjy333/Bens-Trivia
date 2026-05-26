@@ -266,21 +266,11 @@ async function fetchLeaderboard(quizTitle) {
 
 async function fetchQuestionStats(quizTitle) {
   try {
-    const allRows = [];
-    const pageSize = 1000;
-    let offset = 0;
-    while (true) {
-      const url = `${SUPA_URL}/rest/v1/question_stats`
-        + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
-        + `&select=question_id,correct,points_earned`
-        + `&limit=${pageSize}&offset=${offset}`;
-      const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
-      const rows = await res.json();
-      allRows.push(...rows);
-      if (rows.length < pageSize) break;
-      offset += pageSize;
-    }
-    return allRows;
+    const url = `${SUPA_URL}/rest/v1/question_stats_summary`
+      + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
+      + `&select=question_id,total_count,correct_count`;
+    const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
+    return await res.json();
   } catch { return []; }
 }
 
@@ -355,9 +345,7 @@ function renderQuestions(quizTitle, qData) {
 
   const byId = {};
   qData.forEach(row => {
-    if (!byId[row.question_id]) byId[row.question_id] = { correct: 0, total: 0 };
-    byId[row.question_id].total++;
-    if (row.correct) byId[row.question_id].correct++;
+    byId[row.question_id] = { correct: row.correct_count, total: row.total_count };
   });
 
   const rows = qs.map(q => {
