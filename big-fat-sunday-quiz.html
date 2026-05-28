@@ -1008,7 +1008,7 @@ document.getElementById("signup-btn").addEventListener("click", async () => {
     });
     if (res.ok) {
       statusEl.style.color = "var(--good)";
-      statusEl.textContent = "✓ You're subscribed! See you next Sunday 🍺";
+      statusEl.textContent = "✓ You're subscribed! See you next Sunday 🍺 (check your spam if you don't see it)";
       emailEl.style.display = "none"; btn.style.display = "none";
     } else if (res.status === 409) {
       statusEl.style.color = "#f5c542";
