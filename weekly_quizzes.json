@@ -212,7 +212,7 @@
       { "id": "landlords-game-monopoly", "type": "text-exact", "tag": "General knowledge", "text": "Patented in 1903, The Landlord's Game was the model for which popular board game?", "correctAnswer": "monopoly", "acceptedAnswers": ["monopoly"], "maxPoints": 1 },
       { "id": "gizzard-rhyme-lizard", "type": "text-exact", "tag": "General knowledge", "text": "What rhymes with 'lizard' and is the part of a bird's stomach that grinds food?", "correctAnswer": "gizzard", "acceptedAnswers": ["gizzard"], "maxPoints": 1 },
       { "id": "weeknd-spotify-100m", "type": "text-exact", "tag": "Music", "text": "Who was the first artist to surpass 100 million monthly listeners on Spotify?", "correctAnswer": "the weeknd", "acceptedAnswers": ["the weeknd", "weeknd"], "maxPoints": 1 },
-      { "id": "golf-condor", "type": "mcq", "tag": "Sport", "text": "What is the term for 4 under par on a single hole in golf?", "options": ["Birdie", "Eagle", "Albatross", "Condor"], "correctIndex": 3, "maxPoints": 1, "funfact": "A condor has only been recorded 5 times in history — all on par 5 holes. Incredibly rare!", "shoutout": "Shoutout to Jack for this question suggestion! 🏌️" }
+      { "id": "golf-condor", "type": "mcq", "tag": "Sport", "text": "What is the term for 4 under par on a single hole in golf?", "options": ["Birdie", "Eagle", "Albatross", "Condor"], "correctIndex": 3, "maxPoints": 1, "funfact": "A condor has only been recorded 5 times in history — all on par 5 holes. Incredibly rare!", "shoutout": "Shoutout to Jack for this question suggestion! 🏌️" },
       { "id": "fibonacci-next", "type": "numeric", "tag": "Maths", "text": "What comes next in this sequence: 1, 1, 2, 3, 5, 8, 13…?", "correctNumber": 21, "maxPoints": 1 }
 
     ] },
