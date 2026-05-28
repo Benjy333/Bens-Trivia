@@ -231,7 +231,7 @@
         <div class="highlight-sub" id="highlight-sub"></div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:4px;">
           <button class="highlight-share-btn" id="highlight-whatsapp">Share via WhatsApp</button>
-          <button class="highlight-share-btn" id="highlight-copy">Copy highlight</button>
+          <button class="highlight-share-btn" id="highlight-copy">📋 Copy Result</button>
         </div>
         <div id="highlight-share-status" style="font-size:11px;opacity:0.8;margin-top:6px;"></div>
         <div style="margin-top:16px;border-top:1px solid rgba(150,208,255,0.15);padding-top:14px;">
@@ -780,8 +780,14 @@ async function showHighlight() {
   headlineEl.textContent = "Calculating your highlight…";
   subEl.textContent = "";
 
+  const earned = states.reduce((s, x) => s + x.points, 0);
+  const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
+  const myPct  = maxPts ? Math.round((earned / maxPts) * 100) : 0;
+  const scoreStr = `Score: ${earned}/${maxPts} (${myPct}%)`;
+  const link = "https://benjy333.github.io/Bens-Trivia/big-fat-sunday-quiz.html";
+
   try {
-    // Fetch full leaderboard for this quiz
+    // Fetch full leaderboard
     const url = `${SUPA_URL}/rest/v1/leaderboard`
       + `?quiz_title=eq.${encodeURIComponent(currentQuizTitle)}`
       + `&select=player_name,score,percent,country`
@@ -789,52 +795,37 @@ async function showHighlight() {
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     const lb = await res.json();
 
-    const earned = states.reduce((s, x) => s + x.points, 0);
-    const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
-    const myPct  = maxPts ? Math.round((earned / maxPts) * 100) : 0;
-
-    // Find hardest question the player got right
-    let hardestCorrect = null;
-    let hardestPct = 101;
-
-    // Fetch question summary stats
+    // Fetch question summary stats to find THE hardest question overall
     const qUrl = `${SUPA_URL}/rest/v1/question_stats_summary`
       + `?quiz_title=eq.${encodeURIComponent(currentQuizTitle)}`
       + `&select=question_id,total_count,correct_count`;
     const qRes = await fetch(qUrl, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     const qStats = await qRes.json();
 
-    const statsByQid = {};
-    qStats.forEach(r => { statsByQid[r.question_id] = r; });
-
-    questions.forEach((q, i) => {
-      if (states[i].points > 0) {
-        const s = statsByQid[q.id];
-        if (s && s.total_count > 0) {
-          const pct = Math.round((s.correct_count / s.total_count) * 100);
-          if (pct < hardestPct) { hardestPct = pct; hardestCorrect = q; }
-        }
+    // Find the single hardest question of the whole quiz
+    let hardestQid = null, hardestPct = 101;
+    qStats.forEach(r => {
+      if (r.total_count > 0) {
+        const pct = Math.round((r.correct_count / r.total_count) * 100);
+        if (pct < hardestPct) { hardestPct = pct; hardestQid = r.question_id; }
       }
     });
+    const hardestQuestion = questions.find(q => q.id === hardestQid);
+    const playerGotHardest = hardestQid && states[questions.findIndex(q => q.id === hardestQid)]?.points > 0;
 
     let headline = "", sub = "", cssClass = "";
+    const suffix = n => n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
 
     if (lb.length > 0) {
-      // Sort lb by score desc (already sorted, but let's be safe)
-      // Assign ranks
       let ranks = [];
       lb.forEach((r, i) => {
         if (i === 0 || r.score !== lb[i-1].score || r.percent !== lb[i-1].percent) ranks.push(i);
         else ranks.push(ranks[i-1]);
       });
-
-      // Find where the player sits (by score)
       const myRankIdx = lb.findIndex(r => r.score === earned);
       const myWorldRank = myRankIdx >= 0 ? (ranks[myRankIdx] + 1) : null;
       const total = lb.length;
-      const top25threshold = Math.ceil(total * 0.25);
 
-      // Country rank
       let myCountryRank = null;
       if (detectedCountry) {
         const countryLb = lb.filter(r => r.country === detectedCountry);
@@ -842,65 +833,55 @@ async function showHighlight() {
         myCountryRank = myCountryIdx >= 0 ? myCountryIdx + 1 : null;
       }
 
-      const suffix = n => n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
-
       // Priority 1: Top 3 in the world
       if (myWorldRank !== null && myWorldRank <= 3) {
         const medals = ["🥇","🥈","🥉"];
         headline = `${medals[myWorldRank-1]} ${myWorldRank}${suffix(myWorldRank)} in the World!`;
-        sub = `You ranked ${myWorldRank}${suffix(myWorldRank)} out of ${total} players on the global leaderboard.`;
+        sub = `out of ${total} players`;
         cssClass = "hl-gold";
       }
-      // Priority 2: Top 3 in your country
+      // Priority 2: Top 3 in country
       else if (myCountryRank !== null && myCountryRank <= 3) {
         const flag = countryFlag(detectedCountry);
         const medals = ["🥇","🥈","🥉"];
-        headline = `${medals[myCountryRank-1]} ${myCountryRank}${suffix(myCountryRank)} in ${flag}Your Country!`;
-        sub = `You ranked ${myCountryRank}${suffix(myCountryRank)} in your country on the leaderboard.`;
+        headline = `${medals[myCountryRank-1]} ${myCountryRank}${suffix(myCountryRank)} in ${flag}My Country!`;
+        sub = ``;
         cssClass = "hl-country";
       }
-      // Priority 3: Top 25% overall
-      else if (myWorldRank !== null && myWorldRank <= top25threshold) {
-        headline = `Top 25% 🎯`;
-        sub = `You ranked ${myWorldRank}${suffix(myWorldRank)} out of ${total} players — top 25%!`;
-        cssClass = "";
-      }
-      // Priority 4: Hardest question got right
-      else if (hardestCorrect) {
+      // Priority 3: Got the single hardest question
+      else if (playerGotHardest && hardestQuestion) {
         headline = `I got a question only ${hardestPct}% of people got right!`;
-        sub = `"${hardestCorrect.text}"`;
+        sub = `"${hardestQuestion.text}"`;
         cssClass = "";
       }
+      // Priority 4: Just score
       else {
-        headline = `${myPct}% Score`;
-        sub = `You scored ${earned}/${maxPts} — challenge your friends to beat it!`;
+        headline = `I scored ${myPct}% on Ben's Trivia!`;
+        sub = `${currentQuizTitle} — can you beat me?`;
         cssClass = "";
       }
     } else {
-      // No leaderboard data — fall back to hardest question
-      if (hardestCorrect) {
+      if (playerGotHardest && hardestQuestion) {
         headline = `I got a question only ${hardestPct}% of people got right!`;
-        sub = `"${hardestCorrect.text}"`;
+        sub = `"${hardestQuestion.text}"`;
       } else {
-        headline = `${myPct}% Score`;
-        sub = `You scored ${earned}/${maxPts}!`;
+        headline = `I scored ${myPct}% on Ben's Trivia!`;
+        sub = `${currentQuizTitle} — can you beat me?`;
       }
     }
 
     panel.className = "highlight-panel" + (cssClass ? " " + cssClass : "");
     headlineEl.textContent = headline;
-    subEl.textContent = sub;
+    subEl.textContent = sub ? `${sub}` : "";
 
-    highlightText = `⚡ Trivia Highlight\n\n${headline}\n${sub}\n\nBen's Trivia · ${currentQuizTitle}\nhttps://benjy333.github.io/Bens-Trivia/big-fat-sunday-quiz.html`;
+    highlightText = `⚡ Trivia Highlight\n\n${headline}\n${sub ? sub + "\n" : ""}${scoreStr}\nBen's Trivia · ${currentQuizTitle}\n${link}`;
 
   } catch(e) {
     console.error("Highlight error:", e);
-    const earned = states.reduce((s, x) => s + x.points, 0);
-    const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
-    const myPct  = maxPts ? Math.round((earned / maxPts) * 100) : 0;
-    document.getElementById("highlight-headline").textContent = `${myPct}% Score`;
-    document.getElementById("highlight-sub").textContent = `You scored ${earned}/${maxPts} — challenge your friends!`;
-    highlightText = `⚡ Trivia Highlight\n\n${myPct}% Score\nBen's Trivia · ${currentQuizTitle}\nhttps://benjy333.github.io/Bens-Trivia/big-fat-sunday-quiz.html`;
+    headline = `I scored ${myPct}% on Ben's Trivia!`;
+    document.getElementById("highlight-headline").textContent = headline;
+    document.getElementById("highlight-sub").textContent = `${currentQuizTitle} — can you beat me?`;
+    highlightText = `⚡ Trivia Highlight\n\n${headline}\n${scoreStr}\nBen's Trivia · ${currentQuizTitle}\n${link}`;
   }
 }
 
