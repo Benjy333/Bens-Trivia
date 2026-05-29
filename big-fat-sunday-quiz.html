@@ -837,7 +837,7 @@ async function showHighlight() {
       if (myWorldRank !== null && myWorldRank <= 3) {
         const medals = ["🥇","🥈","🥉"];
         headline = `${medals[myWorldRank-1]} ${myWorldRank}${suffix(myWorldRank)} in the World!`;
-        sub = `out of ${total} players`;
+        sub = "";
         cssClass = "hl-gold";
       }
       // Priority 2: Top 3 in country
