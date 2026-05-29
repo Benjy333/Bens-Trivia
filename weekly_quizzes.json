@@ -186,12 +186,12 @@
     ] },
          
     { "title": "Big Fat Sunday Quiz #7", 
-      "description": "Couple of Updates! You can now google benstrivia.com for the weekly trivia! I have also added a Subscribe option at the end if you would like a the link emailed every Sunday",
+      "description": "Couple of Updates! You can now google benstrivia.com for the weekly trivia! Added a Subscribe option at the end if you want the link emailed every Sunday",
       
       "questions": [
 
      { "id": "biggest-apps", "type": "multi-text", "tag": "Tech", "text": "Name the 5 biggest apps in the world by monthly active users", "answers": ["facebook", "instagram", "whatsapp", "youtube", "tiktok"], "acceptedAnswers": [["facebook"], ["instagram"], ["whatsapp", "whats app"], ["youtube"], ["tiktok", "tik tok"]], "maxPoints": 5 },
-     { "id": "hairstyles-pageboy", "type": "text-exact", "tag": "General knowledge", "text": "The pageboy, beehive and fauxhawk are all … what?", "correctAnswer": "hairstyles", "acceptedAnswers": ["hairstyles", "haircuts", "hairstyles/haircuts"], "maxPoints": 1 },
+     { "id": "hairstyles-pageboy", "type": "text-exact", "tag": "General knowledge", "text": "The pageboy, beehive and fauxhawk are all … what?", "correctAnswer": "hairstyles", "acceptedAnswers": ["hairstyles", "haircuts", "hairstyles/haircuts", "hairdos"], "maxPoints": 1 },
      { "id": "henry-viii-wives", "type": "mcq", "tag": "History", "text": "How many women named Catherine did Henry VIII marry?", "options": ["1", "2", "3", "4"], "correctIndex": 2, "maxPoints": 1, "funfact": "Henry VIII married 6 women in total — 3 Catherines, 2 Annes and 1 Jane." },
      { "id": "bood-up-slang", "type": "text-exact", "tag": "Language", "text": "According to Gen-Z slang, what am I if I'm 'boo'd up'?", "correctAnswer": "in a romantic relationship", "acceptedAnswers": ["in a romantic relationship", "in a relationship", "dating someone", "taken","have a girlfriend"], "maxPoints": 1 },
       { "id": "kylie-anagram", "type": "text-exact", "tag": "Wordplay", "text": "This pop princess is an anagram of 'I LIKE GUY ON ME'. Who is she?", "correctAnswer": "kylie minogue", "acceptedAnswers": ["kylie minogue", "kylie"], "maxPoints": 1 },
