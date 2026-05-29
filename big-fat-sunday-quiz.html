@@ -989,8 +989,14 @@ document.getElementById("signup-btn").addEventListener("click", async () => {
     });
     if (res.ok) {
       statusEl.style.color = "var(--good)";
-      statusEl.textContent = "✓ You're subscribed! See you next Sunday 🍺 (check your spam if you don't see it)";
+      statusEl.textContent = "✓ You're subscribed! Sending you this week's quiz now... (check your spam if you don't see it)";
       emailEl.style.display = "none"; btn.style.display = "none";
+      // Send welcome email immediately
+      fetch(`${SUPA_URL}/functions/v1/smooth-action/send-one`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SUPA_KEY}`, "apikey": SUPA_KEY },
+        body: JSON.stringify({ email })
+      });
     } else if (res.status === 409) {
       statusEl.style.color = "#f5c542";
       statusEl.textContent = "You're already subscribed!";
