@@ -224,7 +224,7 @@
       "questions": [
       
 
-        { "id": "spotify-top-5-listeners", "type": "multi-text", "tag": "Music", "text": "Name the top 5 most listened to artists on Spotify by monthly listeners (1 point each)", "answers": ["justin bieber", "bruno mars", "the weeknd", "rihanna", "michael jackson"], "acceptedAnswers": [["justin bieber", "bieber"], ["bruno mars"], ["the weeknd", "weeknd"], ["rihanna"], ["michael jackson", "mj", "jackson"]], "maxPoints": 5 },
+        
         { "id": "animated-sequels-2", "type": "multi-text", "tag": "Movies", "text": "Name the 5 biggest animated sequel movies with the number 2 in the title", "answers": ["frozen 2", "incredibles 2", "inside out 2", "zootopia 2", "moana 2"], "acceptedAnswers": [["frozen 2", "frozen ii"], ["incredibles 2", "the incredibles 2"], ["inside out 2"], ["zootopia 2"], ["moana 2"]], "maxPoints": 5 },
       { "id": "prayer-bones-knees", "type": "text-exact", "tag": "General knowledge", "text": "The archaic expression 'prayer bones' refers to which body parts?", "correctAnswer": "knees", "acceptedAnswers": ["knees", "kneecaps"], "maxPoints": 1 },
       { "id": "montevideo-capital", "type": "text-exact", "tag": "Geography", "text": "Montevideo is the capital of which country?", "correctAnswer": "uruguay", "acceptedAnswers": ["uruguay"], "maxPoints": 1 },
