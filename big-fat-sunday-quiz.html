@@ -850,23 +850,23 @@ async function showHighlight() {
       }
       // Priority 3: Got the single hardest question
       else if (playerGotHardest && hardestQuestion) {
-        headline = `I got a question only ${hardestPct}% of people got right!`;
+        headline = `Only ${hardestPct}% got this right!`;
         sub = `"${hardestQuestion.text}"`;
         cssClass = "";
       }
       // Priority 4: Just score
       else {
-        headline = `I scored ${myPct}% on Ben's Trivia!`;
-        sub = `${currentQuizTitle} — can you beat me?`;
+        headline = `I scored ${earned}/${maxPts} (${myPct}%) — can you beat it?`;
+        sub = "";
         cssClass = "";
       }
     } else {
       if (playerGotHardest && hardestQuestion) {
-        headline = `I got a question only ${hardestPct}% of people got right!`;
+        headline = `Only ${hardestPct}% got this right!`;
         sub = `"${hardestQuestion.text}"`;
       } else {
-        headline = `I scored ${myPct}% on Ben's Trivia!`;
-        sub = `${currentQuizTitle} — can you beat me?`;
+        headline = `I scored ${earned}/${maxPts} (${myPct}%) — can you beat it?`;
+        sub = "";
       }
     }
 
@@ -874,14 +874,15 @@ async function showHighlight() {
     headlineEl.textContent = headline;
     subEl.textContent = sub ? `${sub}` : "";
 
-    highlightText = `⚡ Trivia Highlight\n\n${headline}\n${sub ? sub + "\n" : ""}${scoreStr}\nBen's Trivia · ${currentQuizTitle}\n${link}`;
+    const quizLine = `📣 ${currentQuizTitle}`;
+    highlightText = `${quizLine}\n${headline}${sub ? "\n" + sub : ""}\n${scoreStr}\n${link}`;
 
   } catch(e) {
     console.error("Highlight error:", e);
-    headline = `I scored ${myPct}% on Ben's Trivia!`;
+    headline = `I scored ${earned}/${maxPts} (${myPct}%) — can you beat it?`;
     document.getElementById("highlight-headline").textContent = headline;
-    document.getElementById("highlight-sub").textContent = `${currentQuizTitle} — can you beat me?`;
-    highlightText = `⚡ Trivia Highlight\n\n${headline}\n${scoreStr}\nBen's Trivia · ${currentQuizTitle}\n${link}`;
+    document.getElementById("highlight-sub").textContent = "";
+    highlightText = `📣 ${currentQuizTitle}\n${headline}\n${scoreStr}\n${link}`;
   }
 }
 
