@@ -1,10 +1,10 @@
 :root {
-  --neon: #37a1ff;          /* primary neon blue */
-  --neon-soft: #96d0ff;     /* softer blue for glow */
-  --bg1: #071327;           /* deep navy background */
-  --bg2: #001020;           /* darker navy for cards */
-  --good: #38ef7d;          /* neon green */
-  --bad: #ff4266;           /* neon pink/red */
+  --neon: #37a1ff;
+  --neon-soft: #96d0ff;
+  --bg1: #071327;
+  --bg2: #001020;
+  --good: #38ef7d;
+  --bad: #ff4266;
   --text: #e9f4ff;
   --radius: 20px;
   --shadow: 0 0 25px rgba(55,161,255,.25),
@@ -30,8 +30,6 @@ body {
   color: var(--text);
   min-height: 100svh;
   overflow-x: hidden;
-
-  /* space for fixed header (2 rows) */
   padding-top: 120px;
 }
 
@@ -52,21 +50,18 @@ body {
   border-bottom: 1px solid rgba(150, 208, 255, 0.25);
 }
 
-/* row 1: menu + logo on left, optional "how to" on right */
 .header-row1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* left cluster: menu + logo */
 .header-left {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* logo */
 .logo-wrap {
   display: flex;
   align-items: center;
@@ -80,7 +75,6 @@ body {
     drop-shadow(0 0 22px var(--neon-soft));
 }
 
-/* "How to play" icon (only used on Connections for now) */
 .howto-btn {
   background: rgba(0, 0, 0, 0.25);
   border: 1.5px solid var(--neon-soft);
@@ -102,7 +96,6 @@ body {
   color: #001020;
 }
 
-/* row 2: centred title + date */
 .header-row2 {
   display: flex;
   justify-content: center;
@@ -143,7 +136,7 @@ body {
 .menu-dropdown {
   display: none;
   position: absolute;
-  top: 52px; /* just under row1 */
+  top: 52px;
   left: 12px;
   background: #020818f5;
   border: 1px solid rgba(150, 208, 255, 0.4);
@@ -290,6 +283,43 @@ p {
   margin-top: 6px;
   font-style: italic;
   color: var(--neon-soft);
+}
+
+/* ========= QUESTION FOOTER (skip + check) ========= */
+
+.question-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.btn-skip {
+  font-size: 0.72rem;
+  opacity: 0.45;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(150, 208, 255, 0.25);
+  background: transparent;
+  color: var(--neon-soft);
+  cursor: pointer;
+  box-shadow: none;
+  transition: opacity 0.15s;
+}
+
+.btn-skip:hover {
+  opacity: 0.8;
+  background: transparent;
+  color: var(--neon-soft);
+  box-shadow: none;
+}
+
+/* ========= MCQ SELECTED STATE ========= */
+
+.option-btn.selected {
+  border-color: var(--neon-soft);
+  box-shadow: 0 0 12px rgba(55, 161, 255, 0.45);
+  background: rgba(55, 161, 255, 0.12);
 }
 
 /* ========= FOOTER ========= */
