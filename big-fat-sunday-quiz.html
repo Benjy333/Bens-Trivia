@@ -278,6 +278,27 @@
         <div id="signup-status" style="font-size:0.8rem;margin-top:8px;min-height:18px;"></div>
       </div>
 
+      <div id="feedback-section" style="display:none; margin-top:20px; padding:18px 16px; border:1px solid rgba(150,208,255,0.25); border-radius:16px; background:radial-gradient(circle at top left,#12335a 0,#020a16 70%); text-align:center;">
+        <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">💬 Got something to say?</div>
+        <div style="font-size:0.88rem;margin-bottom:12px;opacity:0.85;">Feedback, spotted a mistake, or got a question idea? Let me know.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:420px;margin:0 auto;">
+          <select id="feedback-type" style="padding:8px 14px;border-radius:999px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;">
+            <option value="feedback">💭 General Feedback</option>
+            <option value="mistake">⚠️ Spot a Mistake</option>
+            <option value="suggestion">💡 Question Suggestion</option>
+          </select>
+          <textarea id="feedback-message" rows="3" placeholder="Type your message…" maxlength="500"
+            style="padding:10px 14px;border-radius:14px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;resize:vertical;font-family:inherit;"></textarea>
+          <input id="feedback-name" type="text" placeholder="Your name (optional)" maxlength="20"
+            style="padding:8px 14px;border-radius:999px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;" />
+          <button id="feedback-submit-btn"
+            style="padding:8px 18px;border-radius:999px;border:1px solid var(--neon);background:rgba(3,15,34,0.9);color:var(--neon);font-size:0.85rem;cursor:pointer;font-weight:600;">
+            Send
+          </button>
+        </div>
+        <div id="feedback-status" style="font-size:0.8rem;margin-top:10px;min-height:18px;"></div>
+      </div>
+
       <div id="instagram-handle" style="display:none; text-align:center; margin-top:20px; padding:16px; border-top:1px solid rgba(150,208,255,0.15);">
         <div style="font-size:0.78rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Want to see the weekly leaderboard?</div>
         <a href="https://instagram.com/benstrivia" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:999px; border:1.5px solid rgba(150,208,255,0.5); background:rgba(3,15,34,0.9); color:#e9f4ff; text-decoration:none; font-size:0.95rem; font-weight:600; box-shadow:0 0 12px rgba(55,161,255,0.25); transition:0.15s;" onmouseover="this.style.background='var(--neon)';this.style.color='#001';" onmouseout="this.style.background='rgba(3,15,34,0.9)';this.style.color='#e9f4ff';">📸 Follow @benstrivia</a>
@@ -456,6 +477,7 @@ function restoreAnswers() {
   if (allDone) {
     document.getElementById("instagram-handle").style.display = "block";
     document.getElementById("mailing-list-signup").style.display = "block";
+    document.getElementById("feedback-section").style.display = "block";
     showLeaderboard();
     const savedName = loadSubmission(currentQuizTitle);
     if (savedName) {
@@ -725,6 +747,7 @@ function updateProgress() {
   if (answered === total && total > 0) {
     document.getElementById("instagram-handle").style.display = "block";
     document.getElementById("mailing-list-signup").style.display = "block";
+    document.getElementById("feedback-section").style.display = "block";
     showLeaderboard();
     showHighlight();
     if (pct >= 60) launchConfetti(pct);
@@ -961,6 +984,7 @@ document.getElementById("btn-restart").addEventListener("click", () => {
   scoreSubmitted = false;
   document.getElementById("highlight-panel").style.display = "none";
   document.getElementById("mailing-list-signup").style.display = "none";
+  document.getElementById("feedback-section").style.display = "none";
   document.getElementById("leaderboard-section").style.display = "none";
   document.getElementById("leaderboard-locked").style.display = "block";
   document.getElementById("leaderboard-unlocked").style.display = "none";
@@ -1017,6 +1041,52 @@ document.getElementById("signup-btn").addEventListener("click", async () => {
 
 document.getElementById("signup-email").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("signup-btn").click();
+});
+
+/* ---- FEEDBACK BOX ---- */
+document.getElementById("feedback-submit-btn").addEventListener("click", async () => {
+  const typeEl = document.getElementById("feedback-type");
+  const msgEl = document.getElementById("feedback-message");
+  const nameEl = document.getElementById("feedback-name");
+  const statusEl = document.getElementById("feedback-status");
+  const message = msgEl.value.trim();
+
+  if (!message) {
+    statusEl.style.color = "var(--bad)";
+    statusEl.textContent = "Please write a message first.";
+    return;
+  }
+
+  const btn = document.getElementById("feedback-submit-btn");
+  btn.disabled = true; btn.textContent = "Sending…";
+
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/feedback`, {
+      method: "POST",
+      headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal" },
+      body: JSON.stringify({
+        quiz_title: currentQuizTitle,
+        player_name: nameEl.value.trim() || "Anonymous",
+        type: typeEl.value,
+        message: message
+      })
+    });
+    if (res.ok) {
+      statusEl.style.color = "var(--good)";
+      statusEl.textContent = "✓ Thanks, got it!";
+      msgEl.value = "";
+      nameEl.value = "";
+      btn.disabled = false; btn.textContent = "Send";
+    } else {
+      statusEl.style.color = "var(--bad)";
+      statusEl.textContent = "Something went wrong. Try again.";
+      btn.disabled = false; btn.textContent = "Send";
+    }
+  } catch(e) {
+    statusEl.style.color = "var(--bad)";
+    statusEl.textContent = "Could not connect. Check your internet.";
+    btn.disabled = false; btn.textContent = "Send";
+  }
 });
 </script>
 </body>
