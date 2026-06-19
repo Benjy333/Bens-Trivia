@@ -302,8 +302,6 @@
       
       "questions": [
       
-
-     [
   { "id": "brokeback-mountain-quote", "type": "mcq", "tag": "Movie Quote", "text": "'I wish I knew how to quit you' — which movie is this iconic line from?", "options": ["Carol", "Brokeback Mountain", "Call Me By Your Name", "Moonlight"], "correctIndex": 1, "maxPoints": 1, "funfact": "🤠 Brokeback Mountain (2005) won 3 Academy Awards including Best Director for Ang Lee, but lost Best Picture to Crash in one of the most controversial Oscar upsets in history." },
   { "id": "seattle-pride-match-2026", "type": "mcq", "tag": "Topical", "text": "Which 2 teams will feature in Seattle's World Pride match on June 26th, during the city's annual Pride weekend?", "options": [ "USA and Australia", "Belgium and New Zealand", "Qatar and Bosnia-Herzegovina", "Egypt and Iran"], "correctIndex": 3, "maxPoints": 1, "funfact": "⚽ Both Egypt and Iran's football federations complained to FIFA about the Pride celebrations attached to their match, but Seattle's organizing committee stood firm, saying the match reflects their commitment to 'respect, dignity and unity for all.'" },
   { "id": "mardi-gras-translation", "type": "mcq", "tag": "Language", "text": "What does 'Mardi Gras' mean in French?", "options": [ "Happy Wednesday", "Great Festival", "Fat Tuesday", "Wild Carnival"], "correctIndex": 2, "maxPoints": 1, "funfact": "🎭 Mardi Gras gets its name because it's the last day to indulge in rich, fatty foods before the fasting period of Lent begins on Ash Wednesday." },
@@ -329,8 +327,6 @@
   { "id": "tom-ford-director", "type": "mcq", "tag": "1% Question", "text": "Which famous fashion designer has also directed Oscar-nominated movies such as 'Nocturnal Animals' and 'A Single Man'?", "options": ["Tom Ford", "Karl Lagerfeld", "Marc Jacobs", "Giorgio Armani"], "correctIndex": 0, "maxPoints": 1, "funfact": "🎬 Before becoming a director, Tom Ford spent a decade as creative director of Gucci, growing the brand's annual revenue from $200 million to $3 billion." },
   { "id": "iceland-gay-pm-shoutout", "type": "mcq", "tag": "History", "text": "The first openly gay prime minister, Jóhanna Sigurðardóttir, hailed from which country?", "options": [ "Norway", "Netherlands", "Sweden", "Iceland"], "correctIndex": 3, "maxPoints": 1, "shoutout": "🙌 Big shoutout to Talisia for this question!", "funfact": "🇮🇸 Jóhanna Sigurðardóttir served as Iceland's Prime Minister from 2009 to 2013, becoming the world's first openly lesbian head of government in modern history." },
   { "id": "nokia-happy-pride-riddle", "type": "text-exact", "tag": "Riddle", "text": "In old Nokia phone keypad language (T9 texting), what does the following translate as: 44 2 7777 7777 99 0 7 777 444 3 33?", "correctAnswer": "happy pride", "acceptedAnswers": ["happy pride"], "maxPoints": 1, "funfact": "📱 Old Nokia phones used T9 predictive text where each number key represented 3-4 letters texting fluently on these keypads was practically a rite of passage for anyone who grew up in the 2000s!" }
-]
-
       
     ] },
     
