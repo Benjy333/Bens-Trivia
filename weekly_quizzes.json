@@ -299,7 +299,7 @@
 
 {
   "title": "Big Fat Sunday Quiz #10",
-  "description": "Happy Pride Month! 🏳️‍🌈",
+  "description": "Happy Pride Month! 🏳️‍🌈 I have also added a text box at the end for Players to add feedback/ question suggestions! Good luck!",
   "questions": [
     { "id": "brokeback-mountain-quote", "type": "mcq", "tag": "Movie Quote", "text": "'I wish I knew how to quit you' — which movie is this iconic line from?", "options": ["Carol", "Brokeback Mountain", "Call Me By Your Name", "Moonlight"], "correctIndex": 1, "maxPoints": 1, "funfact": "🤠 Brokeback Mountain (2005) won 3 Academy Awards including Best Director for Ang Lee, but lost Best Picture to Crash in one of the most controversial Oscar upsets in history." },
     { "id": "seattle-pride-match-2026", "type": "mcq", "tag": "Topical", "text": "Which 2 teams will feature in Seattle's World Pride match on June 26th, during the city's annual Pride weekend?", "options": ["USA and Australia", "Belgium and New Zealand", "Qatar and Bosnia-Herzegovina", "Egypt and Iran"], "correctIndex": 3, "maxPoints": 1, "funfact": "⚽ Both Egypt and Iran's football federations complained to FIFA about the Pride celebrations attached to their match, but Seattle's organizing committee stood firm, saying the match reflects their commitment to 'respect, dignity and unity for all.'" },
