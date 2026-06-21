@@ -546,10 +546,13 @@ function renderQuiz() {
 }
 
 function addSkipButton(card, q, i) {
+  const row = document.createElement("div");
+  row.className = "skip-row";
   const skip = document.createElement("button");
   skip.className = "btn-skip"; skip.id = `skip-${i}`; skip.textContent = "Skip question";
   skip.onclick = () => skipQuestion(i);
-  card.appendChild(skip);
+  row.appendChild(skip);
+  card.appendChild(row);
 }
 
 function skipQuestion(i) {
