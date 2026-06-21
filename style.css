@@ -314,6 +314,14 @@ p {
   box-shadow: none;
 }
 
+/* ========= SKIP BUTTON ROW (bottom-right of question card) ========= */
+
+.skip-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
 /* ========= MCQ SELECTED STATE ========= */
 
 .option-btn.selected {
