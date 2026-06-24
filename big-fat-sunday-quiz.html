@@ -651,7 +651,7 @@ function checkMultiText(i) {
     else if (slotResults[slotIdx]) inp.classList.add("mt-correct");
     else inp.classList.add("mt-wrong");
   });
-  const pts = slotResults.filter(Boolean).length; states[i].points = pts;
+  const pts = slotResults.filter(Boolean).length; states[i].points = pts; states[i].slotResults = slotResults;
   const correctList = q.answers.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(", ");
   const answersDiv = document.createElement("div"); answersDiv.className = "multi-text-answers"; answersDiv.textContent = `Answers: ${correctList}`;
   card.querySelector(".multi-text-grid").after(answersDiv);
@@ -673,15 +673,28 @@ function lockCard(i, wasCorrect) {
   saveProgress(document.getElementById("quiz-title").textContent);
   if (currentQuizTitle) {
     const q = questions[i];
+    let rows;
+    if (q.type === "multi-text" && states[i].slotResults) {
+      rows = q.answers.map((answerText, slot) => ({
+        quiz_title: currentQuizTitle,
+        question_id: q.id,
+        slot_id: answerText.toLowerCase().trim().replace(/\s+/g, "-"),
+        correct: !!states[i].slotResults[slot],
+        points_earned: states[i].slotResults[slot] ? 1 : 0
+      }));
+    } else {
+      rows = [{ quiz_title: currentQuizTitle, question_id: q.id, correct: states[i].points > 0, points_earned: states[i].points }];
+    }
     fetch(`${SUPA_URL}/rest/v1/question_stats`, {
       method: "POST",
       headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal" },
-      body: JSON.stringify([{ quiz_title: currentQuizTitle, question_id: q.id, correct: states[i].points > 0, points_earned: states[i].points }])
+      body: JSON.stringify(rows)
     });
   }
   updateProgress();
   setTimeout(() => { const next = states.findIndex((s, idx) => idx > i && !s.checked); if (next !== -1) { document.getElementById(`card-${next}`).classList.add("current-q"); } }, 500);
 }
+  
 function setFeedback(i, msg, type) { const fb = document.getElementById(`feedback-${i}`); fb.textContent = msg; fb.className = `feedback ${type}`; }
 
 function checkMCQ(i, chosen) {
