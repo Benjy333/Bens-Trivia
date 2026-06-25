@@ -243,14 +243,15 @@ async function loadStats(quizTitle) {
   document.getElementById("lb-body").innerHTML = '<tr><td colspan="6" class="loading-msg">Loading…</td></tr>';
   document.getElementById("highlights").style.display = "none";
 
-  const [lbData, qData] = await Promise.all([
+  const [lbData, qData, yearData] = await Promise.all([
     fetchLeaderboard(quizTitle),
-    fetchQuestionStats(quizTitle)
+    fetchQuestionStats(quizTitle),
+    fetchYearStats(quizTitle)
   ]);
 
   renderSummary(lbData);
   renderLeaderboard(lbData);
-  renderQuestions(quizTitle, qData);
+  renderQuestions(quizTitle, qData, yearData);
 }
 
 async function fetchLeaderboard(quizTitle) {
@@ -268,7 +269,17 @@ async function fetchQuestionStats(quizTitle) {
   try {
     const url = `${SUPA_URL}/rest/v1/question_stats_summary`
       + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
-      + `&select=question_id,total_count,correct_count`;
+      + `&select=question_id,slot_id,total_count,correct_count`;
+    const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
+    return await res.json();
+  } catch { return []; }
+}
+
+async function fetchYearStats(quizTitle) {
+  try {
+    const url = `${SUPA_URL}/rest/v1/question_stats`
+      + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
+      + `&select=question_id,points_earned`;
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     return await res.json();
   } catch { return []; }
@@ -334,25 +345,46 @@ function renderLeaderboard(lb) {
   tbody.innerHTML = html;
 }
 
-function renderQuestions(quizTitle, qData) {
+function renderQuestions(quizTitle, qData, yearData) {
   const qs = allQuestions[quizTitle] || [];
   const list = document.getElementById("question-list");
 
-  if (!qData.length) {
+  if (!qData.length && !yearData.length) {
     list.innerHTML = '<div class="loading-msg">No question data yet — submit some scores first!</div>';
     return;
   }
 
+  // Group summary rows by question_id. Rows with a slot_id (multi-text) are
+  // kept as a per-slot breakdown; rows without one are blended into a single
+  // correct/total pair (mcq, text-exact, numeric, year, and any leftover
+  // pre-migration multi-text rows).
   const byId = {};
   qData.forEach(row => {
-    byId[row.question_id] = { correct: row.correct_count, total: row.total_count };
+    if (!byId[row.question_id]) byId[row.question_id] = { correct: 0, total: 0, slots: [] };
+    if (row.slot_id) {
+      byId[row.question_id].slots.push({ slot_id: row.slot_id, correct: row.correct_count, total: row.total_count });
+    } else {
+      byId[row.question_id].correct += row.correct_count;
+      byId[row.question_id].total += row.total_count;
+    }
+  });
+
+  // Group raw year-question rows by question_id + points_earned (2 = exact, 1 = within 1 year, 0 = miss)
+  const yearById = {};
+  yearData.forEach(row => {
+    if (!yearById[row.question_id]) yearById[row.question_id] = { exact: 0, near: 0, miss: 0, total: 0 };
+    const y = yearById[row.question_id];
+    y.total++;
+    if (row.points_earned === 2) y.exact++;
+    else if (row.points_earned === 1) y.near++;
+    else y.miss++;
   });
 
   const rows = qs.map(q => {
-    const stats = byId[q.id] || { correct: 0, total: 0 };
+    const stats = byId[q.id] || { correct: 0, total: 0, slots: [] };
     const pct = stats.total ? Math.round((stats.correct / stats.total) * 100) : null;
     return { q, stats, pct };
-  }).filter(r => r.stats.total > 0);
+  }).filter(r => r.stats.total > 0 || (r.q.type === "year" && yearById[r.q.id]));
 
   if (!rows.length) {
     list.innerHTML = '<div class="loading-msg">No question data yet — submit some scores first!</div>';
@@ -360,20 +392,72 @@ function renderQuestions(quizTitle, qData) {
   }
 
   const withPct = rows.filter(r => r.pct !== null);
-  const hardest = withPct.reduce((a, b) => a.pct < b.pct ? a : b);
-  const easiest = withPct.reduce((a, b) => a.pct > b.pct ? a : b);
-
-  document.getElementById("hardest-q").textContent = hardest.q.text;
-  document.getElementById("hardest-pct").textContent = hardest.pct + "% got it right";
-  document.getElementById("easiest-q").textContent = easiest.q.text;
-  document.getElementById("easiest-pct").textContent = easiest.pct + "% got it right";
-  document.getElementById("highlights").style.display = "grid";
+  if (withPct.length) {
+    const hardest = withPct.reduce((a, b) => a.pct < b.pct ? a : b);
+    const easiest = withPct.reduce((a, b) => a.pct > b.pct ? a : b);
+    document.getElementById("hardest-q").textContent = hardest.q.text;
+    document.getElementById("hardest-pct").textContent = hardest.pct + "% got it right";
+    document.getElementById("easiest-q").textContent = easiest.q.text;
+    document.getElementById("easiest-pct").textContent = easiest.pct + "% got it right";
+    document.getElementById("highlights").style.display = "grid";
+  } else {
+    document.getElementById("highlights").style.display = "none";
+  }
 
   const sorted = [...rows].sort((a, b) => (a.pct ?? 50) - (b.pct ?? 50));
 
   list.innerHTML = sorted.map(({ q, stats, pct }) => {
     const difficulty = pct === null ? "medium" : pct >= 70 ? "easy" : pct >= 40 ? "medium" : "hard";
     const displayPct = pct === null ? "—" : pct + "%";
+
+    // Multi-text: show each answer slot as its own percentage bar
+    if (q.type === "multi-text" && stats.slots.length) {
+      const slotRows = stats.slots
+        .slice()
+        .sort((a, b) => (b.total ? b.correct / b.total : 0) - (a.total ? a.correct / a.total : 0))
+        .map(s => {
+          const sPct = s.total ? Math.round((s.correct / s.total) * 100) : 0;
+          const sDiff = sPct >= 70 ? "easy" : sPct >= 40 ? "medium" : "hard";
+          const label = s.slot_id.replace(/-/g, " ");
+          return `
+            <div style="margin-top:6px;">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
+                <span style="text-transform:capitalize;opacity:0.85;">${escapeHtml(label)}</span>
+                <span class="q-pct ${sDiff}">${sPct}%</span>
+              </div>
+              <div class="q-bar-outer"><div class="q-bar-inner ${sDiff}" style="width:${sPct}%"></div></div>
+            </div>`;
+        }).join("");
+      return `
+        <div class="q-row">
+          <div class="q-row-top"><div class="q-text">${escapeHtml(q.text)}</div></div>
+          ${slotRows}
+          <div style="display:flex;justify-content:space-between;margin-top:6px;">
+            <span class="q-tag">${q.tag || ""}</span>
+          </div>
+        </div>`;
+    }
+
+    // Year: show exact% and within-1-year% instead of one blended bar
+    if (q.type === "year" && yearById[q.id]) {
+      const y = yearById[q.id];
+      const exactPct = y.total ? Math.round((y.exact / y.total) * 100) : 0;
+      const nearPct  = y.total ? Math.round(((y.exact + y.near) / y.total) * 100) : 0;
+      return `
+        <div class="q-row">
+          <div class="q-row-top"><div class="q-text">${escapeHtml(q.text)}</div></div>
+          <div style="display:flex;gap:18px;margin-top:6px;font-size:0.85rem;">
+            <div><span style="opacity:0.6;">Exact year:</span> <strong class="q-pct easy">${exactPct}%</strong></div>
+            <div><span style="opacity:0.6;">Within 1 year:</span> <strong class="q-pct medium">${nearPct}%</strong></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:6px;">
+            <span class="q-tag">${q.tag || ""}</span>
+            <span class="q-tag">${y.total} answers</span>
+          </div>
+        </div>`;
+    }
+
+    // Default: unchanged single-bar rendering (mcq, text-exact, numeric)
     return `
       <div class="q-row">
         <div class="q-row-top">
