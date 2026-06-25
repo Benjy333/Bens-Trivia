@@ -422,7 +422,8 @@ function renderQuestions(quizTitle, qData, yearData) {
     const difficulty = pct === null ? "medium" : pct >= 70 ? "easy" : pct >= 40 ? "medium" : "hard";
     const displayPct = pct === null ? "—" : pct + "%";
 
-    // Multi-text: show each answer slot as its own percentage bar
+    // Multi-text: show each answer slot as its own percentage bar,
+    // with the correct/total counts shown the same way as other question types.
     if (q.type === "multi-text" && stats.slots.length) {
       const slotRows = stats.slots
         .slice()
@@ -435,17 +436,19 @@ function renderQuestions(quizTitle, qData, yearData) {
             <div style="margin-top:6px;">
               <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
                 <span style="text-transform:capitalize;opacity:0.85;">${escapeHtml(label)}</span>
-                <span class="q-pct ${sDiff}">${sPct}%</span>
+                <span class="q-pct ${sDiff}">${sPct}% &nbsp;<span style="opacity:0.5;font-weight:400;">(${s.correct}/${s.total})</span></span>
               </div>
               <div class="q-bar-outer"><div class="q-bar-inner ${sDiff}" style="width:${sPct}%"></div></div>
             </div>`;
         }).join("");
+      const attemptsTotal = Math.max(...stats.slots.map(s => s.total));
       return `
         <div class="q-row">
           <div class="q-row-top"><div class="q-text">${escapeHtml(q.text)}</div></div>
           ${slotRows}
-          <div style="display:flex;justify-content:space-between;margin-top:6px;">
+          <div style="display:flex;justify-content:space-between;margin-top:8px;">
             <span class="q-tag">${q.tag || ""}</span>
+            <span class="q-tag">${attemptsTotal} attempts</span>
           </div>
         </div>`;
     }
