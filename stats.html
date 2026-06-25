@@ -282,10 +282,9 @@ async function fetchQuestionStats(quizTitle) {
 
 async function fetchYearStats(quizTitle) {
   try {
-    const url = `${SUPA_URL}/rest/v1/question_stats`
+    const url = `${SUPA_URL}/rest/v1/question_stats_by_points`
       + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
-      + `&select=question_id,points_earned`
-      + `&limit=5000`;
+      + `&select=question_id,points_earned,attempt_count`;
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     return await res.json();
   } catch { return []; }
@@ -375,15 +374,18 @@ function renderQuestions(quizTitle, qData, yearData) {
     }
   });
 
-  // Group raw year-question rows by question_id + points_earned (2 = exact, 1 = within 1 year, 0 = miss)
+  // Group pre-aggregated year-question rows by question_id + points_earned
+  // (2 = exact, 1 = within 1 year, 0 = miss). Each row already represents a
+  // count via attempt_count, courtesy of question_stats_by_points.
   const yearById = {};
   yearData.forEach(row => {
     if (!yearById[row.question_id]) yearById[row.question_id] = { exact: 0, near: 0, miss: 0, total: 0 };
     const y = yearById[row.question_id];
-    y.total++;
-    if (row.points_earned === 2) y.exact++;
-    else if (row.points_earned === 1) y.near++;
-    else y.miss++;
+    const count = row.attempt_count;
+    y.total += count;
+    if (row.points_earned === 2) y.exact += count;
+    else if (row.points_earned === 1) y.near += count;
+    else y.miss += count;
   });
 
   const rows = qs.map(q => {
