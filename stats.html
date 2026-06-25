@@ -284,7 +284,8 @@ async function fetchYearStats(quizTitle) {
   try {
     const url = `${SUPA_URL}/rest/v1/question_stats`
       + `?quiz_title=eq.${encodeURIComponent(quizTitle)}`
-      + `&select=question_id,points_earned`;
+      + `&select=question_id,points_earned`
+      + `&limit=5000`;
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     return await res.json();
   } catch { return []; }
@@ -387,7 +388,13 @@ function renderQuestions(quizTitle, qData, yearData) {
 
   const rows = qs.map(q => {
     const stats = byId[q.id] || { correct: 0, total: 0, slots: [] };
-    const pct = stats.total ? Math.round((stats.correct / stats.total) * 100) : null;
+    let pct;
+    if (q.type === "year" && yearById[q.id]) {
+      const y = yearById[q.id];
+      pct = y.total ? Math.round(((y.exact + y.near) / y.total) * 100) : null;
+    } else {
+      pct = stats.total ? Math.round((stats.correct / stats.total) * 100) : null;
+    }
     return { q, stats, pct };
   }).filter(r => r.stats.total > 0 || (r.q.type === "year" && yearById[r.q.id]));
 
@@ -443,12 +450,14 @@ function renderQuestions(quizTitle, qData, yearData) {
         </div>`;
     }
 
-    // Year: show the same overall % bar as every other question type,
-    // plus an exact-year / within-1-year breakdown computed from the raw rows.
+    // Year: exact% and one-year-away% (mutually exclusive), both derived
+    // from the same raw rows as the overall top-bar % (pct, computed above),
+    // so all three figures are internally consistent: exact% + one-year-away% = pct.
     if (q.type === "year" && yearById[q.id]) {
       const y = yearById[q.id];
-      const exactPct = stats.total ? Math.round((y.exact / stats.total) * 100) : 0;
-      const nearPct  = stats.total ? Math.round(((y.exact + y.near) / stats.total) * 100) : 0;
+      const yearTotal = y.total;
+      const exactPct   = yearTotal ? Math.round((y.exact / yearTotal) * 100) : 0;
+      const oneAwayPct = yearTotal ? Math.round((y.near / yearTotal) * 100) : 0;
       return `
         <div class="q-row">
           <div class="q-row-top">
@@ -460,11 +469,11 @@ function renderQuestions(quizTitle, qData, yearData) {
           </div>
           <div style="display:flex;gap:18px;margin-top:8px;font-size:0.85rem;">
             <div><span style="opacity:0.6;">Exact year:</span> <strong class="q-pct easy">${exactPct}%</strong></div>
-            <div><span style="opacity:0.6;">Within 1 year:</span> <strong class="q-pct medium">${nearPct}%</strong></div>
+            <div><span style="opacity:0.6;">One year away:</span> <strong class="q-pct medium">${oneAwayPct}%</strong></div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:6px;">
             <span class="q-tag">${q.tag || ""}</span>
-            <span class="q-tag">${stats.correct}/${stats.total} correct</span>
+            <span class="q-tag">${y.exact + y.near}/${yearTotal} correct</span>
           </div>
         </div>`;
     }
