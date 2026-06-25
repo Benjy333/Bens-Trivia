@@ -119,6 +119,7 @@
     <nav class="menu-dropdown" id="menu-dropdown">
       <a href="big-fat-sunday-quiz.html">🍻 Big Fat Sunday Quiz</a>
       <a href="stats.html">📊 Quiz Stats</a>
+      <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
     </nav>
   </header>
 
@@ -181,6 +182,10 @@
 <script>
 const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
 const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
+
+if (location.search.includes("dev")) {
+  document.getElementById("venue-stats-link").style.display = "block";
+}
 
 const menuBtn = document.getElementById("menu-btn");
 const menuDropdown = document.getElementById("menu-dropdown");
