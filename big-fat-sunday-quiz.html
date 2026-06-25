@@ -408,10 +408,11 @@ function clearOldSaves(currentTitle, allTitles) { allTitles.forEach(title => { i
 
 (async function loadQuiz() {
   try {
-    const res  = await fetch("weekly_quizzes.json");
+    const now = getNow();
+    const cacheKey = Math.floor((now.getTime() - BASE_DATE.getTime()) / (7 * 86400000));
+    const res  = await fetch(`weekly_quizzes.json?v=${cacheKey}`, { cache: "no-cache" });
     const data = await res.json();
     data_start_date = data.start_date;
-    const now     = getNow();
     const diffMs  = now.getTime() - BASE_DATE.getTime();
     const weekIdx = Math.min(Math.max(Math.floor(diffMs / (7 * 86400000)), 0), data.weekly_quizzes.length - 1);
     const quiz    = data.weekly_quizzes[weekIdx];
@@ -637,23 +638,24 @@ function checkMultiText(i) {
   const typedValues = Array.from(inputs).map(inp => inp.value.trim());
   states[i].chosenValues = typedValues;
   const usedAnswerIdxs = new Set();
-  const slotResults = typedValues.map(val => {
-    if (!val) return false;
+  const matchedAnswerIdx = typedValues.map(val => {
+    if (!val) return -1;
     const valLower = val.toLowerCase();
     for (let aIdx = 0; aIdx < q.acceptedAnswers.length; aIdx++) {
       if (usedAnswerIdxs.has(aIdx)) continue;
       const group = q.acceptedAnswers[aIdx]; const targets = Array.isArray(group) ? group : [group];
-      if (targets.some(t => fuzzyMatch(valLower, t.toLowerCase()))) { usedAnswerIdxs.add(aIdx); return true; }
+      if (targets.some(t => fuzzyMatch(valLower, t.toLowerCase()))) { usedAnswerIdxs.add(aIdx); return aIdx; }
     }
-    return false;
+    return -1;
   });
+  const slotResults = matchedAnswerIdx.map(idx => idx !== -1);
   inputs.forEach((inp, slotIdx) => {
     const val = typedValues[slotIdx];
     if (!val) inp.classList.add("mt-empty");
     else if (slotResults[slotIdx]) inp.classList.add("mt-correct");
     else inp.classList.add("mt-wrong");
   });
-  const pts = slotResults.filter(Boolean).length; states[i].points = pts; states[i].slotResults = slotResults;
+  const pts = slotResults.filter(Boolean).length; states[i].points = pts; states[i].slotResults = slotResults; states[i].matchedAnswerIdx = matchedAnswerIdx;
   const correctList = q.answers.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(", ");
   const answersDiv = document.createElement("div"); answersDiv.className = "multi-text-answers"; answersDiv.textContent = `Answers: ${correctList}`;
   card.querySelector(".multi-text-grid").after(answersDiv);
@@ -677,13 +679,28 @@ function lockCard(i, wasCorrect) {
     const q = questions[i];
     let rows;
     if (q.type === "multi-text" && states[i].slotResults) {
-      rows = q.answers.map((answerText, slot) => ({
-        quiz_title: currentQuizTitle,
-        question_id: q.id,
-        slot_id: answerText.toLowerCase().trim().replace(/\s+/g, "-"),
-        correct: !!states[i].slotResults[slot],
-        points_earned: states[i].slotResults[slot] ? 1 : 0
-      }));
+      const matched = states[i].matchedAnswerIdx;
+      const claimedIdxs = new Set(matched.filter(idx => idx !== -1));
+      const unclaimedIdxs = q.answers.map((_, idx) => idx).filter(idx => !claimedIdxs.has(idx));
+      let unclaimedPointer = 0;
+      rows = q.answers.map((_, slot) => {
+        const wasSlotCorrect = !!states[i].slotResults[slot];
+        let answerIdxForLabel;
+        if (wasSlotCorrect) {
+          answerIdxForLabel = matched[slot];
+        } else {
+          answerIdxForLabel = unclaimedIdxs[unclaimedPointer] ?? slot;
+          unclaimedPointer++;
+        }
+        const answerText = q.answers[answerIdxForLabel];
+        return {
+          quiz_title: currentQuizTitle,
+          question_id: q.id,
+          slot_id: answerText.toLowerCase().trim().replace(/\s+/g, "-"),
+          correct: wasSlotCorrect,
+          points_earned: wasSlotCorrect ? 1 : 0
+        };
+      });
     } else {
       rows = [{ quiz_title: currentQuizTitle, question_id: q.id, correct: states[i].points > 0, points_earned: states[i].points }];
     }
