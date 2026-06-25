@@ -443,21 +443,28 @@ function renderQuestions(quizTitle, qData, yearData) {
         </div>`;
     }
 
-    // Year: show exact% and within-1-year% instead of one blended bar
+    // Year: show the same overall % bar as every other question type,
+    // plus an exact-year / within-1-year breakdown computed from the raw rows.
     if (q.type === "year" && yearById[q.id]) {
       const y = yearById[q.id];
-      const exactPct = y.total ? Math.round((y.exact / y.total) * 100) : 0;
-      const nearPct  = y.total ? Math.round(((y.exact + y.near) / y.total) * 100) : 0;
+      const exactPct = stats.total ? Math.round((y.exact / stats.total) * 100) : 0;
+      const nearPct  = stats.total ? Math.round(((y.exact + y.near) / stats.total) * 100) : 0;
       return `
         <div class="q-row">
-          <div class="q-row-top"><div class="q-text">${escapeHtml(q.text)}</div></div>
-          <div style="display:flex;gap:18px;margin-top:6px;font-size:0.85rem;">
+          <div class="q-row-top">
+            <div class="q-text">${escapeHtml(q.text)}</div>
+            <div class="q-pct ${difficulty}">${displayPct}</div>
+          </div>
+          <div class="q-bar-outer">
+            <div class="q-bar-inner ${difficulty}" style="width:${pct ?? 50}%"></div>
+          </div>
+          <div style="display:flex;gap:18px;margin-top:8px;font-size:0.85rem;">
             <div><span style="opacity:0.6;">Exact year:</span> <strong class="q-pct easy">${exactPct}%</strong></div>
             <div><span style="opacity:0.6;">Within 1 year:</span> <strong class="q-pct medium">${nearPct}%</strong></div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:6px;">
             <span class="q-tag">${q.tag || ""}</span>
-            <span class="q-tag">${y.total} answers</span>
+            <span class="q-tag">${stats.correct}/${stats.total} correct</span>
           </div>
         </div>`;
     }
