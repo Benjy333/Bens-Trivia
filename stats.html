@@ -398,7 +398,11 @@ function renderQuestions(quizTitle, qData, yearData) {
       pct = stats.total ? Math.round((stats.correct / stats.total) * 100) : null;
     }
     return { q, stats, pct };
-  }).filter(r => r.stats.total > 0 || (r.q.type === "year" && yearById[r.q.id]));
+  }).filter(r =>
+    r.stats.total > 0 ||
+    r.stats.slots.length > 0 ||
+    (r.q.type === "year" && yearById[r.q.id])
+  );
 
   if (!rows.length) {
     list.innerHTML = '<div class="loading-msg">No question data yet — submit some scores first!</div>';
