@@ -369,7 +369,7 @@
       
       "questions": [
       
-  {"id": "jerry-maguire-quote", "type": "text-exact", "tag": "Movie Quote", "text": "Which film features the line - You had me at hello?, "correctAnswer": "Jerry Maguire", "acceptedAnswers": [Jerry Maguire], "maxPoints": 1, "funfact": The line was reportedly improvised by Renee Zellweger during filming and wasn't in the original script.},
+  {"id": "jerry-maguire-quote", "type": "text-exact", "tag": "Movie Quote", "text": "Which film features the line - You had me at hello", "correctAnswer": "Jerry Maguire", "acceptedAnswers": [Jerry Maguire], "maxPoints": 1, "funfact": The line was reportedly improvised by Renee Zellweger during filming and wasn't in the original script.},
   {"id": "chinese-zodiac-2026", "type": "text-exact", "tag": "Topical", "text": "What animal year is 2026 according to the Chinese zodiac calendar?", "correctAnswer": "Horse", "acceptedAnswers": [], "maxPoints": 1, "funfact": "2026 is specifically the Year of the Fire Horse, beginning 17 February 2026 and ending 5 February 2027."},
   {"id": "goodbye-italian", "type": "text-exact", "tag": "Language", "text": "What is \"goodbye\" in Italian?", "correctAnswer": "Ciao", "acceptedAnswers": ["Arrivederci"], "maxPoints": 1, "funfact": "Ciao is actually used for both 'hello' and 'goodbye' in informal Italian, while 'Arrivederci' is the more formal farewell."},
   {"id": "bastille-day-date", "type": "text-exact", "tag": "Events", "text": "On what date does France celebrate Bastille Day?", "correctAnswer": "14 July", "acceptedAnswers": ["July 14", "14th July", "July 14th"], "maxPoints": 1, "funfact": "Bastille Day marks the storming of the Bastille prison on 14 July 1789, a key event of the French Revolution."},
