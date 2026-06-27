@@ -104,6 +104,32 @@
     .card { background: var(--bg2); border: 1px solid rgba(150,208,255,0.2); border-radius: 16px; padding: 18px 16px; }
     .loading-msg { text-align: center; opacity: 0.5; padding: 24px; font-size: 0.9rem; }
     .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
+
+    .signup-card {
+      background: radial-gradient(circle at top left, #12335a 0, #020a16 70%);
+      border: 1px solid rgba(150,208,255,0.25);
+      border-radius: 16px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .signup-card .signup-label {
+      font-size: 0.78rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+    }
+    .signup-card .signup-sub {
+      font-size: 0.88rem; margin-bottom: 12px; opacity: 0.85;
+    }
+    .signup-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .signup-row input[type="email"] {
+      flex: 1; min-width: 180px; max-width: 280px; padding: 8px 14px;
+      border-radius: 999px; border: 1px solid rgba(150,208,255,0.6);
+      background: rgba(0,8,18,0.85); color: #e9f4ff; font-size: 0.9rem;
+    }
+    .signup-row button {
+      padding: 8px 18px; border-radius: 999px; border: 1px solid var(--neon);
+      background: rgba(3,15,34,0.9); color: var(--neon); font-size: 0.85rem;
+      cursor: pointer; font-weight: 600; white-space: nowrap;
+    }
+    #stats-signup-status { font-size: 0.8rem; margin-top: 8px; min-height: 18px; }
   </style>
 </head>
 <body>
@@ -165,6 +191,16 @@
             <tr><td colspan="6" class="loading-msg">Select a quiz above</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="card signup-card">
+        <div class="signup-label">📬 Get the quiz every Sunday</div>
+        <div class="signup-sub">Drop your email and we'll send you a link each week</div>
+        <div class="signup-row">
+          <input id="stats-signup-email" type="email" placeholder="your@email.com" maxlength="100" />
+          <button id="stats-signup-btn">Subscribe</button>
+        </div>
+        <div id="stats-signup-status"></div>
       </div>
 
       <div class="card">
@@ -528,6 +564,53 @@ function toggleMtReveal(revealId) {
 function escapeHtml(str) {
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
+
+/* ---- EMAIL SIGNUP ---- */
+document.getElementById("stats-signup-btn").addEventListener("click", async () => {
+  const emailEl = document.getElementById("stats-signup-email");
+  const statusEl = document.getElementById("stats-signup-status");
+  const email = emailEl.value.trim();
+  if (!email || !email.includes("@")) {
+    statusEl.style.color = "var(--bad)";
+    statusEl.textContent = "Please enter a valid email address.";
+    return;
+  }
+  const btn = document.getElementById("stats-signup-btn");
+  btn.disabled = true; btn.textContent = "Subscribing…";
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/mailing_list`, {
+      method: "POST",
+      headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal" },
+      body: JSON.stringify({ email })
+    });
+    if (res.ok) {
+      statusEl.style.color = "var(--good)";
+      statusEl.textContent = "✓ You're subscribed! Sending you this week's quiz now... (check your spam if you don't see it)";
+      emailEl.style.display = "none"; btn.style.display = "none";
+      fetch(`${SUPA_URL}/functions/v1/smooth-action/send-one`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SUPA_KEY}`, "apikey": SUPA_KEY },
+        body: JSON.stringify({ email })
+      });
+    } else if (res.status === 409) {
+      statusEl.style.color = "#f5c542";
+      statusEl.textContent = "You're already subscribed!";
+      btn.disabled = false; btn.textContent = "Subscribe";
+    } else {
+      statusEl.style.color = "var(--bad)";
+      statusEl.textContent = "Something went wrong. Try again.";
+      btn.disabled = false; btn.textContent = "Subscribe";
+    }
+  } catch(e) {
+    statusEl.style.color = "var(--bad)";
+    statusEl.textContent = "Could not connect. Check your internet.";
+    btn.disabled = false; btn.textContent = "Subscribe";
+  }
+});
+
+document.getElementById("stats-signup-email").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("stats-signup-btn").click();
+});
 </script>
 </body>
 </html>
