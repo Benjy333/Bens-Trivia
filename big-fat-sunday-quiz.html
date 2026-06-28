@@ -574,6 +574,8 @@ function skipQuestion(i) {
   } else if (q.type === "year") {
     setFeedback(i, `Skipped · The answer was: ${q.correctYear}`, "skipped");
   } else if (q.type === "multi-text") {
+    states[i].slotResults = q.answers.map(() => false);
+    states[i].matchedAnswerIdx = q.answers.map(() => -1);
     const correctList = q.answers.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(", ");
     const answersDiv = document.createElement("div"); answersDiv.className = "multi-text-answers"; answersDiv.textContent = `Answers: ${correctList}`;
     card.querySelector(".multi-text-grid").after(answersDiv);
