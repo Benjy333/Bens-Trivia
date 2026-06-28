@@ -862,7 +862,7 @@ async function showHighlight() {
     const qRes = await fetch(qUrl, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     const qStats = await qRes.json();
 
-    // Aggregate by question_id first — multi-text questions return one row
+// Aggregate by question_id first — multi-text questions return one row
     // per answer slot, so they must be summed into a single correct/total
     // pair before comparing percentages across questions.
     const byQid = {};
@@ -872,9 +872,15 @@ async function showHighlight() {
       byQid[r.question_id].total += r.total_count;
     });
 
+    // Multi-text questions are excluded from hardest/easiest — partial
+    // credit across several answer slots doesn't compare fairly against
+    // single-answer questions, so they're left out of this highlight.
+    const multiTextIds = new Set(questions.filter(q => q.type === "multi-text").map(q => q.id));
+
     // Find the single hardest question of the whole quiz
     let hardestQid = null, hardestPct = 101;
     Object.keys(byQid).forEach(qid => {
+      if (multiTextIds.has(qid)) return;
       const { correct, total } = byQid[qid];
       if (total > 0) {
         const pct = Math.round((correct / total) * 100);
