@@ -855,21 +855,33 @@ async function showHighlight() {
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     const lb = await res.json();
 
-    // Fetch question summary stats to find THE hardest question overall
+// Fetch question summary stats to find THE hardest question overall
     const qUrl = `${SUPA_URL}/rest/v1/question_stats_summary`
       + `?quiz_title=eq.${encodeURIComponent(currentQuizTitle)}`
       + `&select=question_id,total_count,correct_count`;
     const qRes = await fetch(qUrl, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     const qStats = await qRes.json();
 
+    // Aggregate by question_id first — multi-text questions return one row
+    // per answer slot, so they must be summed into a single correct/total
+    // pair before comparing percentages across questions.
+    const byQid = {};
+    qStats.forEach(r => {
+      if (!byQid[r.question_id]) byQid[r.question_id] = { correct: 0, total: 0 };
+      byQid[r.question_id].correct += r.correct_count;
+      byQid[r.question_id].total += r.total_count;
+    });
+
     // Find the single hardest question of the whole quiz
     let hardestQid = null, hardestPct = 101;
-    qStats.forEach(r => {
-      if (r.total_count > 0) {
-        const pct = Math.round((r.correct_count / r.total_count) * 100);
-        if (pct < hardestPct) { hardestPct = pct; hardestQid = r.question_id; }
+    Object.keys(byQid).forEach(qid => {
+      const { correct, total } = byQid[qid];
+      if (total > 0) {
+        const pct = Math.round((correct / total) * 100);
+        if (pct < hardestPct) { hardestPct = pct; hardestQid = qid; }
       }
     });
+    
     const hardestQuestion = questions.find(q => q.id === hardestQid);
     const playerGotHardest = hardestQid && states[questions.findIndex(q => q.id === hardestQid)]?.points > 0;
 
