@@ -167,6 +167,22 @@
     .highlight-share-btn:hover { background: var(--neon-soft); color: #001; }
     .share-panel { margin-top: 12px; flex-direction: column; align-items: center; gap: 8px; }
     .share-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .share-preview-box {
+      margin: 14px auto 4px; max-width: 360px;
+      background: rgba(0,8,18,0.75);
+      border: 1px solid rgba(150,208,255,0.25);
+      border-radius: 14px;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      white-space: pre-line;
+      color: #e9f4ff;
+    }
+    .share-preview-label {
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em;
+      opacity: 0.5; margin-bottom: 10px; text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -230,6 +246,8 @@
         <div class="highlight-label">⚡ Your Trivia Highlight</div>
         <div class="highlight-headline" id="highlight-headline">—</div>
         <div class="highlight-sub" id="highlight-sub"></div>
+        <div class="share-preview-label">Preview — this is what gets shared</div>
+        <div class="share-preview-box" id="share-preview-box">—</div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:4px;">
           <button class="highlight-share-btn" id="highlight-whatsapp">Share via WhatsApp</button>
           <button class="highlight-share-btn" id="highlight-copy">📋 Copy Result</button>
@@ -828,6 +846,14 @@ function countryFlag(code) {
   return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) + " ";
 }
 
+function countryName(code) {
+  if (!code) return "My Country";
+  try {
+    const dn = new Intl.DisplayNames(["en"], { type: "region" });
+    return dn.of(code.toUpperCase()) || "My Country";
+  } catch(e) { return "My Country"; }
+}
+
 function showLeaderboard() { document.getElementById("leaderboard-section").style.display = "block"; currentQuizTitle = document.getElementById("quiz-title").textContent; loadLeaderboard(); }
 function switchTab(tab) { currentTab = tab; document.getElementById("tab-week").classList.toggle("active", tab === "week"); document.getElementById("tab-all").classList.toggle("active", tab === "all"); loadLeaderboard(); }
 
@@ -838,15 +864,29 @@ async function showHighlight() {
   const panel = document.getElementById("highlight-panel");
   const headlineEl = document.getElementById("highlight-headline");
   const subEl = document.getElementById("highlight-sub");
+  const previewEl = document.getElementById("share-preview-box");
   panel.style.display = "block";
   headlineEl.textContent = "Calculating your highlight…";
   subEl.textContent = "";
+  previewEl.textContent = "—";
 
   const earned = states.reduce((s, x) => s + x.points, 0);
   const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
   const myPct  = maxPts ? Math.round((earned / maxPts) * 100) : 0;
   const scoreStr = `Score: ${earned}/${maxPts} (${myPct}%)`;
   const link = "https://benjy333.github.io/Bens-Trivia/big-fat-sunday-quiz.html";
+
+  // Builds the exact text that gets shared/copied: brand line, an optional
+  // achievement line (only for a top-3 world or country placing), the score
+  // line, then the link. Kept separate from the on-page headline copy below,
+  // which can stay more playful (hardest-question callouts etc).
+  function buildShareText(achievementLine) {
+    const lines = ["Ben's Trivia"];
+    if (achievementLine) lines.push(achievementLine);
+    lines.push(scoreStr);
+    lines.push(link);
+    return lines.join("\n");
+  }
 
   try {
     // Fetch full leaderboard
@@ -895,6 +935,7 @@ async function showHighlight() {
 
     let headline = "", sub = "", cssClass = "";
     const suffix = n => n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
+    let achievementLine = null;
 
     if (lb.length > 0) {
       let ranks = [];
@@ -919,6 +960,7 @@ async function showHighlight() {
         headline = `${medals[myWorldRank-1]} ${myWorldRank}${suffix(myWorldRank)} in the World!`;
         sub = "";
         cssClass = "hl-gold";
+        achievementLine = `${myWorldRank}${suffix(myWorldRank)} in the World`;
       }
       // Priority 2: Top 3 in country
       else if (myCountryRank !== null && myCountryRank <= 3) {
@@ -927,6 +969,7 @@ async function showHighlight() {
         headline = `${medals[myCountryRank-1]} ${myCountryRank}${suffix(myCountryRank)} in ${flag}My Country!`;
         sub = ``;
         cssClass = "hl-country";
+        achievementLine = `${myCountryRank}${suffix(myCountryRank)} in ${countryName(detectedCountry)}`;
       }
       // Priority 3: Got the single hardest question
       else if (playerGotHardest && hardestQuestion) {
@@ -954,16 +997,16 @@ async function showHighlight() {
     headlineEl.textContent = headline;
     subEl.textContent = sub ? `${sub}` : "";
 
-    const quizLine = `📣 ${currentQuizTitle}`;
-    const scoreInHeadline = headline.includes(earned + "/" + maxPts);
-    highlightText = `${quizLine}\n${headline}${sub ? "\n" + sub : ""}${scoreInHeadline ? "" : "\n" + scoreStr}\n${link}`;
+    highlightText = buildShareText(achievementLine);
+    previewEl.textContent = highlightText;
 
   } catch(e) {
     console.error("Highlight error:", e);
-    headline = `I scored ${earned}/${maxPts} (${myPct}%) — can you beat it?`;
+    const headline = `I scored ${earned}/${maxPts} (${myPct}%) — can you beat it?`;
     document.getElementById("highlight-headline").textContent = headline;
     document.getElementById("highlight-sub").textContent = "";
-    highlightText = `📣 ${currentQuizTitle}\n${headline}\n${scoreStr}\n${link}`;
+    highlightText = buildShareText(null);
+    previewEl.textContent = highlightText;
   }
 }
 
@@ -978,8 +1021,8 @@ document.getElementById("highlight-copy").addEventListener("click", () => {
 });
 
 async function loadLeaderboard() {
-  const tbody = document.getElementById("leaderboard-body");
-  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>`;
+  const tbody = document.getElementById("lb-body");
+  tbody.innerHTML = `<tr><td colspan="6" class="loading-msg">Loading…</td></tr>`;
   try {
     let url = `${SUPA_URL}/rest/v1/leaderboard?select=player_name,score,max_score,percent,submitted_at,country&order=score.desc,percent.desc&limit=1000`;
     if (currentTab === "week") {
@@ -992,22 +1035,22 @@ async function loadLeaderboard() {
     } else { url += `&quiz_title=eq.${encodeURIComponent(currentQuizTitle)}`; }
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     const rows = await res.json();
-    if (!rows.length) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;opacity:0.5;padding:16px;">No scores yet — be the first!</td></tr>`; return; }
+    if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="loading-msg">No scores yet — be the first!</td></tr>`; return; }
     let ranks = []; let currentRank = 0;
     rows.forEach((r, i) => { if (i === 0 || r.score !== rows[i-1].score || r.percent !== rows[i-1].percent) { currentRank = i; } ranks.push(currentRank); });
     const medals = ["🥇","🥈","🥉"]; const podium = rows.filter((r, i) => ranks[i] <= 2);
     tbody.innerHTML = podium.map((r, i) => `<tr><td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td><td style="font-size:1.1rem;">${countryFlag(r.country)}</td><td>${escapeHtml(r.player_name)}</td><td>${r.score} / ${r.max_score}</td><td>${r.percent}%</td></tr>`).join("");
-    tbody.innerHTML += `<tr><td colspan="5" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} player${rows.length !== 1 ? "s" : ""} this week</td></tr>`;
+    tbody.innerHTML += `<tr><td colspan="6" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} player${rows.length !== 1 ? "s" : ""} this week</td></tr>`;
     const submittedName = document.getElementById("player-name").value.trim();
     if (submittedName && scoreSubmitted) {
       const userIdx = rows.findIndex(r => r.player_name === submittedName);
       const podiumSize = rows.filter((r, i) => ranks[i] <= 2).length;
       if (userIdx !== -1 && userIdx >= podiumSize) {
         const userRank = ranks[userIdx] + 1; const suffix = userRank === 1 ? "st" : userRank === 2 ? "nd" : userRank === 3 ? "rd" : "th";
-        tbody.innerHTML += `<tr><td colspan="5" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-size:1.1rem;">${countryFlag(rows[userIdx].country)}</td><td style="color:var(--neon-soft);font-weight:600;">${escapeHtml(submittedName)} (you)</td><td style="color:var(--neon-soft);">${rows[userIdx].score} / ${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td></tr>`;
+        tbody.innerHTML += `<tr><td colspan="6" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-size:1.1rem;">${countryFlag(rows[userIdx].country)}</td><td style="color:var(--neon-soft);font-weight:600;">${escapeHtml(submittedName)} (you)</td><td style="color:var(--neon-soft);">${rows[userIdx].score} / ${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td></tr>`;
       }
     }
-  } catch(err) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;opacity:0.5;padding:16px;">Could not load scores.</td></tr>`; }
+  } catch(err) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.5;padding:16px;">Could not load scores.</td></tr>`; }
 }
 
 document.getElementById("btn-submit-score").addEventListener("click", async () => {
