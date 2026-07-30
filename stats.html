@@ -162,8 +162,8 @@
       </div>
 
       <div class="summary-grid" id="summary-grid">
-        <div class="stat-card"><div class="stat-value" id="stat-players">—</div><div class="stat-label">Players</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-avg">—</div><div class="stat-label">Avg Score</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-completed">—</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-countries">—</div><div class="stat-label">Countries</div></div>
         <div class="stat-card"><div class="stat-value" id="stat-top">—</div><div class="stat-label">Top Score</div></div>
         <div class="stat-card"><div class="stat-value" id="stat-avg-pct">—</div><div class="stat-label">Avg %</div></div>
       </div>
@@ -290,7 +290,7 @@ async function loadStats(quizTitle) {
     fetchYearStats(quizTitle)
   ]);
 
-  renderSummary(lbData);
+  renderSummary(lbData, quizTitle, qData);
   renderLeaderboard(lbData);
   renderQuestions(quizTitle, qData, yearData);
 }
@@ -326,21 +326,36 @@ async function fetchYearStats(quizTitle) {
   } catch { return []; }
 }
 
-function renderSummary(lb) {
+// "Completed" = number of people who reached the LAST question of the quiz,
+// derived from question_stats_summary rather than the leaderboard, since not
+// everyone who finishes submits a score. Every completion writes one
+// question_stats row per question (one row per answer-slot for multi-text),
+// so the last question's total_count is a reliable completions count.
+function computeCompletions(quizTitle, qData) {
+  const qs = allQuestions[quizTitle] || [];
+  if (!qs.length || !qData.length) return null;
+  const lastId = qs[qs.length - 1].id;
+  const rows = qData.filter(r => r.question_id === lastId);
+  if (!rows.length) return null;
+  return Math.max(...rows.map(r => r.total_count));
+}
+
+function renderSummary(lb, quizTitle, qData) {
+  const completions = computeCompletions(quizTitle, qData);
+  document.getElementById("stat-completed").textContent = completions === null ? "0" : completions;
+
+  const countries = new Set(lb.map(r => r.country).filter(Boolean)).size;
+  document.getElementById("stat-countries").textContent = countries;
+
   if (!lb.length) {
-    document.getElementById("stat-players").textContent = "0";
-    document.getElementById("stat-avg").textContent = "—";
     document.getElementById("stat-top").textContent = "—";
     document.getElementById("stat-avg-pct").textContent = "—";
     return;
   }
   const players = lb.length;
-  const avgScore = (lb.reduce((s, r) => s + r.score, 0) / players).toFixed(1);
   const topScore = lb[0].score + " / " + lb[0].max_score;
   const avgPct   = Math.round(lb.reduce((s, r) => s + r.percent, 0) / players) + "%";
 
-  document.getElementById("stat-players").textContent = players;
-  document.getElementById("stat-avg").textContent = avgScore;
   document.getElementById("stat-top").textContent = topScore;
   document.getElementById("stat-avg-pct").textContent = avgPct;
 }
