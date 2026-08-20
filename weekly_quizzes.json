@@ -611,12 +611,6 @@
       
       "questions": [
 
-    
-{
-  "title": "Weekly Trivia Quiz",
-  "description": "Good luck!",
-
-  "questions": [
 
     {"id": "alien-tagline-space-scream", "type": "mcq", "tag": "Movie Quote", "text": "Which movie had the iconic tagline 'In space no one can hear you scream'?", "options": ["2001: A Space Odyssey", "Alien", "Contact", "Apollo 13"], "correctIndex": 1, "maxPoints": 1, "funfact": "The tagline was coined for Ridley Scott's Alien (1979) and is regularly ranked among the greatest movie taglines of all time."},
     {"id": "clacton-second-place", "type": "mcq", "tag": "Topical", "text": "The UK just held a by-election in Clacton which Nigel Farage won. Who came second at the polls with over 26% of the vote?", "options": [ "Boaty McBoatface", "Count Binface", "Jokey McJokeface", "Sir Lord Dukeface"], "correctIndex": 1, "maxPoints": 1, "funfact": "Satirical candidate Count Binface, intergalactic space warrior (real name Jon Harvey) took just over a quarter of the vote in the 2026 Clacton by-election, beaten only by Farage, in what was widely called one of the strangest by-elections in recent UK history."},
