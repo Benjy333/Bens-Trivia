@@ -1021,7 +1021,7 @@ document.getElementById("highlight-copy").addEventListener("click", () => {
 });
 
 async function loadLeaderboard() {
-  const tbody = document.getElementById("lb-body");
+  const tbody = document.getElementById("leaderboard-body");
   tbody.innerHTML = `<tr><td colspan="6" class="loading-msg">Loading…</td></tr>`;
   try {
     let url = `${SUPA_URL}/rest/v1/leaderboard?select=player_name,score,max_score,percent,submitted_at,country&order=score.desc,percent.desc&limit=1000`;
