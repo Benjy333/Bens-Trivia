@@ -71,6 +71,7 @@
     .btn-check { padding: 8px 18px; border-radius: 999px; border: 1px solid rgba(150,208,255,0.7); background: rgba(3,15,34,0.95); color: #e9f4ff; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
     .btn-check:disabled { opacity: 0.5; cursor: default; }
     .btn-check:hover:not(:disabled) { background: var(--neon-soft); color: #001; }
+    .check-row { display: flex; justify-content: flex-end; margin-top: 12px; }
     .feedback { margin-top: 8px; font-size: 0.85rem; min-height: 18px; font-weight: 500; }
     .feedback.correct { color: var(--good); }
     .feedback.incorrect { color: var(--bad); }
@@ -584,11 +585,11 @@ function renderMCQ(card, q, i) {
   const grid = document.createElement("div"); grid.className = "options";
   q.options.forEach((opt, oi) => { const btn = document.createElement("button"); btn.className = "option-btn"; btn.textContent = opt; btn.onclick = () => selectMCQOption(i, oi); grid.appendChild(btn); });
   card.appendChild(grid);
+  const checkRow = document.createElement("div"); checkRow.className = "check-row";
   const checkBtn = document.createElement("button");
   checkBtn.className = "btn-check"; checkBtn.id = `btn-${i}`; checkBtn.textContent = "Check";
-  checkBtn.style.marginTop = "12px"; checkBtn.disabled = true;
   checkBtn.onclick = () => checkMCQ(i);
-  card.appendChild(checkBtn);
+  checkRow.appendChild(checkBtn); card.appendChild(checkRow);
   addSkipButton(card, q, i);
 }
 function selectMCQOption(i, oi) {
@@ -597,8 +598,6 @@ function selectMCQOption(i, oi) {
   const btns = card.querySelectorAll(".option-btn");
   btns.forEach((btn, bi) => btn.classList.toggle("selected", bi === oi));
   states[i].chosenIndex = oi;
-  const checkBtn = document.getElementById(`btn-${i}`);
-  if (checkBtn) checkBtn.disabled = false;
 }
 function renderTextExact(card, q, i) {
   const row = document.createElement("div"); row.className = "input-row";
@@ -637,8 +636,9 @@ function renderMultiText(card, q, i) {
     row.appendChild(num); row.appendChild(input); grid.appendChild(row);
   }
   card.appendChild(grid);
-  const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check answers"; btn.style.marginTop = "12px";
-  btn.onclick = () => checkMultiText(i); card.appendChild(btn);
+  const checkRow = document.createElement("div"); checkRow.className = "check-row";
+  const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check answers";
+  btn.onclick = () => checkMultiText(i); checkRow.appendChild(btn); card.appendChild(checkRow);
   addSkipButton(card, q, i);
 }
 function checkMultiText(i) {
