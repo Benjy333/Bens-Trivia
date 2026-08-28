@@ -131,7 +131,6 @@
     #dev-clear { background: transparent; color: #f5c542; }
     #dev-label { opacity: 0.75; margin-left: 4px; }
     #dev-badge { background: #f5c542; color: #000; font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: bold; letter-spacing: 0.05em; }
-
     /* ---- TRIVIA HIGHLIGHT ---- */
     .highlight-panel {
       margin-top: 20px;
@@ -186,7 +185,6 @@
   </style>
 </head>
 <body>
-
   <div id="dev-panel">
     <span id="dev-badge">DEV</span>
     <label>Simulate date:
@@ -196,7 +194,6 @@
     <button id="dev-clear">Clear</button>
     <span id="dev-label"></span>
   </div>
-
   <canvas id="confetti-canvas"></canvas>
   <div class="sticky-score" id="sticky-score">
     <span class="ss-label">Score</span>
@@ -219,7 +216,6 @@
       <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
     </nav>
   </header>
-
   <main>
     <section class="game-card card quiz-shell">
       <p class="page-subtitle">25 questions. One big quiz.</p>
@@ -240,7 +236,6 @@
       </div>
       <button class="btn-secondary" id="jump-unanswered">↓ Jump to first unanswered</button>
       <div class="score-box" id="score-box"></div>
-
       <!-- Trivia Highlight panel (shown after finishing) -->
       <div id="highlight-panel" class="highlight-panel" style="display:none;">
         <div class="highlight-label">⚡ Your Trivia Highlight</div>
@@ -258,7 +253,6 @@
           <div style="font-size:0.75rem;opacity:0.5;margin-top:6px;">This will clear your answers and start fresh</div>
         </div>
       </div>
-
       <div class="leaderboard-section" id="leaderboard-section" style="display:none;">
         <div class="leaderboard-title">🏆 This Week's Leaderboard</div>
         <div class="submit-row" id="submit-row">
@@ -296,7 +290,6 @@
         </div>
         <div id="signup-status" style="font-size:0.8rem;margin-top:8px;min-height:18px;"></div>
       </div>
-
      <div id="feedback-section" style="margin-top:20px; padding:18px 16px; border:1px solid rgba(150,208,255,0.25); border-radius:16px; background:radial-gradient(circle at top left,#12335a 0,#020a16 70%); text-align:center;">
         <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">💬 Got something to say?</div>
         <div style="font-size:0.88rem;margin-bottom:12px;opacity:0.85;">Feedback, spotted a mistake, or got a question idea? Let me know.</div>
@@ -317,7 +310,6 @@
         </div>
         <div id="feedback-status" style="font-size:0.8rem;margin-top:10px;min-height:18px;"></div>
       </div>
-
       <div id="instagram-handle" style="text-align:center; margin-top:20px; padding:16px; border-top:1px solid rgba(150,208,255,0.15);">
         <div style="font-size:0.78rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Want to see the weekly leaderboard?</div>
         <a href="https://instagram.com/benstrivia" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:999px; border:1.5px solid rgba(150,208,255,0.5); background:rgba(3,15,34,0.9); color:#e9f4ff; text-decoration:none; font-size:0.95rem; font-weight:600; box-shadow:0 0 12px rgba(55,161,255,0.25); transition:0.15s;" onmouseover="this.style.background='var(--neon)';this.style.color='#001';" onmouseout="this.style.background='rgba(3,15,34,0.9)';this.style.color='#e9f4ff';">📸 Follow @benstrivia</a>
@@ -326,11 +318,9 @@
     </section>
   </main>
   <footer class="global-footer" id="footer-text"></footer>
-
 <script>
 const BASE_DATE = new Date("2026-04-18T15:00:00Z");
 const DEV_STORAGE_KEY = "bens-trivia-dev-date";
-
 (function initDevPanel() {
   if (!location.search.includes("dev")) return;
   const panel = document.getElementById("dev-panel");
@@ -364,31 +354,26 @@ const DEV_STORAGE_KEY = "bens-trivia-dev-date";
     return Math.max(Math.floor((date.getTime() - BASE_DATE.getTime()) / (7 * 86400000)), 0);
   }
 })();
-
 function getNow() {
   const override = localStorage.getItem(DEV_STORAGE_KEY);
   return override ? new Date(override) : new Date();
 }
-
 (function() {
   const today = getNow();
   const opts = { weekday:"long", day:"numeric", month:"long" };
   document.getElementById("page-date").textContent = today.toLocaleDateString(undefined, opts);
   document.getElementById("footer-text").textContent = "Made by Ben · " + today.toLocaleDateString(undefined, { ...opts, year:"numeric" });
 })();
-
 const menuBtn = document.getElementById("menu-btn");
 const menuDropdown = document.getElementById("menu-dropdown");
 menuBtn.addEventListener("click", () => { menuDropdown.style.display = menuDropdown.style.display === "flex" ? "none" : "flex"; });
 document.addEventListener("click", e => { if (!menuDropdown.contains(e.target) && !menuBtn.contains(e.target)) menuDropdown.style.display = "none"; });
-
 let questions = [];
 let states = [];
 const container = document.getElementById("quiz-container");
 const scoreBox  = document.getElementById("score-box");
 const progText  = document.getElementById("progress-text");
 const progBar   = document.getElementById("progress-bar");
-
 function levenshtein(a, b) {
   const dp = Array.from({ length: a.length + 1 }, (_, i) => Array.from({ length: b.length + 1 }, (_, j) => i || j));
   for (let i = 1; i <= a.length; i++)
@@ -411,7 +396,6 @@ function isCorrect(val, q) {
   }
   return accepted.some(target => fuzzyMatch(input, target));
 }
-
 function getSaveKey(quizTitle) { return `bens-trivia-progress:${quizTitle}`; }
 function getSubmitKey(quizTitle) { return `bens-trivia-submitted:${quizTitle}`; }
 function saveProgress(quizTitle) {
@@ -423,7 +407,6 @@ function loadSubmission(quizTitle) { try { return localStorage.getItem(getSubmit
 function clearSubmission(quizTitle) { try { localStorage.removeItem(getSubmitKey(quizTitle)); } catch(e) {} }
 function loadSavedProgress(quizTitle) { try { const raw = localStorage.getItem(getSaveKey(quizTitle)); return raw ? JSON.parse(raw) : null; } catch(e) { return null; } }
 function clearOldSaves(currentTitle, allTitles) { allTitles.forEach(title => { if (title !== currentTitle) { try { localStorage.removeItem(getSaveKey(title)); } catch(e) {} } }); }
-
 (async function loadQuiz() {
   try {
     const now = getNow();
@@ -461,7 +444,6 @@ function clearOldSaves(currentTitle, allTitles) { allTitles.forEach(title => { i
     document.getElementById("quiz-week-info").textContent = "Error loading quiz – check console.";
   }
 })();
-
 function restoreAnswers() {
   states.forEach((s, i) => {
     if (!s.checked) return;
@@ -512,7 +494,6 @@ function restoreAnswers() {
     showHighlight();
   }
 }
-
 function restoreMultiText(card, q, i, s) {
   const saved = s.chosenValues || [];
   const inputs = card.querySelectorAll(".multi-text-input");
@@ -537,7 +518,6 @@ function restoreMultiText(card, q, i, s) {
   const pts = s.points; const max = q.maxPoints;
   setFeedback(i, pts === max ? `✓ Perfect! ${pts}/${max} points!` : pts > 0 ? `${pts}/${max} points` : `✗ 0/${max} points`, pts === max ? "correct" : pts > 0 ? "partial" : "incorrect");
 }
-
 function renderQuiz() {
   container.innerHTML = "";
   questions.forEach((q, i) => {
@@ -565,7 +545,6 @@ function renderQuiz() {
     container.appendChild(card);
   });
 }
-
 function addSkipButton(card, q, i) {
   const row = document.createElement("div");
   row.className = "skip-row";
@@ -575,7 +554,6 @@ function addSkipButton(card, q, i) {
   row.appendChild(skip);
   card.appendChild(row);
 }
-
 function skipQuestion(i) {
   if (states[i].checked) return;
   const q = questions[i];
@@ -602,12 +580,25 @@ function skipQuestion(i) {
   if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; card.appendChild(ff); }
   lockCard(i, false);
 }
-
 function renderMCQ(card, q, i) {
   const grid = document.createElement("div"); grid.className = "options";
-  q.options.forEach((opt, oi) => { const btn = document.createElement("button"); btn.className = "option-btn"; btn.textContent = opt; btn.onclick = () => checkMCQ(i, oi); grid.appendChild(btn); });
+  q.options.forEach((opt, oi) => { const btn = document.createElement("button"); btn.className = "option-btn"; btn.textContent = opt; btn.onclick = () => selectMCQOption(i, oi); grid.appendChild(btn); });
   card.appendChild(grid);
+  const checkBtn = document.createElement("button");
+  checkBtn.className = "btn-check"; checkBtn.id = `btn-${i}`; checkBtn.textContent = "Check";
+  checkBtn.style.marginTop = "12px"; checkBtn.disabled = true;
+  checkBtn.onclick = () => checkMCQ(i);
+  card.appendChild(checkBtn);
   addSkipButton(card, q, i);
+}
+function selectMCQOption(i, oi) {
+  if (states[i].checked) return;
+  const card = document.getElementById(`card-${i}`);
+  const btns = card.querySelectorAll(".option-btn");
+  btns.forEach((btn, bi) => btn.classList.toggle("selected", bi === oi));
+  states[i].chosenIndex = oi;
+  const checkBtn = document.getElementById(`btn-${i}`);
+  if (checkBtn) checkBtn.disabled = false;
 }
 function renderTextExact(card, q, i) {
   const row = document.createElement("div"); row.className = "input-row";
@@ -650,7 +641,6 @@ function renderMultiText(card, q, i) {
   btn.onclick = () => checkMultiText(i); card.appendChild(btn);
   addSkipButton(card, q, i);
 }
-
 function checkMultiText(i) {
   if (states[i].checked) return;
   const q = questions[i]; const card = document.getElementById(`card-${i}`);
@@ -686,7 +676,6 @@ function checkMultiText(i) {
   if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; card.appendChild(ff); }
   lockCard(i, pts > 0);
 }
-
 function lockCard(i, wasCorrect) {
   const card = document.getElementById(`card-${i}`);
   card.querySelectorAll("input, button.option-btn, button.btn-check, .btn-skip").forEach(el => el.disabled = true);
@@ -734,19 +723,19 @@ function lockCard(i, wasCorrect) {
   setTimeout(() => { const next = states.findIndex((s, idx) => idx > i && !s.checked); if (next !== -1) { document.getElementById(`card-${next}`).classList.add("current-q"); } }, 500);
 }
 function setFeedback(i, msg, type) { const fb = document.getElementById(`feedback-${i}`); fb.textContent = msg; fb.className = `feedback ${type}`; }
-
-function checkMCQ(i, chosen) {
+function checkMCQ(i) {
   if (states[i].checked) return;
   const q = questions[i]; const card = document.getElementById(`card-${i}`);
+  const chosen = states[i].chosenIndex;
+  if (chosen === null || chosen === undefined) { setFeedback(i, "Please select an answer first.", ""); return; }
   const btns = card.querySelectorAll(".option-btn");
-  btns.forEach((btn, bi) => { if (bi === q.correctIndex) btn.classList.add("correct"); else if (bi === chosen) btn.classList.add("wrong"); });
-  const mcqCorrect = chosen === q.correctIndex; states[i].chosenIndex = chosen;
+  btns.forEach((btn, bi) => { btn.classList.remove("selected"); if (bi === q.correctIndex) btn.classList.add("correct"); else if (bi === chosen) btn.classList.add("wrong"); });
+  const mcqCorrect = chosen === q.correctIndex;
   if (mcqCorrect) { states[i].points = q.maxPoints; setFeedback(i, "✓ Correct!", "correct"); }
   else { setFeedback(i, `✗ The answer was: ${q.options[q.correctIndex]}`, "incorrect"); }
   if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; card.appendChild(ff); }
   lockCard(i, mcqCorrect);
 }
-
 function checkTextExact(i) {
   if (states[i].checked) return;
   const q = questions[i]; const input = document.getElementById(`input-${i}`); const val = input.value;
@@ -757,7 +746,6 @@ function checkTextExact(i) {
   if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; document.getElementById(`card-${i}`).appendChild(ff); }
   lockCard(i, textCorrect);
 }
-
 function checkNumeric(i) {
   if (states[i].checked) return;
   const q = questions[i]; const input = document.getElementById(`input-${i}`); const val = parseFloat(input.value);
@@ -768,7 +756,6 @@ function checkNumeric(i) {
   if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; document.getElementById(`card-${i}`).appendChild(ff); }
   lockCard(i, numCorrect);
 }
-
 function checkYear(i) {
   if (states[i].checked) return;
   const q = questions[i]; const input = document.getElementById(`input-${i}`); const val = parseInt(input.value, 10);
@@ -783,7 +770,6 @@ function checkYear(i) {
   if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; document.getElementById(`card-${i}`).appendChild(ff); }
   lockCard(i, pts > 0);
 }
-
 let _animFrame = null;
 function updateProgress() {
   const answered = states.filter(s => s.checked).length; const total = states.length;
@@ -812,7 +798,6 @@ function animateCounter(el, from, to) {
   function step(now) { const t = Math.min((now - start) / duration, 1); const ease = 1 - Math.pow(1 - t, 3); el.textContent = Math.round(from + (to - from) * ease) + "%"; if (t < 1) _animFrame = requestAnimationFrame(step); }
   _animFrame = requestAnimationFrame(step);
 }
-
 function launchConfetti(pct) {
   const canvas = document.getElementById("confetti-canvas"); const ctx = canvas.getContext("2d");
   canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -822,17 +807,13 @@ function launchConfetti(pct) {
   function draw() { ctx.clearRect(0, 0, canvas.width, canvas.height); pieces.forEach(p => { p.angle += p.tiltSpeed; p.y += p.d; p.x += Math.sin(p.angle) * 1.5; p.tilt = Math.sin(p.angle) * 12; ctx.beginPath(); ctx.lineWidth = p.r; ctx.strokeStyle = p.col; ctx.moveTo(p.x + p.tilt + p.r / 2, p.y); ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2); ctx.stroke(); }); frame++; if (frame < 180) requestAnimationFrame(draw); else ctx.clearRect(0, 0, canvas.width, canvas.height); }
   draw();
 }
-
 document.getElementById("jump-unanswered").addEventListener("click", () => { const idx = states.findIndex(s => !s.checked); if (idx === -1) scoreBox.scrollIntoView({ behavior: "smooth" }); else document.getElementById(`card-${idx}`).scrollIntoView({ behavior: "smooth", block: "center" }); });
-
 const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
 const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
 let currentTab = "week"; let currentQuizTitle = ""; let scoreSubmitted = false;
 let detectedCountry = "";
-
 const urlParams = new URLSearchParams(window.location.search);
 const scannedVenue = urlParams.get("venue");
-
 (async function detectCountry() {
   try {
     const res = await fetch("https://ipapi.co/json/");
@@ -840,12 +821,10 @@ const scannedVenue = urlParams.get("venue");
     if (data && data.country_code) detectedCountry = data.country_code;
   } catch(e) { detectedCountry = ""; }
 })();
-
 function countryFlag(code) {
   if (!code || code.length !== 2) return "";
   return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) + " ";
 }
-
 function countryName(code) {
   if (!code) return "My Country";
   try {
@@ -853,13 +832,10 @@ function countryName(code) {
     return dn.of(code.toUpperCase()) || "My Country";
   } catch(e) { return "My Country"; }
 }
-
 function showLeaderboard() { document.getElementById("leaderboard-section").style.display = "block"; currentQuizTitle = document.getElementById("quiz-title").textContent; loadLeaderboard(); }
 function switchTab(tab) { currentTab = tab; document.getElementById("tab-week").classList.toggle("active", tab === "week"); document.getElementById("tab-all").classList.toggle("active", tab === "all"); loadLeaderboard(); }
-
 /* ---- TRIVIA HIGHLIGHT ---- */
 let highlightText = "";
-
 async function showHighlight() {
   const panel = document.getElementById("highlight-panel");
   const headlineEl = document.getElementById("highlight-headline");
@@ -869,13 +845,11 @@ async function showHighlight() {
   headlineEl.textContent = "Calculating your highlight…";
   subEl.textContent = "";
   previewEl.textContent = "—";
-
   const earned = states.reduce((s, x) => s + x.points, 0);
   const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
   const myPct  = maxPts ? Math.round((earned / maxPts) * 100) : 0;
   const scoreStr = `Score: ${earned}/${maxPts} (${myPct}%)`;
   const link = "https://benjy333.github.io/Bens-Trivia/big-fat-sunday-quiz.html";
-
   // Builds the exact text that gets shared/copied: brand line, an optional
   // achievement line (only for a top-3 world or country placing), the score
   // line, then the link. Kept separate from the on-page headline copy below,
@@ -887,7 +861,6 @@ async function showHighlight() {
     lines.push(link);
     return lines.join("\n");
   }
-
   try {
     // Fetch full leaderboard
     const url = `${SUPA_URL}/rest/v1/leaderboard`
@@ -896,14 +869,12 @@ async function showHighlight() {
       + `&order=score.desc,percent.desc&limit=1000`;
     const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     const lb = await res.json();
-
 // Fetch question summary stats to find THE hardest question overall
     const qUrl = `${SUPA_URL}/rest/v1/question_stats_summary`
       + `?quiz_title=eq.${encodeURIComponent(currentQuizTitle)}`
       + `&select=question_id,total_count,correct_count`;
     const qRes = await fetch(qUrl, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     const qStats = await qRes.json();
-
 // Aggregate by question_id first — multi-text questions return one row
     // per answer slot, so they must be summed into a single correct/total
     // pair before comparing percentages across questions.
@@ -913,12 +884,10 @@ async function showHighlight() {
       byQid[r.question_id].correct += r.correct_count;
       byQid[r.question_id].total += r.total_count;
     });
-
     // Multi-text questions are excluded from hardest/easiest — partial
     // credit across several answer slots doesn't compare fairly against
     // single-answer questions, so they're left out of this highlight.
     const multiTextIds = new Set(questions.filter(q => q.type === "multi-text").map(q => q.id));
-
     // Find the single hardest question of the whole quiz
     let hardestQid = null, hardestPct = 101;
     Object.keys(byQid).forEach(qid => {
@@ -929,14 +898,12 @@ async function showHighlight() {
         if (pct < hardestPct) { hardestPct = pct; hardestQid = qid; }
       }
     });
-    
+
     const hardestQuestion = questions.find(q => q.id === hardestQid);
     const playerGotHardest = hardestQid && states[questions.findIndex(q => q.id === hardestQid)]?.points > 0;
-
     let headline = "", sub = "", cssClass = "";
     const suffix = n => n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
     let achievementLine = null;
-
     if (lb.length > 0) {
       let ranks = [];
       lb.forEach((r, i) => {
@@ -946,14 +913,12 @@ async function showHighlight() {
       const myRankIdx = lb.findIndex(r => r.score === earned);
       const myWorldRank = myRankIdx >= 0 ? (ranks[myRankIdx] + 1) : null;
       const total = lb.length;
-
       let myCountryRank = null;
       if (detectedCountry) {
         const countryLb = lb.filter(r => r.country === detectedCountry);
         const myCountryIdx = countryLb.findIndex(r => r.score === earned);
         myCountryRank = myCountryIdx >= 0 ? myCountryIdx + 1 : null;
       }
-
       // Priority 1: Top 3 in the world
       if (myWorldRank !== null && myWorldRank <= 3) {
         const medals = ["🥇","🥈","🥉"];
@@ -992,14 +957,11 @@ async function showHighlight() {
         sub = "";
       }
     }
-
     panel.className = "highlight-panel" + (cssClass ? " " + cssClass : "");
     headlineEl.textContent = headline;
     subEl.textContent = sub ? `${sub}` : "";
-
     highlightText = buildShareText(achievementLine);
     previewEl.textContent = highlightText;
-
   } catch(e) {
     console.error("Highlight error:", e);
     const headline = `I scored ${earned}/${maxPts} (${myPct}%) — can you beat it?`;
@@ -1009,7 +971,6 @@ async function showHighlight() {
     previewEl.textContent = highlightText;
   }
 }
-
 document.getElementById("highlight-whatsapp").addEventListener("click", () => {
   window.open("https://wa.me/?text=" + encodeURIComponent(highlightText), "_blank");
 });
@@ -1019,7 +980,6 @@ document.getElementById("highlight-copy").addEventListener("click", () => {
     setTimeout(() => document.getElementById("highlight-share-status").textContent = "", 2000);
   });
 });
-
 async function loadLeaderboard() {
   const tbody = document.getElementById("leaderboard-body");
   tbody.innerHTML = `<tr><td colspan="6" class="loading-msg">Loading…</td></tr>`;
@@ -1052,7 +1012,6 @@ async function loadLeaderboard() {
     }
   } catch(err) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.5;padding:16px;">Could not load scores.</td></tr>`; }
 }
-
 document.getElementById("btn-submit-score").addEventListener("click", async () => {
   if (scoreSubmitted) return;
   const nameEl = document.getElementById("player-name"); const name = nameEl.value.trim();
@@ -1072,10 +1031,8 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
     } else { btn.disabled = false; btn.textContent = "Submit Score"; document.getElementById("submit-status").textContent = "Something went wrong. Try again."; }
   } catch(err) { btn.disabled = false; btn.textContent = "Submit Score"; document.getElementById("submit-status").textContent = "Could not connect. Check your internet."; }
 });
-
 document.getElementById("player-name").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("btn-submit-score").click(); });
 function escapeHtml(str) { return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-
 document.getElementById("btn-restart").addEventListener("click", () => {
   const quizTitle = document.getElementById("quiz-title").textContent;
   try { localStorage.removeItem(getSaveKey(quizTitle)); } catch(e) {}
@@ -1092,9 +1049,7 @@ document.getElementById("btn-restart").addEventListener("click", () => {
   document.getElementById("ss-bar").style.width = "0%"; document.getElementById("ss-score").textContent = "0%";
   renderQuiz(); updateProgress(); window.scrollTo({ top: 0, behavior: "smooth" });
 });
-
 let data_start_date = "2026-04-18";
-
 /* ---- MAILING LIST SIGNUP ---- */
 document.getElementById("signup-btn").addEventListener("click", async () => {
   const emailEl = document.getElementById("signup-email");
@@ -1138,11 +1093,9 @@ document.getElementById("signup-btn").addEventListener("click", async () => {
     btn.disabled = false; btn.textContent = "Subscribe";
   }
 });
-
 document.getElementById("signup-email").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("signup-btn").click();
 });
-
 /* ---- FEEDBACK BOX ---- */
 document.getElementById("feedback-submit-btn").addEventListener("click", async () => {
   const typeEl = document.getElementById("feedback-type");
@@ -1150,16 +1103,13 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
   const nameEl = document.getElementById("feedback-name");
   const statusEl = document.getElementById("feedback-status");
   const message = msgEl.value.trim();
-
   if (!message) {
     statusEl.style.color = "var(--bad)";
     statusEl.textContent = "Please write a message first.";
     return;
   }
-
   const btn = document.getElementById("feedback-submit-btn");
   btn.disabled = true; btn.textContent = "Sending…";
-
   try {
     const res = await fetch(`${SUPA_URL}/rest/v1/feedback`, {
       method: "POST",
