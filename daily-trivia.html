@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ben’s Trivia — Daily Trivia</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-row1">
+      <div class="header-left">
+        <button id="menu-btn">☰</button>
+        <div class="logo-wrap">
+          <img class="logo-img" src="narrow_logo.png" alt="Ben's Trivia logo" />
+        </div>
+      </div>
+      <!-- no how-to icon on this page -->
+    </div>
+    <div class="header-row2">
+      <h1 id="page-title" class="page-title"></h1>
+    </div>
+
+    <nav class="menu-dropdown" id="menu-dropdown">
+      <a href="index.html">🎯 Daily Trivia</a>
+      <a href="anagram.html">🔤 Anagram Game</a>
+      <a href="riddle.html">🕵️ Riddle Game</a>
+      <a href="connections.html">🧩 Connections</a>
+      <a href="big-fat-sunday-quiz.html">🍻 Big Fat Sunday Quiz</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="game-card card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:var(--neon-soft)">
+        <div>Score: <strong id="score">0</strong></div>
+        <div>Question: <strong id="qnum">1</strong>/<span id="qtotal">4</span></div>
+      </div>
+      <h2 id="question" style="margin:10px 0 14px;text-align:center">Loading…</h2>
+      <div id="answers" style="display:grid;gap:10px"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="toolbar" style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+        <button class="btn" id="next" disabled>Next</button>
+        <button class="btn" id="restart" style="display:none">Play again</button>
+      </div>
+      <div class="subtle" id="shareWrap" style="display:none">
+        Share your score:
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+          <button class="btn" id="shareWhats">WhatsApp</button>
+          <button class="btn" id="copyLink">Copy result</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footerText"></footer>
+
+  <script>
+    // ----- MENU -----
+    const menuBtn = document.getElementById('menu-btn');
+    const menuDrop = document.getElementById('menu-dropdown');
+    menuBtn.onclick = () =>
+      menuDrop.style.display = menuDrop.style.display === 'block' ? 'none' : 'block';
+    document.addEventListener('click', e => {
+      if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) {
+        menuDrop.style.display = 'none';
+      }
+    });
+
+    const footer = document.getElementById('footerText');
+    const today  = new Date();
+
+    // Header title: Daily Trivia — Sunday, 23 November
+    const pageTitleEl = document.getElementById('page-title');
+    pageTitleEl.textContent =
+      'Daily Trivia — ' +
+      today.toLocaleDateString(undefined, {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+      });
+
+    // ----- Trivia (daily) from JSON -----
+    (async function(){
+      const res  = await fetch('daily_content.json');
+      const data = await res.json();
+
+      // EASY TO UPDATE MONTHLY:
+      // On the 1st of each month, you can replace the trivia_sets
+      // inside daily_content.json with new questions.
+      // Keep the same structure so this logic still works.
+
+      const start    = new Date(data.start_date);
+      const diffDays = Math.floor((Date.now() - start) / 86400000);
+      const dayIndex = Math.max(0, diffDays);
+      const useIndex = Math.min(dayIndex, data.trivia_sets.length - 1);
+      const QUESTIONS = data.trivia_sets[useIndex].questions;
+
+      // Shared daily puzzle number (also used by Anagram, Riddle, Connections)
+      const puzzleNumber = dayIndex + 1;
+
+      footer.textContent = `Made by Ben · Puzzle No. ${puzzleNumber} · ${
+        today.toLocaleDateString(undefined, {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        })
+      }`;
+
+      const qTotalEl   = document.getElementById('qtotal'),
+            qNumEl     = document.getElementById('qnum'),
+            scoreEl    = document.getElementById('score'),
+            questionEl = document.getElementById('question'),
+            answersEl  = document.getElementById('answers'),
+            feedbackEl = document.getElementById('feedback'),
+            nextBtn    = document.getElementById('next'),
+            restartBtn = document.getElementById('restart'),
+            shareWrap  = document.getElementById('shareWrap');
+
+      qTotalEl.textContent = QUESTIONS.length;
+
+      let idx   = 0;
+      let score = 0;
+      let locked = false;
+
+      function renderQuestion() {
+        const item = QUESTIONS[idx];
+        qNumEl.textContent    = idx + 1;
+        questionEl.textContent = item.q;
+        feedbackEl.textContent = "";
+        nextBtn.disabled       = true;
+        shareWrap.style.display = 'none';
+        restartBtn.style.display = 'none';
+        locked = false;
+
+        answersEl.innerHTML = "";
+        item.choices.forEach((text, i) => {
+          const b = document.createElement('button');
+          b.className   = 'btn';
+          b.style.width = '100%';
+          b.textContent = text;
+          b.onclick     = () => pickAnswer(i);
+          answersEl.appendChild(b);
+        });
+      }
+
+      function pickAnswer(choice) {
+        if (locked) return;
+        locked = true;
+
+        const correct = QUESTIONS[idx].answer;
+        [...answersEl.querySelectorAll('button')].forEach((b, i) => {
+          if (i === correct) {
+            b.style.background   = 'var(--good)';
+            b.style.color        = '#001';
+            b.style.borderColor  = 'var(--good)';
+            b.style.boxShadow    = '0 0 22px var(--good)';
+          } else if (i === choice) {
+            b.style.background   = 'var(--bad)';
+            b.style.color        = '#001';
+            b.style.borderColor  = 'var(--bad)';
+            b.style.boxShadow    = '0 0 22px var(--bad)';
+          } else {
+            b.style.opacity = .6;
+          }
+          b.disabled = true;
+        });
+
+        if (choice === correct) {
+          score++;
+          scoreEl.textContent = score;
+          feedbackEl.textContent = '✅ Correct!';
+        } else {
+          feedbackEl.textContent = '❌ Not quite.';
+        }
+        nextBtn.disabled = false;
+      }
+
+      function nextQuestion() {
+        if (idx < QUESTIONS.length - 1) {
+          idx++;
+          renderQuestion();
+        } else {
+          endGame();
+        }
+      }
+
+      function endGame() {
+        questionEl.textContent = '🎉 All done!';
+        answersEl.innerHTML = '';
+        feedbackEl.innerHTML =
+          `Final score: <strong>${score}</strong> / ${QUESTIONS.length}`;
+        nextBtn.disabled = true;
+        restartBtn.style.display = 'inline-block';
+        shareWrap.style.display  = 'block';
+      }
+
+      function restart() {
+        idx = 0;
+        score = 0;
+        scoreEl.textContent = score;
+        renderQuestion();
+      }
+
+      nextBtn.onclick    = nextQuestion;
+      restartBtn.onclick = restart;
+
+      function shareText() {
+        const pct = Math.round((score / QUESTIONS.length) * 100);
+        return `Ben's Trivia — I scored ${score}/${QUESTIONS.length} (${pct}%). Play: ${location.href}`;
+      }
+
+      document.getElementById('shareWhats').onclick = () =>
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareText())}`,'_blank');
+
+      document.getElementById('copyLink').onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(shareText());
+          alert('Result copied!');
+        } catch {
+          alert('Copy failed.');
+        }
+      };
+
+      renderQuestion();
+    })();
+  </script>
+</body>
+</html>
