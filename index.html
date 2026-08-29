@@ -8,10 +8,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta property="og:title" content="The Big Fat Sunday Quiz · Ben's Trivia" />
   <meta property="og:description" content="25 questions · Weekly Sunday Challenge · Try beat my score!" />
-  <meta property="og:image" content="https://benjy333.github.io/Bens-Trivia/preview.png" />
+  <meta property="og:image" content="https://benstrivia.com/preview.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:url" content="https://benjy333.github.io/Bens-Trivia/big-fat-sunday-quiz.html" />
+  <meta property="og:url" content="https://benstrivia.com/" />
   <meta property="og:type" content="website" />
   <title>The Big Fat Sunday Quiz</title>
   <link rel="stylesheet" href="style.css" />
@@ -213,6 +213,7 @@
     </div>
     <nav class="menu-dropdown" id="menu-dropdown">
       <a href="index.html">🍻 Big Fat Sunday Quiz</a>
+      <a href="daily-trivia.html">🎯 Daily Trivia</a>
       <a href="stats.html">📊 Quiz Stats</a>
       <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
     </nav>
@@ -325,9 +326,14 @@ const DEV_STORAGE_KEY = "bens-trivia-dev-date";
 (function initDevPanel() {
   if (!location.search.includes("dev")) return;
   const panel = document.getElementById("dev-panel");
+  const header = document.querySelector(".global-header");
   panel.style.display = "flex";
   document.getElementById("venue-stats-link").style.display = "block";
-  document.body.style.paddingTop = (parseInt(getComputedStyle(document.body).paddingTop || "0") + 36) + "px";
+  // Push the fixed header (and its menu button) down below the dev bar
+  // instead of letting the dev bar's higher z-index cover it.
+  const panelHeight = panel.offsetHeight;
+  header.style.top = panelHeight + "px";
+  document.body.style.paddingTop = (header.offsetHeight + panelHeight) + "px";
   const input  = document.getElementById("dev-date-input");
   const label  = document.getElementById("dev-label");
   const stored = localStorage.getItem(DEV_STORAGE_KEY);
@@ -849,7 +855,7 @@ async function showHighlight() {
   const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
   const myPct  = maxPts ? Math.round((earned / maxPts) * 100) : 0;
   const scoreStr = `Score: ${earned}/${maxPts} (${myPct}%)`;
-  const link = "https://benjy333.github.io/Bens-Trivia/big-fat-sunday-quiz.html";
+  const link = "https://benstrivia.com/";
   // Builds the exact text that gets shared/copied: brand line, an optional
   // achievement line (only for a top-3 world or country placing), the score
   // line, then the link. Kept separate from the on-page headline copy below,
