@@ -2,17 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="refresh" content="0; url=/" />
   <link rel="canonical" href="https://benstrivia.com/" />
   <meta name="robots" content="noindex" />
   <title>Redirecting… — Ben's Trivia</title>
-  <script>location.replace("/");</script>
+  <script>
+    // Preserve any query string (e.g. ?venue=xyz from venue QR codes)
+    // so venue-specific scans still get tracked correctly.
+    location.replace("/" + location.search);
+  </script>
+  <noscript><meta http-equiv="refresh" content="0; url=/" /></noscript>
   <style>
     body { font-family: system-ui, sans-serif; background:#020713; color:#e9f4ff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; text-align:center; }
     a { color:#96d0ff; }
   </style>
 </head>
 <body>
-  <p>Taking you to the quiz… if nothing happens, <a href="/">click here</a>.</p>
+  <p>Taking you to the quiz… if nothing happens, <a href="/" id="fallback-link">click here</a>.</p>
+  <script>document.getElementById("fallback-link").href = "/" + location.search;</script>
 </body>
 </html>
