@@ -71,7 +71,7 @@
     .btn-check { padding: 8px 18px; border-radius: 999px; border: 1px solid rgba(150,208,255,0.7); background: rgba(3,15,34,0.95); color: #e9f4ff; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
     .btn-check:disabled { opacity: 0.5; cursor: default; }
     .btn-check:hover:not(:disabled) { background: var(--neon-soft); color: #001; }
-    .check-row { display: flex; justify-content: flex-end; margin-top: 12px; }
+    .check-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
     .feedback { margin-top: 8px; font-size: 0.85rem; min-height: 18px; font-weight: 500; }
     .feedback.correct { color: var(--good); }
     .feedback.incorrect { color: var(--bad); }
@@ -551,14 +551,11 @@ function renderQuiz() {
     container.appendChild(card);
   });
 }
-function addSkipButton(card, q, i) {
-  const row = document.createElement("div");
-  row.className = "skip-row";
+function makeSkipButton(q, i) {
   const skip = document.createElement("button");
   skip.className = "btn-skip"; skip.id = `skip-${i}`; skip.textContent = "Skip question";
   skip.onclick = () => skipQuestion(i);
-  row.appendChild(skip);
-  card.appendChild(row);
+  return skip;
 }
 function skipQuestion(i) {
   if (states[i].checked) return;
@@ -591,11 +588,11 @@ function renderMCQ(card, q, i) {
   q.options.forEach((opt, oi) => { const btn = document.createElement("button"); btn.className = "option-btn"; btn.textContent = opt; btn.onclick = () => selectMCQOption(i, oi); grid.appendChild(btn); });
   card.appendChild(grid);
   const checkRow = document.createElement("div"); checkRow.className = "check-row";
+  checkRow.appendChild(makeSkipButton(q, i));
   const checkBtn = document.createElement("button");
   checkBtn.className = "btn-check"; checkBtn.id = `btn-${i}`; checkBtn.textContent = "Check";
   checkBtn.onclick = () => checkMCQ(i);
   checkRow.appendChild(checkBtn); card.appendChild(checkRow);
-  addSkipButton(card, q, i);
 }
 function selectMCQOption(i, oi) {
   if (states[i].checked) return;
@@ -608,26 +605,32 @@ function renderTextExact(card, q, i) {
   const row = document.createElement("div"); row.className = "input-row";
   const input = document.createElement("input"); input.type = "text"; input.className = "question-input"; input.id = `input-${i}`; input.placeholder = "Type your answer…";
   input.addEventListener("keydown", e => { if (e.key === "Enter") checkTextExact(i); });
+  row.appendChild(input); card.appendChild(row);
+  const checkRow = document.createElement("div"); checkRow.className = "check-row";
+  checkRow.appendChild(makeSkipButton(q, i));
   const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check"; btn.onclick = () => checkTextExact(i);
-  row.appendChild(input); row.appendChild(btn); card.appendChild(row);
-  addSkipButton(card, q, i);
+  checkRow.appendChild(btn); card.appendChild(checkRow);
 }
 function renderNumeric(card, q, i) {
   const row = document.createElement("div"); row.className = "input-row";
   const input = document.createElement("input"); input.type = "number"; input.className = "question-input"; input.id = `input-${i}`; input.placeholder = "Enter number…";
   input.addEventListener("keydown", e => { if (e.key === "Enter") checkNumeric(i); });
+  row.appendChild(input); card.appendChild(row);
+  const checkRow = document.createElement("div"); checkRow.className = "check-row";
+  checkRow.appendChild(makeSkipButton(q, i));
   const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check"; btn.onclick = () => checkNumeric(i);
-  row.appendChild(input); row.appendChild(btn); card.appendChild(row);
-  addSkipButton(card, q, i);
+  checkRow.appendChild(btn); card.appendChild(checkRow);
 }
 function renderYear(card, q, i) {
   const hint = document.createElement("div"); hint.className = "year-hint"; hint.textContent = "Exact year = 2 pts · 1 year off = 1 pt"; card.appendChild(hint);
   const row = document.createElement("div"); row.className = "input-row";
   const input = document.createElement("input"); input.type = "number"; input.className = "question-input"; input.id = `input-${i}`; input.placeholder = "Enter year…";
   input.addEventListener("keydown", e => { if (e.key === "Enter") checkYear(i); });
+  row.appendChild(input); card.appendChild(row);
+  const checkRow = document.createElement("div"); checkRow.className = "check-row";
+  checkRow.appendChild(makeSkipButton(q, i));
   const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check"; btn.onclick = () => checkYear(i);
-  row.appendChild(input); row.appendChild(btn); card.appendChild(row);
-  addSkipButton(card, q, i);
+  checkRow.appendChild(btn); card.appendChild(checkRow);
 }
 function renderMultiText(card, q, i) {
   const hint = document.createElement("div"); hint.className = "multi-text-hint";
@@ -642,9 +645,9 @@ function renderMultiText(card, q, i) {
   }
   card.appendChild(grid);
   const checkRow = document.createElement("div"); checkRow.className = "check-row";
+  checkRow.appendChild(makeSkipButton(q, i));
   const btn = document.createElement("button"); btn.className = "btn-check"; btn.id = `btn-${i}`; btn.textContent = "Check answers";
   btn.onclick = () => checkMultiText(i); checkRow.appendChild(btn); card.appendChild(checkRow);
-  addSkipButton(card, q, i);
 }
 function checkMultiText(i) {
   if (states[i].checked) return;
