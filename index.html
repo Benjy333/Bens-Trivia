@@ -249,10 +249,6 @@
           <button class="highlight-share-btn" id="highlight-copy">📋 Copy Result</button>
         </div>
         <div id="highlight-share-status" style="font-size:11px;opacity:0.8;margin-top:6px;"></div>
-        <div style="margin-top:16px;border-top:1px solid rgba(150,208,255,0.15);padding-top:14px;">
-          <button class="btn-restart" id="btn-restart">↺ Restart Quiz</button>
-          <div style="font-size:0.75rem;opacity:0.5;margin-top:6px;">This will clear your answers and start fresh</div>
-        </div>
       </div>
       <div class="leaderboard-section" id="leaderboard-section" style="display:none;">
         <div class="leaderboard-title">🏆 This Week's Leaderboard</div>
@@ -1041,22 +1037,6 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
 });
 document.getElementById("player-name").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("btn-submit-score").click(); });
 function escapeHtml(str) { return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-document.getElementById("btn-restart").addEventListener("click", () => {
-  const quizTitle = document.getElementById("quiz-title").textContent;
-  try { localStorage.removeItem(getSaveKey(quizTitle)); } catch(e) {}
-  clearSubmission(quizTitle);
-  states = questions.map(q => ({ checked: false, points: 0, maxPoints: q.maxPoints || 1, chosenIndex: null, chosenValue: null, chosenValues: null }));
-  scoreSubmitted = false;
-  document.getElementById("highlight-panel").style.display = "none";
-  document.getElementById("mailing-list-signup").style.display = "none";
-  document.getElementById("feedback-section").style.display = "none";
-  document.getElementById("leaderboard-section").style.display = "none";
-  document.getElementById("leaderboard-locked").style.display = "block";
-  document.getElementById("leaderboard-unlocked").style.display = "none";
-  document.getElementById("instagram-handle").style.display = "none";
-  document.getElementById("ss-bar").style.width = "0%"; document.getElementById("ss-score").textContent = "0%";
-  renderQuiz(); updateProgress(); window.scrollTo({ top: 0, behavior: "smooth" });
-});
 let data_start_date = "2026-04-18";
 /* ---- MAILING LIST SIGNUP ---- */
 document.getElementById("signup-btn").addEventListener("click", async () => {
