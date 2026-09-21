@@ -54,6 +54,22 @@
 
     .section-subheading { font-size: 0.75rem; opacity: 0.55; margin: -6px 0 12px; }
 
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .stat-card {
+      background: radial-gradient(circle at top left, #12335a 0, #020a16 70%);
+      border: 1px solid rgba(150,208,255,0.3); border-radius: 14px;
+      padding: 14px 16px; text-align: center;
+    }
+    .stat-card .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--neon-soft); text-shadow: 0 0 8px var(--neon-soft); }
+    .stat-card .stat-label { font-size: 0.75rem; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+
+    .week-chart { display: flex; align-items: flex-end; gap: 8px; padding: 10px 4px 0; overflow-x: auto; }
+    .week-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1 0 30px; min-width: 30px; }
+    .week-bar-track { height: 120px; display: flex; align-items: flex-end; }
+    .week-bar-value { font-size: 0.65rem; opacity: 0.8; margin-bottom: 4px; white-space: nowrap; }
+    .week-bar { width: 55%; max-width: 26px; margin: 0 auto; background: linear-gradient(180deg, var(--neon), var(--neon-soft)); border-radius: 6px 6px 2px 2px; box-shadow: 0 0 8px var(--neon-soft); min-height: 3px; }
+    .week-bar-label { font-size: 0.6rem; opacity: 0.55; margin-top: 6px; white-space: nowrap; }
+
     .month-label { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-top: -8px; }
     .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
   </style>
@@ -78,6 +94,22 @@
 
   <main>
     <div class="stats-shell">
+
+      <div class="card">
+        <div class="section-heading">🌟 All-Time Highlights</div>
+        <div class="summary-grid">
+          <div class="stat-card"><div class="stat-value" id="stat-total-played">—</div><div class="stat-label">Total Players</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-total-leaderboard">—</div><div class="stat-label">On Leaderboard</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-avg-score">—</div><div class="stat-label">Avg Score</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-heading">📈 Players Per Week</div>
+        <div class="week-chart" id="week-chart">
+          <div class="loading-msg">Loading…</div>
+        </div>
+      </div>
 
       <div class="month-label" id="month-label">All-time leaderboard</div>
 
@@ -157,19 +189,23 @@ function escapeHtml(str) {
 const MIN_SCORES_FOR_LEADERBOARD = 10;
 
 (async function init() {
-  const countries = await fetchCountryLeaderboard();
+  const [countries, highlights] = await Promise.all([
+    fetchCountryLeaderboard(),
+    fetchHighlights()
+  ]);
   const qualified = countries.filter(c => c.player_count >= MIN_SCORES_FOR_LEADERBOARD);
   const minor = countries.filter(c => c.player_count < MIN_SCORES_FOR_LEADERBOARD);
   renderCountryLeaderboard(qualified);
   populateOtherCountries(minor);
+  renderHighlights(highlights);
 })();
 
-async function fetchAllRows(query) {
+async function fetchAllRows(table, query) {
   const pageSize = 1000;
   let allRows = [];
   let from = 0;
   while (true) {
-    const url = `${SUPA_URL}/rest/v1/leaderboard?${query}`;
+    const url = `${SUPA_URL}/rest/v1/${table}?${query}`;
     const res = await fetch(url, {
       headers: {
         "apikey": SUPA_KEY,
@@ -186,9 +222,76 @@ async function fetchAllRows(query) {
   return allRows;
 }
 
+// Total completions per week come from question_stats_summary: the last
+// question of each week's quiz has a total_count that reflects everyone
+// who reached the end, whether or not they went on to add their name to
+// the leaderboard (same logic stats.html uses for its "Players" stat).
+async function fetchHighlights() {
+  try {
+    const [quizData, leaderboardRows, statsRows] = await Promise.all([
+      fetch("weekly_quizzes.json").then(r => r.json()),
+      fetchAllRows("leaderboard", "select=quiz_title,percent"),
+      fetchAllRows("question_stats_summary", "select=quiz_title,question_id,total_count")
+    ]);
+
+    const weeks = (quizData.weekly_quizzes || []).filter(q => q.questions && q.questions.length > 0);
+
+    const weekStats = weeks.map(q => {
+      const lastId = q.questions[q.questions.length - 1].id;
+      const rows = statsRows.filter(r => r.quiz_title === q.title && r.question_id === lastId);
+      const completions = rows.length ? Math.max(...rows.map(r => r.total_count)) : 0;
+      return { title: q.title, completions };
+    });
+
+    const totalPlayed = weekStats.reduce((sum, w) => sum + w.completions, 0);
+    const totalLeaderboard = leaderboardRows.length;
+    const avgScore = totalLeaderboard
+      ? Math.round(leaderboardRows.reduce((s, r) => s + r.percent, 0) / totalLeaderboard)
+      : 0;
+
+    return { weekStats, totalPlayed, totalLeaderboard, avgScore };
+  } catch (err) {
+    return null;
+  }
+}
+
+function renderHighlights(data) {
+  if (!data) {
+    document.getElementById("stat-total-played").textContent = "—";
+    document.getElementById("stat-total-leaderboard").textContent = "—";
+    document.getElementById("stat-avg-score").textContent = "—";
+    document.getElementById("week-chart").innerHTML = '<div class="loading-msg">Could not load weekly stats.</div>';
+    return;
+  }
+  document.getElementById("stat-total-played").textContent = data.totalPlayed;
+  document.getElementById("stat-total-leaderboard").textContent = data.totalLeaderboard;
+  document.getElementById("stat-avg-score").textContent = data.totalLeaderboard ? data.avgScore + "%" : "—";
+  renderWeekChart(data.weekStats);
+}
+
+function renderWeekChart(weekStats) {
+  const el = document.getElementById("week-chart");
+  if (!weekStats || !weekStats.length) {
+    el.innerHTML = '<div class="loading-msg">No weekly data yet</div>';
+    return;
+  }
+  const max = Math.max(1, ...weekStats.map(w => w.completions));
+  el.innerHTML = weekStats.map((w, i) => {
+    const heightPct = w.completions ? Math.max(4, Math.round((w.completions / max) * 100)) : 0;
+    const match = w.title.match(/#(\d+)/);
+    const label = match ? "#" + match[1] : "Wk " + (i + 1);
+    return `
+      <div class="week-bar-wrap" title="${escapeHtml(w.title)}: ${w.completions} players">
+        <div class="week-bar-value">${w.completions}</div>
+        <div class="week-bar-track"><div class="week-bar" style="height:${heightPct}%;"></div></div>
+        <div class="week-bar-label">${escapeHtml(label)}</div>
+      </div>`;
+  }).join("");
+}
+
 async function fetchCountryLeaderboard() {
   try {
-    const rows = await fetchAllRows("select=country,percent&country=not.is.null");
+    const rows = await fetchAllRows("leaderboard", "select=country,percent&country=not.is.null");
     const byCountry = {};
     rows.forEach(r => {
       if (!r.country) return;
