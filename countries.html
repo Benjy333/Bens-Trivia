@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Country Leaderboard · Ben's Trivia</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <style>
+    .global-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 120;
+      padding: 10px 14px 12px;
+      background: linear-gradient(90deg, #020713ee, #041831ee);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(150, 208, 255, 0.3);
+    }
+    .header-row-top { display: flex; align-items: center; justify-content: space-between; }
+    .header-logo { height: 52px; width: auto; filter: drop-shadow(0 0 8px var(--neon)) drop-shadow(0 0 18px var(--neon-soft)); }
+    .header-row-bottom { margin-top: 6px; text-align: center; }
+    .page-title { margin: 0; font-size: 1.1rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); text-shadow: 0 0 8px var(--neon-soft); }
+    .global-header #menu-btn {
+      background: rgba(0,0,0,.25); border: 1.5px solid var(--neon); color: var(--neon);
+      font-size: 1.3rem; padding: 6px 12px; border-radius: 12px; cursor: pointer;
+      box-shadow: 0 0 10px var(--neon-soft); transition: .18s;
+    }
+    .global-header #menu-btn:hover { background: var(--neon); color: #001; }
+    .menu-dropdown {
+      position: absolute; top: 60px; left: 8px; background: var(--bg2);
+      border: 1px solid var(--neon); border-radius: 12px; padding: 6px;
+      box-shadow: 0 0 18px var(--neon-soft); min-width: 210px;
+      display: none; flex-direction: column; z-index: 200;
+    }
+    .menu-dropdown a { display: block; padding: 10px 12px; color: var(--text); text-decoration: none; border-radius: 10px; font-size: 0.95rem; white-space: nowrap; }
+    .menu-dropdown a:hover { background: var(--neon); color: #001; }
+
+    body { padding-top: 130px; }
+    main { display: grid; place-items: center; padding: 24px 16px 48px; }
+    .stats-shell { width: min(960px, 100%); display: flex; flex-direction: column; gap: 20px; }
+
+    .card { background: var(--bg2); border: 1px solid rgba(150,208,255,0.2); border-radius: 16px; padding: 18px 16px; }
+    .section-heading {
+      font-size: 0.85rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--neon-soft); opacity: 0.8;
+      margin-bottom: 10px;
+    }
+    .loading-msg { text-align: center; opacity: 0.5; padding: 24px; font-size: 0.9rem; }
+
+    .lb-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .lb-table th { text-align: left; padding: 6px 10px; color: var(--neon-soft); opacity: 0.7; font-weight: 500; border-bottom: 1px solid rgba(150,208,255,0.15); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .lb-table td { padding: 9px 10px; border-bottom: 1px solid rgba(150,208,255,0.07); }
+    .lb-table tr:nth-child(1) td { color: #ffd700; }
+    .lb-table tr:nth-child(2) td { color: #c0d8e8; }
+    .lb-table tr:nth-child(3) td { color: #e8b87a; }
+
+    .month-label { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-top: -8px; }
+    .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <header class="global-header">
+    <div class="header-row-top">
+      <button id="menu-btn">☰</button>
+      <img src="logo.png" class="header-logo" alt="Ben's Trivia Logo" style="position:absolute;left:50%;transform:translateX(-50%);">
+      <div style="width:52px;"></div>
+    </div>
+    <div class="header-row-bottom">
+      <h1 class="page-title">🌍 Country Leaderboard</h1>
+    </div>
+    <nav class="menu-dropdown" id="menu-dropdown">
+      <a href="big-fat-sunday-quiz.html">🍻 Big Fat Sunday Quiz</a>
+      <a href="stats.html">📊 Quiz Stats</a>
+      <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
+      <a href="countries.html" id="country-stats-link" style="display:none;">🌍 Country Leaderboard</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="stats-shell">
+
+      <div class="month-label" id="month-label">All-time leaderboard</div>
+
+      <div class="card">
+        <div class="section-heading">🌍 Global Leaderboard by Country</div>
+        <table class="lb-table">
+          <thead>
+            <tr><th>#</th><th>Flag</th><th>Country</th><th>Players</th><th>Avg %</th></tr>
+          </thead>
+          <tbody id="country-lb-body">
+            <tr><td colspan="5" class="loading-msg">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="global-footer">Made by Ben · Country Leaderboard</footer>
+
+<script>
+const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
+const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
+
+if (location.search.includes("dev")) {
+  document.getElementById("venue-stats-link").style.display = "block";
+  document.getElementById("country-stats-link").style.display = "block";
+}
+
+const menuBtn = document.getElementById("menu-btn");
+const menuDropdown = document.getElementById("menu-dropdown");
+menuBtn.addEventListener("click", () => {
+  menuDropdown.style.display = menuDropdown.style.display === "flex" ? "none" : "flex";
+});
+document.addEventListener("click", e => {
+  if (!menuDropdown.contains(e.target) && !menuBtn.contains(e.target))
+    menuDropdown.style.display = "none";
+});
+
+function countryFlag(code) {
+  if (!code || code.length !== 2) return "";
+  return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) + " ";
+}
+function countryName(code) {
+  if (!code || code.length !== 2) return "Unknown";
+  try {
+    const dn = new Intl.DisplayNames(["en"], { type: "region" });
+    return dn.of(code.toUpperCase()) || code.toUpperCase();
+  } catch {
+    return code.toUpperCase();
+  }
+}
+function escapeHtml(str) {
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+(async function init() {
+  const countries = await fetchCountryLeaderboard();
+  renderCountryLeaderboard(countries);
+})();
+
+async function fetchAllRows(query) {
+  const pageSize = 1000;
+  let allRows = [];
+  let from = 0;
+  while (true) {
+    const url = `${SUPA_URL}/rest/v1/leaderboard?${query}`;
+    const res = await fetch(url, {
+      headers: {
+        "apikey": SUPA_KEY,
+        "Authorization": `Bearer ${SUPA_KEY}`,
+        "Range": `${from}-${from + pageSize - 1}`
+      }
+    });
+    const rows = await res.json();
+    if (!Array.isArray(rows) || !rows.length) break;
+    allRows = allRows.concat(rows);
+    if (rows.length < pageSize) break;
+    from += pageSize;
+  }
+  return allRows;
+}
+
+async function fetchCountryLeaderboard() {
+  try {
+    const rows = await fetchAllRows("select=country,percent&country=not.is.null");
+    const byCountry = {};
+    rows.forEach(r => {
+      if (!r.country) return;
+      const code = r.country.toUpperCase();
+      if (!byCountry[code]) byCountry[code] = { total: 0, count: 0 };
+      byCountry[code].total += r.percent;
+      byCountry[code].count += 1;
+    });
+    const countries = Object.keys(byCountry).map(code => ({
+      code,
+      player_count: byCountry[code].count,
+      avg_percent: Math.round((byCountry[code].total / byCountry[code].count) * 10) / 10
+    }));
+    countries.sort((a, b) => b.avg_percent - a.avg_percent);
+    return countries;
+  } catch {
+    return [];
+  }
+}
+
+function renderCountryLeaderboard(countries) {
+  const tbody = document.getElementById("country-lb-body");
+  if (!countries || !countries.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="loading-msg">No country scores yet</td></tr>';
+    return;
+  }
+  const medals = ["🥇","🥈","🥉"];
+  tbody.innerHTML = countries.map((c, i) => `
+    <tr>
+      <td>${medals[i] || (i + 1)}</td>
+      <td style="font-size:1.1rem;">${countryFlag(c.code)}</td>
+      <td>${escapeHtml(countryName(c.code))}</td>
+      <td>${c.player_count}</td>
+      <td>${c.avg_percent}%</td>
+    </tr>
+  `).join("");
+}
+</script>
+</body>
+</html>
