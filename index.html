@@ -215,6 +215,7 @@
       <a href="index.html">🍻 Big Fat Sunday Quiz</a>
       <a href="stats.html">📊 Quiz Stats</a>
       <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
+      <a href="countries.html" id="country-stats-link" style="display:none;">🌍 Country Leaderboard</a>
     </nav>
   </header>
   <main>
@@ -324,6 +325,7 @@ const DEV_STORAGE_KEY = "bens-trivia-dev-date";
   const header = document.querySelector(".global-header");
   panel.style.display = "flex";
   document.getElementById("venue-stats-link").style.display = "block";
+  document.getElementById("country-stats-link").style.display = "block";
   // Push the fixed header (and its menu button) down below the dev bar
   // instead of letting the dev bar's higher z-index cover it.
   const panelHeight = panel.offsetHeight;
