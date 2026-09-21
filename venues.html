@@ -78,6 +78,7 @@
       <a href="big-fat-sunday-quiz.html">🍻 Big Fat Sunday Quiz</a>
       <a href="stats.html">📊 Quiz Stats</a>
       <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
+      <a href="countries.html" id="country-stats-link" style="display:none;">🌍 Country Leaderboard</a>
     </nav>
   </header>
 
@@ -127,6 +128,7 @@ const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
 
 if (location.search.includes("dev")) {
   document.getElementById("venue-stats-link").style.display = "block";
+  document.getElementById("country-stats-link").style.display = "block";
 }
 
 const menuBtn = document.getElementById("menu-btn");
@@ -150,8 +152,7 @@ function prettyVenueName(slug) {
   return slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
 }
 
-document.getElementById("month-label").textContent =
-  new Date().toLocaleDateString(undefined, { month: "long", year: "numeric" }) + " leaderboard";
+document.getElementById("month-label").textContent = "All-time leaderboard";
 
 (async function init() {
   const [venues, playersByVenue] = await Promise.all([
@@ -162,18 +163,52 @@ document.getElementById("month-label").textContent =
   populateVenuePicker(venues);
 })();
 
+async function fetchAllRows(query) {
+  const pageSize = 1000;
+  let allRows = [];
+  let from = 0;
+  while (true) {
+    const url = `${SUPA_URL}/rest/v1/leaderboard?${query}`;
+    const res = await fetch(url, {
+      headers: {
+        "apikey": SUPA_KEY,
+        "Authorization": `Bearer ${SUPA_KEY}`,
+        "Range": `${from}-${from + pageSize - 1}`
+      }
+    });
+    const rows = await res.json();
+    if (!Array.isArray(rows) || !rows.length) break;
+    allRows = allRows.concat(rows);
+    if (rows.length < pageSize) break;
+    from += pageSize;
+  }
+  return allRows;
+}
+
 async function fetchVenueLeaderboard() {
   try {
-    const url = `${SUPA_URL}/rest/v1/venue_monthly_leaderboard?select=venue,player_count,avg_percent&order=avg_percent.desc`;
-    const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
-    return await res.json();
+    const rows = await fetchAllRows("select=venue,percent&venue=not.is.null");
+    const byVenue = {};
+    rows.forEach(r => {
+      if (!r.venue) return;
+      if (!byVenue[r.venue]) byVenue[r.venue] = { total: 0, count: 0 };
+      byVenue[r.venue].total += r.percent;
+      byVenue[r.venue].count += 1;
+    });
+    const venues = Object.keys(byVenue).map(venue => ({
+      venue,
+      player_count: byVenue[venue].count,
+      avg_percent: Math.round((byVenue[venue].total / byVenue[venue].count) * 10) / 10
+    }));
+    venues.sort((a, b) => b.avg_percent - a.avg_percent);
+    return venues;
   } catch { return []; }
 }
 
 function renderVenueLeaderboard(venues) {
   const tbody = document.getElementById("venue-lb-body");
   if (!venues || !venues.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="loading-msg">No venue scores yet this month</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" class="loading-msg">No venue scores yet</td></tr>';
     return;
   }
   const medals = ["🥇","🥈","🥉"];
@@ -204,20 +239,14 @@ async function loadVenuePlayers(venue) {
   const tbody = document.getElementById("venue-players-body");
   tbody.innerHTML = '<tr><td colspan="5" class="loading-msg">Loading…</td></tr>';
   try {
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
-    startOfMonth.setHours(0, 0, 0, 0);
-
-    const url = `${SUPA_URL}/rest/v1/leaderboard`
-      + `?venue=eq.${encodeURIComponent(venue)}`
-      + `&submitted_at=gte.${startOfMonth.toISOString()}`
+    const rows = await fetchAllRows(
+      `venue=eq.${encodeURIComponent(venue)}`
       + `&select=player_name,score,max_score,percent,country`
-      + `&order=score.desc,percent.desc&limit=1000`;
-    const res = await fetch(url, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
-    const rows = await res.json();
+      + `&order=score.desc,percent.desc`
+    );
 
     if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="loading-msg">No players yet this month</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="loading-msg">No players yet</td></tr>';
       return;
     }
 
