@@ -54,14 +54,6 @@
 
     .section-subheading { font-size: 0.75rem; opacity: 0.55; margin: -6px 0 12px; }
 
-    .venue-select-wrap { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .venue-select-wrap label { font-size: 0.85rem; opacity: 0.7; }
-    select.venue-picker {
-      padding: 8px 14px; border-radius: 999px;
-      border: 1px solid rgba(150,208,255,0.6); background: rgba(0,8,18,0.85);
-      color: #e9f4ff; font-size: 0.9rem; cursor: pointer; flex: 1;
-    }
-
     .month-label { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-top: -8px; }
     .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
   </style>
@@ -105,18 +97,12 @@
       <div class="card" id="other-countries-card" style="display:none;">
         <div class="section-heading">Other Countries</div>
         <div class="section-subheading">Fewer than 10 completed quizzes so far</div>
-        <div class="venue-select-wrap" style="margin-bottom:14px;">
-          <label for="country-picker">Browse:</label>
-          <select class="venue-picker" id="country-picker">
-            <option value="">Loading…</option>
-          </select>
-        </div>
         <table class="lb-table">
           <thead>
-            <tr><th>Flag</th><th>Country</th><th>Players</th><th>Avg %</th></tr>
+            <tr><th>#</th><th>Flag</th><th>Country</th><th>Players</th><th>Avg %</th></tr>
           </thead>
           <tbody id="other-country-body">
-            <tr><td colspan="4" class="loading-msg">Select a country above</td></tr>
+            <tr><td colspan="5" class="loading-msg">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -243,7 +229,6 @@ function renderCountryLeaderboard(countries) {
 
 function populateOtherCountries(minor) {
   const card = document.getElementById("other-countries-card");
-  const picker = document.getElementById("country-picker");
   const tbody = document.getElementById("other-country-body");
 
   if (!minor || !minor.length) {
@@ -254,23 +239,15 @@ function populateOtherCountries(minor) {
   card.style.display = "block";
   minor.sort((a, b) => b.avg_percent - a.avg_percent);
 
-  picker.innerHTML = '<option value="">— Select a country —</option>'
-    + minor.map(c => `<option value="${escapeHtml(c.code)}">${countryFlag(c.code)}${escapeHtml(countryName(c.code))} (${c.player_count})</option>`).join("");
-
-  picker.addEventListener("change", () => {
-    const chosen = minor.find(c => c.code === picker.value);
-    if (!chosen) {
-      tbody.innerHTML = '<tr><td colspan="4" class="loading-msg">Select a country above</td></tr>';
-      return;
-    }
-    tbody.innerHTML = `
-      <tr>
-        <td style="font-size:1.1rem;">${countryFlag(chosen.code)}</td>
-        <td>${escapeHtml(countryName(chosen.code))}</td>
-        <td>${chosen.player_count}</td>
-        <td>${chosen.avg_percent}%</td>
-      </tr>`;
-  });
+  tbody.innerHTML = minor.map((c, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td style="font-size:1.1rem;">${countryFlag(c.code)}</td>
+      <td>${escapeHtml(countryName(c.code))}</td>
+      <td>${c.player_count}</td>
+      <td>${c.avg_percent}%</td>
+    </tr>
+  `).join("");
 }
 </script>
 </body>
