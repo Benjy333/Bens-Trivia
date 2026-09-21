@@ -319,8 +319,11 @@
 <script>
 const BASE_DATE = new Date("2026-04-18T15:00:00Z");
 const DEV_STORAGE_KEY = "bens-trivia-dev-date";
+const DEV_MODE_KEY = "bens-trivia-dev-mode";
 (function initDevPanel() {
-  if (!location.search.includes("dev")) return;
+  if (location.search.includes("nodev")) { localStorage.removeItem(DEV_MODE_KEY); return; }
+  if (location.search.includes("dev")) localStorage.setItem(DEV_MODE_KEY, "1");
+  if (localStorage.getItem(DEV_MODE_KEY) !== "1") return;
   const panel = document.getElementById("dev-panel");
   const header = document.querySelector(".global-header");
   panel.style.display = "flex";
