@@ -467,7 +467,7 @@ function clearOldSaves(currentTitle) {
       // to the full archive instead of ever showing the wrong quiz.
       const diffMs = now.getTime() - BASE_DATE.getTime();
       const expectedIdx = Math.max(Math.floor(diffMs / (7 * 86400000)), 0);
-      const upRes = await fetch(`weekly_quizzes/upcoming.json?v=${dayKey}`, { cache: "no-cache" });
+      const upRes = await fetch(`upcoming.json?v=${dayKey}`, { cache: "no-cache" });
       if (!upRes.ok) throw new Error("upcoming.json not ok");
       const upData = await upRes.json();
       const localIdx = expectedIdx - (upData.start_week_number - 1);
