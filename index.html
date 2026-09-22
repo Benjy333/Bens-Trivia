@@ -393,6 +393,10 @@ const DEV_MODE_KEY = "bens-trivia-dev-mode";
   }
 })();
 function getNow() {
+  // Only honor a saved test date while dev mode is actually switched on for
+  // this tab — otherwise a leftover override from past testing could keep
+  // silently showing the wrong week to every regular visitor indefinitely.
+  if (sessionStorage.getItem(DEV_MODE_KEY) !== "1") return new Date();
   const override = localStorage.getItem(DEV_STORAGE_KEY);
   return override ? new Date(override) : new Date();
 }
