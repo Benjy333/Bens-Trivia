@@ -809,6 +809,17 @@ function updateProgress() {
     showLeaderboard();
     showHighlight();
     if (pct >= 60) launchConfetti(pct);
+    if (!quizCompletedEventSent) {
+      quizCompletedEventSent = true;
+      if (typeof gtag === "function") {
+        gtag("event", "quiz_completed", {
+          quiz_title: currentQuizTitle,
+          score_percent: pct,
+          score_points: earned,
+          max_points: maxPts
+        });
+      }
+    }
   }
 }
 function animateCounter(el, from, to) {
@@ -828,7 +839,7 @@ function launchConfetti(pct) {
 document.getElementById("jump-unanswered").addEventListener("click", () => { const idx = states.findIndex(s => !s.checked); if (idx === -1) scoreBox.scrollIntoView({ behavior: "smooth" }); else document.getElementById(`card-${idx}`).scrollIntoView({ behavior: "smooth", block: "center" }); });
 const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
 const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
-let currentTab = "week"; let currentQuizTitle = ""; let scoreSubmitted = false;
+let currentTab = "week"; let currentQuizTitle = ""; let scoreSubmitted = false; let quizCompletedEventSent = false;
 let detectedCountry = "";
 const urlParams = new URLSearchParams(window.location.search);
 const scannedVenue = urlParams.get("venue");
@@ -1046,6 +1057,16 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
       document.getElementById("leaderboard-unlocked").style.display = "block";
       loadLeaderboard();
       showHighlight(); // Refresh highlight now that they're on the leaderboard
+      if (typeof gtag === "function") {
+        gtag("event", "leaderboard_submitted", {
+          quiz_title: currentQuizTitle,
+          score_percent: pct,
+          score_points: earned,
+          max_points: maxPts,
+          country: detectedCountry || "unknown",
+          venue: scannedVenue || "none"
+        });
+      }
     } else { btn.disabled = false; btn.textContent = "Submit Score"; document.getElementById("submit-status").textContent = "Something went wrong. Try again."; }
   } catch(err) { btn.disabled = false; btn.textContent = "Submit Score"; document.getElementById("submit-status").textContent = "Could not connect. Check your internet."; }
 });
