@@ -68,6 +68,9 @@
     .quiz-meta { text-align: center; font-size: 0.85rem; margin-bottom: 14px; opacity: 0.9; }
     .quiz-meta strong { color: var(--neon-soft); }
     .quiz-container { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+    .quiz-loading-placeholder { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; opacity: 0.65; font-size: 0.9rem; text-align: center; }
+    .quiz-loading-spinner { width: 32px; height: 32px; border: 3px solid rgba(150,208,255,0.25); border-top-color: var(--neon); border-radius: 50%; animation: quiz-spin 0.8s linear infinite; }
+    @keyframes quiz-spin { to { transform: rotate(360deg); } }
     .question-card { background: radial-gradient(circle at top left, #12335a 0, #020a16 55%); border-radius: 16px; padding: 14px 14px 12px; border: 1px solid rgba(150, 208, 255, 0.35); box-shadow: 0 0 12px rgba(0,0,0,0.6), 0 0 18px rgba(55,161,255,0.22); transition: border-color 0.3s, box-shadow 0.3s; }
     @keyframes pulseNeon {
       0%,100% { box-shadow: 0 0 12px rgba(0,0,0,0.6), 0 0 14px rgba(55,161,255,0.25); }
@@ -255,7 +258,12 @@
         <span id="quiz-week-info">Loading…</span>
       </div>
       <div id="quiz-description" class="quiz-description" style="display:none;"></div>
-      <div class="quiz-container" id="quiz-container"></div>
+      <div class="quiz-container" id="quiz-container">
+        <div class="quiz-loading-placeholder" id="quiz-loading-placeholder">
+          <div class="quiz-loading-spinner"></div>
+          <div>Loading this week's questions…</div>
+        </div>
+      </div>
       <div class="progress-wrap">
         <div class="progress-label">
           <span>Progress</span>
@@ -511,6 +519,8 @@ function clearOldSaves(currentTitle) {
   } catch(err) {
     console.error("Failed to load quiz:", err);
     document.getElementById("quiz-week-info").textContent = "Error loading quiz – check console.";
+    const placeholder = document.getElementById("quiz-loading-placeholder");
+    if (placeholder) placeholder.innerHTML = "<div>Couldn't load this week's quiz. Please refresh the page.</div>";
   }
 })();
 function restoreAnswers() {
