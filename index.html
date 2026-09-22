@@ -458,21 +458,22 @@ function clearOldSaves(currentTitle) {
     const dayKey = now.toISOString().slice(0, 10); // e.g. "2026-06-28"
     let quiz, weekIdx;
     try {
-      // Fast path: fetch only this week's questions (instead of downloading
-      // every past week's quiz on every page load). If this week's file
-      // isn't up yet, step back to the most recent one that is — no manifest
-      // file to keep in sync, it just finds the latest published week itself.
+      // Fast path: fetch just this week's questions (a few KB) instead of
+      // downloading every past week's quiz on every page load. This one file
+      // gets overwritten each week, so it's always exactly this week's data —
+      // no growing pile of files to manage. We double-check its week_number
+      // against today's date, so a stale/forgotten update can never show the
+      // wrong quiz: it just falls back to the full archive instead.
       const diffMs = now.getTime() - BASE_DATE.getTime();
-      const targetIdx = Math.max(Math.floor(diffMs / (7 * 86400000)), 0);
-      let found = null;
-      for (let idx = targetIdx; idx >= 0 && targetIdx - idx <= 6; idx--) {
-        const weekNum = String(idx + 1).padStart(2, "0");
-        const weekRes = await fetch(`weekly_quizzes/week-${weekNum}.json?v=${dayKey}`, { cache: "no-cache" });
-        if (weekRes.ok) { found = { idx, quiz: await weekRes.json() }; break; }
+      const expectedIdx = Math.max(Math.floor(diffMs / (7 * 86400000)), 0);
+      const curRes = await fetch(`weekly_quizzes/current_week.json?v=${dayKey}`, { cache: "no-cache" });
+      if (!curRes.ok) throw new Error("current_week.json not ok");
+      const curData = await curRes.json();
+      if (typeof curData.week_number !== "number" || curData.week_number - 1 !== expectedIdx) {
+        throw new Error("current_week.json is stale");
       }
-      if (!found) throw new Error("no split-week file found");
-      weekIdx = found.idx;
-      quiz = found.quiz;
+      weekIdx = expectedIdx;
+      quiz = curData;
     } catch (splitErr) {
       // Fallback: split files missing/misconfigured, load the full archive like before.
       const res = await fetch(`weekly_quizzes.json?v=${dayKey}`, { cache: "no-cache" });
