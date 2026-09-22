@@ -444,17 +444,44 @@ function saveSubmission(quizTitle, name) { try { localStorage.setItem(getSubmitK
 function loadSubmission(quizTitle) { try { return localStorage.getItem(getSubmitKey(quizTitle)) || null; } catch(e) { return null; } }
 function clearSubmission(quizTitle) { try { localStorage.removeItem(getSubmitKey(quizTitle)); } catch(e) {} }
 function loadSavedProgress(quizTitle) { try { const raw = localStorage.getItem(getSaveKey(quizTitle)); return raw ? JSON.parse(raw) : null; } catch(e) { return null; } }
-function clearOldSaves(currentTitle, allTitles) { allTitles.forEach(title => { if (title !== currentTitle) { try { localStorage.removeItem(getSaveKey(title)); } catch(e) {} } }); }
+function clearOldSaves(currentTitle) {
+  const keepKey = getSaveKey(currentTitle);
+  try {
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith("bens-trivia-progress:") && key !== keepKey) localStorage.removeItem(key);
+    });
+  } catch(e) {}
+}
 (async function loadQuiz() {
   try {
     const now = getNow();
     const dayKey = now.toISOString().slice(0, 10); // e.g. "2026-06-28"
-    const res  = await fetch(`weekly_quizzes.json?v=${dayKey}`, { cache: "no-cache" });
-    const data = await res.json();
-    data_start_date = data.start_date;
-    const diffMs  = now.getTime() - BASE_DATE.getTime();
-    const weekIdx = Math.min(Math.max(Math.floor(diffMs / (7 * 86400000)), 0), data.weekly_quizzes.length - 1);
-    const quiz    = data.weekly_quizzes[weekIdx];
+    let quiz, weekIdx;
+    try {
+      // Fast path: fetch only this week's questions (instead of downloading
+      // every past week's quiz on every page load). If this week's file
+      // isn't up yet, step back to the most recent one that is — no manifest
+      // file to keep in sync, it just finds the latest published week itself.
+      const diffMs = now.getTime() - BASE_DATE.getTime();
+      const targetIdx = Math.max(Math.floor(diffMs / (7 * 86400000)), 0);
+      let found = null;
+      for (let idx = targetIdx; idx >= 0 && targetIdx - idx <= 6; idx--) {
+        const weekNum = String(idx + 1).padStart(2, "0");
+        const weekRes = await fetch(`weekly_quizzes/week-${weekNum}.json?v=${dayKey}`, { cache: "no-cache" });
+        if (weekRes.ok) { found = { idx, quiz: await weekRes.json() }; break; }
+      }
+      if (!found) throw new Error("no split-week file found");
+      weekIdx = found.idx;
+      quiz = found.quiz;
+    } catch (splitErr) {
+      // Fallback: split files missing/misconfigured, load the full archive like before.
+      const res = await fetch(`weekly_quizzes.json?v=${dayKey}`, { cache: "no-cache" });
+      const data = await res.json();
+      data_start_date = data.start_date;
+      const diffMs = now.getTime() - BASE_DATE.getTime();
+      weekIdx = Math.min(Math.max(Math.floor(diffMs / (7 * 86400000)), 0), data.weekly_quizzes.length - 1);
+      quiz = data.weekly_quizzes[weekIdx];
+    }
     questions = quiz.questions;
     document.getElementById("quiz-title").textContent = quiz.title;
     document.getElementById("quiz-week-info").textContent = `Week ${weekIdx + 1} · ${questions.length} questions`;
@@ -465,8 +492,7 @@ function clearOldSaves(currentTitle, allTitles) { allTitles.forEach(title => { i
     } else {
       descEl.style.display = "none";
     }
-    const allTitles = data.weekly_quizzes.map(q => q.title);
-    clearOldSaves(quiz.title, allTitles);
+    clearOldSaves(quiz.title);
     const saved = loadSavedProgress(quiz.title);
     if (saved && saved.states && saved.states.length === questions.length) {
       states = saved.states;
