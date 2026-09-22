@@ -24,7 +24,7 @@
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(150, 208, 255, 0.3);
     }
-    .header-row-top { display: flex; align-items: center; justify-content: space-between; }
+    .header-row-top { display: flex; align-items: center; justify-content: space-between; position: relative; }
     .header-logo { height: 52px; width: auto; filter: drop-shadow(0 0 8px var(--neon)) drop-shadow(0 0 18px var(--neon-soft)); }
     .header-row-bottom { margin-top: 6px; text-align: center; }
     .page-title { margin: 0; font-size: 1.1rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); text-shadow: 0 0 8px var(--neon-soft); }
@@ -86,7 +86,7 @@
       <button id="menu-btn" aria-label="Open menu">☰</button>
       <picture>
         <source srcset="images/logo.webp" type="image/webp">
-        <img src="images/logo.png" class="header-logo" alt="Ben's Trivia Logo" width="147" height="52" fetchpriority="high" style="position:absolute;left:50%;transform:translateX(-50%);">
+        <img src="images/logo.png" class="header-logo" alt="Ben's Trivia Logo" width="147" height="52" fetchpriority="high" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);">
       </picture>
       <div style="width:52px;"></div>
     </div>
