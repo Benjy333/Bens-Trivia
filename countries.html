@@ -104,7 +104,7 @@
         <div class="section-heading">🌟 All-Time Highlights</div>
         <div class="summary-grid">
           <div class="stat-card"><div class="stat-value" id="stat-total-played">—</div><div class="stat-label">Total Players</div></div>
-          <div class="stat-card"><div class="stat-value" id="stat-total-leaderboard">—</div><div class="stat-label">On Leaderboard</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-total-leaderboard">—</div><div class="stat-label">Leaderboard</div></div>
           <div class="stat-card"><div class="stat-value" id="stat-avg-score">—</div><div class="stat-label">Avg Score</div></div>
           <div class="stat-card"><div class="stat-value" id="stat-completion-rate">—</div><div class="stat-label">Completion Rate</div></div>
         </div>
@@ -297,10 +297,15 @@ function renderWeekChart(weekStats) {
   const n = weekStats.length;
   const REFERENCE_VALUES = [50, 100, 150];
   const max = Math.max(1, ...REFERENCE_VALUES, ...weekStats.map(w => w.completions));
-  const pointGap = 60;
+  const idealPointGap = 60;
   const leftPad = 34;
   const rightPad = 30;
-  const width = Math.max(280, leftPad + rightPad + (n - 1) * pointGap);
+  // Never let the chart grow wider than the card actually is on screen —
+  // that's what forced horizontal scrolling on phones. Use the ideal
+  // per-week spacing when there's room, otherwise shrink to fit exactly.
+  const containerWidth = Math.max(200, el.clientWidth || 300);
+  const idealWidth = leftPad + rightPad + (n - 1) * idealPointGap;
+  const width = n === 1 ? containerWidth : Math.min(containerWidth, idealWidth);
   const chartTop = 14;
   const chartBottom = 100;
   const chartHeight = chartBottom - chartTop;
