@@ -12,6 +12,7 @@
   </script>
   <meta charset="utf-8" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -228,7 +229,7 @@
   </div>
   <header class="global-header">
     <div class="header-row-top">
-      <button id="menu-btn">☰</button>
+      <button id="menu-btn" aria-label="Open menu">☰</button>
       <img src="logo.png" class="header-logo" alt="Ben's Trivia Logo">
       <div style="width:52px;"></div>
     </div>
@@ -279,7 +280,7 @@
       <div class="leaderboard-section" id="leaderboard-section" style="display:none;">
         <div class="leaderboard-title">🏆 This Week's Leaderboard</div>
         <div class="submit-row" id="submit-row">
-          <input class="name-input" id="player-name" placeholder="Your name…" maxlength="20" />
+          <input class="name-input" id="player-name" placeholder="Your name…" maxlength="20" aria-label="Your name" />
           <button class="btn-submit-score" id="btn-submit-score">Submit Score</button>
         </div>
         <div id="submit-status" class="lb-status"></div>
@@ -304,7 +305,7 @@
         <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">📬 Get the quiz every Sunday</div>
         <div style="font-size:0.88rem;margin-bottom:12px;opacity:0.85;">Drop your email and we'll send you a link each week</div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <input id="signup-email" type="email" placeholder="your@email.com" maxlength="100"
+          <input id="signup-email" type="email" placeholder="your@email.com" maxlength="100" aria-label="Your email address"
             style="flex:1;min-width:180px;max-width:280px;padding:8px 14px;border-radius:999px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;" />
           <button id="signup-btn"
             style="padding:8px 18px;border-radius:999px;border:1px solid var(--neon);background:rgba(3,15,34,0.9);color:var(--neon);font-size:0.85rem;cursor:pointer;font-weight:600;white-space:nowrap;">
@@ -317,14 +318,14 @@
         <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">💬 Got something to say?</div>
         <div style="font-size:0.88rem;margin-bottom:12px;opacity:0.85;">Feedback, spotted a mistake, or got a question idea? Let me know.</div>
         <div style="display:flex;flex-direction:column;gap:8px;max-width:420px;margin:0 auto;">
-          <select id="feedback-type" style="padding:8px 14px;border-radius:999px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;">
+          <select id="feedback-type" aria-label="Feedback type" style="padding:8px 14px;border-radius:999px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;">
             <option value="feedback">💭 General Feedback</option>
             <option value="mistake">⚠️ Spot a Mistake</option>
             <option value="suggestion">💡 Question Suggestion</option>
           </select>
-          <textarea id="feedback-message" rows="3" placeholder="Type your message…" maxlength="500"
+          <textarea id="feedback-message" rows="3" placeholder="Type your message…" maxlength="500" aria-label="Your feedback message"
             style="padding:10px 14px;border-radius:14px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;resize:vertical;font-family:inherit;"></textarea>
-          <input id="feedback-name" type="text" placeholder="Your name (optional)" maxlength="20"
+          <input id="feedback-name" type="text" placeholder="Your name (optional)" maxlength="20" aria-label="Your name (optional)"
             style="padding:8px 14px;border-radius:999px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;" />
           <button id="feedback-submit-btn"
             style="padding:8px 18px;border-radius:999px;border:1px solid var(--neon);background:rgba(3,15,34,0.9);color:var(--neon);font-size:0.85rem;cursor:pointer;font-weight:600;">
