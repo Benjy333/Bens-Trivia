@@ -51,7 +51,7 @@
     .section-heading {
       font-size: 0.85rem; font-weight: 600; letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--neon-soft); opacity: 0.8;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
     }
     .loading-msg { text-align: center; opacity: 0.5; padding: 24px; font-size: 0.9rem; }
 
@@ -62,7 +62,7 @@
     .lb-table tr:nth-child(2) td { color: #c0d8e8; }
     .lb-table tr:nth-child(3) td { color: #e8b87a; }
 
-    .section-subheading { font-size: 0.75rem; opacity: 0.55; margin: -6px 0 12px; }
+    .section-subheading { font-size: 0.75rem; opacity: 0.65; margin: -6px 0 12px; }
 
     .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
     .stat-card {
@@ -83,7 +83,7 @@
 <body>
   <header class="global-header">
     <div class="header-row-top">
-      <button id="menu-btn">☰</button>
+      <button id="menu-btn" aria-label="Open menu">☰</button>
       <img src="logo.png" class="header-logo" alt="Ben's Trivia Logo" style="position:absolute;left:50%;transform:translateX(-50%);">
       <div style="width:52px;"></div>
     </div>
@@ -102,7 +102,7 @@
     <div class="stats-shell">
 
       <div class="card">
-        <div class="section-heading">🌟 All-Time Highlights</div>
+        <h2 class="section-heading">🌟 All-Time Highlights</h2>
         <div class="summary-grid">
           <div class="stat-card"><div class="stat-value" id="stat-total-played">—</div><div class="stat-label">Total Players</div></div>
           <div class="stat-card"><div class="stat-value" id="stat-total-leaderboard">—</div><div class="stat-label">Leaderboard</div></div>
@@ -112,7 +112,7 @@
       </div>
 
       <div class="card">
-        <div class="section-heading">📈 Players Per Week</div>
+        <h2 class="section-heading">📈 Players Per Week</h2>
         <div class="week-chart" id="week-chart">
           <div class="loading-msg">Loading…</div>
         </div>
@@ -121,7 +121,7 @@
       <div class="month-label" id="month-label">All-time leaderboard</div>
 
       <div class="card">
-        <div class="section-heading">🌍 Global Leaderboard by Country</div>
+        <h2 class="section-heading">🌍 Global Leaderboard by Country</h2>
         <div class="section-subheading">Countries with 10 or more completed quizzes</div>
         <table class="lb-table">
           <thead>
@@ -134,7 +134,7 @@
       </div>
 
       <div class="card" id="other-countries-card" style="display:none;">
-        <div class="section-heading">Other Countries</div>
+        <h2 class="section-heading">Other Countries</h2>
         <div class="section-subheading">Fewer than 10 completed quizzes so far</div>
         <table class="lb-table">
           <thead>
