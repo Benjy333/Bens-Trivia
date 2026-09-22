@@ -67,7 +67,7 @@
     .section-heading {
       font-size: 0.85rem; font-weight: 600; letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--neon-soft); opacity: 0.8;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
     }
 
     .question-list { display: flex; flex-direction: column; gap: 10px; }
@@ -145,7 +145,7 @@
 <body>
   <header class="global-header">
     <div class="header-row-top">
-      <button id="menu-btn">☰</button>
+      <button id="menu-btn" aria-label="Open menu">☰</button>
       <img src="logo.png" class="header-logo" alt="Ben's Trivia Logo" style="position:absolute;left:50%;transform:translateX(-50%);">
       <div style="width:52px;"></div>
     </div>
@@ -193,7 +193,7 @@
       </div>
 
       <div class="card">
-        <div class="section-heading">Top Scores</div>
+        <h2 class="section-heading">Top Scores</h2>
         <table class="lb-table">
           <thead>
             <tr><th>#</th><th>Flag</th><th>Name</th><th>Score</th><th>%</th><th>Date</th></tr>
@@ -208,14 +208,14 @@
         <div class="signup-label">📬 Get the quiz every Sunday</div>
         <div class="signup-sub">Drop your email and we'll send you a link each week</div>
         <div class="signup-row">
-          <input id="stats-signup-email" type="email" placeholder="your@email.com" maxlength="100" />
+          <input id="stats-signup-email" type="email" placeholder="your@email.com" maxlength="100" aria-label="Your email address" />
           <button id="stats-signup-btn">Subscribe</button>
         </div>
         <div id="stats-signup-status"></div>
       </div>
 
       <div class="card">
-        <div class="section-heading">Question Breakdown</div>
+        <h2 class="section-heading">Question Breakdown</h2>
         <div class="question-list" id="question-list">
           <div class="loading-msg">Select a quiz above to load stats</div>
         </div>
