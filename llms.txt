@@ -1,0 +1,9 @@
+# Ben's Trivia
+
+> A free weekly online trivia quiz — The Big Fat Sunday Quiz — with 25 new questions every week, a live leaderboard, and player stats.
+
+The Big Fat Sunday Quiz is a weekly 25-question trivia quiz covering movies, music, geography, sport, science, pop culture, and more. A new quiz is published every Sunday. Players answer the questions in the browser, see their score instantly, and can submit it to a public leaderboard to see how they rank against other players globally.
+
+## Pages
+
+- [Play this week's quiz](https://benstrivia.com/): The current Big Fat Sunday Quiz — 25 questions, instant scoring, and leaderboard submission.
