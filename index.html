@@ -12,14 +12,26 @@
   </script>
   <script>
     // Tidy up the address bar for visitors arriving via a tagged share link
-    // (e.g. /w/ or /c/). The UTM parameters have already been read by GA's
-    // initial page view by the time this runs, so removing them from the
-    // visible URL doesn't affect analytics — it just avoids leaving a
-    // technical-looking URL sitting in the browser after the redirect.
+    // (e.g. /w/ or /c/), but only after we know Google's tracking script has
+    // actually loaded and had a chance to read the tagged URL — cleaning up
+    // on a fixed timer risked stripping the tag before analytics ever saw
+    // it on a slower connection. A fallback timer still runs in case that
+    // script is blocked or never loads, so the URL doesn't stay tagged
+    // forever for those visitors either.
     if (location.search.includes("utm_")) {
-      setTimeout(function() {
-        try { history.replaceState(null, "", location.pathname); } catch(e) {}
-      }, 1500);
+      (function() {
+        var cleaned = false;
+        function cleanUrl() {
+          if (cleaned) return;
+          cleaned = true;
+          try { history.replaceState(null, "", location.pathname); } catch(e) {}
+        }
+        var gaScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
+        if (gaScript) {
+          gaScript.addEventListener("load", function() { setTimeout(cleanUrl, 200); });
+        }
+        setTimeout(cleanUrl, 6000);
+      })();
     }
   </script>
   <meta charset="utf-8" />
