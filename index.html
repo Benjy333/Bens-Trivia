@@ -446,6 +446,7 @@ function isCorrect(val, q) {
 }
 function getSaveKey(quizTitle) { return `bens-trivia-progress:${quizTitle}`; }
 function getSubmitKey(quizTitle) { return `bens-trivia-submitted:${quizTitle}`; }
+function getCompletedEventKey(quizTitle) { return `bens-trivia-completed-event:${quizTitle}`; }
 function saveProgress(quizTitle) {
   const save = { savedAt: Date.now(), states: states.map(s => ({ checked: s.checked, points: s.points, maxPoints: s.maxPoints, chosenIndex: s.chosenIndex, chosenValue: s.chosenValue, chosenValues: s.chosenValues })) };
   try { localStorage.setItem(getSaveKey(quizTitle), JSON.stringify(save)); } catch(e) {}
@@ -459,6 +460,7 @@ function clearOldSaves(currentTitle) {
   try {
     Object.keys(localStorage).forEach(key => {
       if (key.startsWith("bens-trivia-progress:") && key !== keepKey) localStorage.removeItem(key);
+      if (key.startsWith("bens-trivia-completed-event:") && key !== getCompletedEventKey(currentTitle)) localStorage.removeItem(key);
     });
   } catch(e) {}
 }
@@ -872,8 +874,11 @@ function updateProgress() {
     showLeaderboard();
     showHighlight();
     if (pct >= 60) launchConfetti(pct);
-    if (!quizCompletedEventSent) {
+    let alreadySentThisQuiz = false;
+    try { alreadySentThisQuiz = localStorage.getItem(getCompletedEventKey(currentQuizTitle)) === "1"; } catch(e) {}
+    if (!quizCompletedEventSent && !alreadySentThisQuiz) {
       quizCompletedEventSent = true;
+      try { localStorage.setItem(getCompletedEventKey(currentQuizTitle), "1"); } catch(e) {}
       if (typeof gtag === "function") {
         gtag("event", "quiz_completed", {
           quiz_title: currentQuizTitle,
