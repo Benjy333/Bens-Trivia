@@ -10,6 +10,18 @@
 
     gtag('config', 'G-0WY3H0WSHS');
   </script>
+  <script>
+    // Tidy up the address bar for visitors arriving via a tagged share link
+    // (e.g. /w/ or /c/). The UTM parameters have already been read by GA's
+    // initial page view by the time this runs, so removing them from the
+    // visible URL doesn't affect analytics — it just avoids leaving a
+    // technical-looking URL sitting in the browser after the redirect.
+    if (location.search.includes("utm_")) {
+      setTimeout(function() {
+        try { history.replaceState(null, "", location.pathname); } catch(e) {}
+      }, 1500);
+    }
+  </script>
   <meta charset="utf-8" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -933,6 +945,7 @@ function showLeaderboard() { document.getElementById("leaderboard-section").styl
 function switchTab(tab) { currentTab = tab; document.getElementById("tab-week").classList.toggle("active", tab === "week"); document.getElementById("tab-all").classList.toggle("active", tab === "all"); loadLeaderboard(); }
 /* ---- TRIVIA HIGHLIGHT ---- */
 let highlightText = "";
+let copyShareText = "";
 async function showHighlight() {
   const panel = document.getElementById("highlight-panel");
   const headlineEl = document.getElementById("highlight-headline");
@@ -946,16 +959,19 @@ async function showHighlight() {
   const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
   const myPct  = maxPts ? Math.round((earned / maxPts) * 100) : 0;
   const scoreStr = `Score: ${earned}/${maxPts} (${myPct}%)`;
-  const link = "https://benstrivia.com/";
+  // Short redirect links so shared messages stay clean while still letting
+  // us tell WhatsApp shares apart from copy/paste shares in analytics.
+  const waLink = "https://benstrivia.com/w/";
+  const copyLink = "https://benstrivia.com/c/";
   // Builds the exact text that gets shared/copied: brand line, an optional
   // achievement line (only for a top-3 world or country placing), the score
   // line, then the link. Kept separate from the on-page headline copy below,
   // which can stay more playful (hardest-question callouts etc).
-  function buildShareText(achievementLine) {
+  function buildShareText(achievementLine, linkToUse) {
     const lines = ["Ben's Trivia"];
     if (achievementLine) lines.push(achievementLine);
     lines.push(scoreStr);
-    lines.push(link);
+    lines.push(linkToUse);
     return lines.join("\n");
   }
   try {
@@ -1057,14 +1073,16 @@ async function showHighlight() {
     panel.className = "highlight-panel" + (cssClass ? " " + cssClass : "");
     headlineEl.textContent = headline;
     subEl.textContent = sub ? `${sub}` : "";
-    highlightText = buildShareText(achievementLine);
+    highlightText = buildShareText(achievementLine, waLink);
+    copyShareText = buildShareText(achievementLine, copyLink);
     previewEl.textContent = highlightText;
   } catch(e) {
     console.error("Highlight error:", e);
     const headline = `I scored ${earned}/${maxPts} (${myPct}%) — can you beat it?`;
     document.getElementById("highlight-headline").textContent = headline;
     document.getElementById("highlight-sub").textContent = "";
-    highlightText = buildShareText(null);
+    highlightText = buildShareText(null, waLink);
+    copyShareText = buildShareText(null, copyLink);
     previewEl.textContent = highlightText;
   }
 }
@@ -1072,7 +1090,7 @@ document.getElementById("highlight-whatsapp").addEventListener("click", () => {
   window.open("https://wa.me/?text=" + encodeURIComponent(highlightText), "_blank");
 });
 document.getElementById("highlight-copy").addEventListener("click", () => {
-  navigator.clipboard.writeText(highlightText).then(() => {
+  navigator.clipboard.writeText(copyShareText).then(() => {
     document.getElementById("highlight-share-status").textContent = "Copied!";
     setTimeout(() => document.getElementById("highlight-share-status").textContent = "", 2000);
   });
