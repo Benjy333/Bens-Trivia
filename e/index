@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex" />
   <title>Ben's Trivia</title>
   <script>
-    location.replace("https://benstrivia.com/?utm_source=email&utm_medium=email");
+    location.replace("https://benstrivia.com");
   </script>
   <noscript><meta http-equiv="refresh" content="0; url=https://benstrivia.com/?utm_source=email&utm_medium=email" /></noscript>
   <style>
