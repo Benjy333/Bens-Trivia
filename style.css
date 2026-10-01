@@ -262,7 +262,13 @@ p {
   border: 1px solid rgba(150, 208, 255, 0.2);
   border-radius: 12px;
   background: rgba(55, 161, 255, 0.06);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.15s ease-out;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
+.quiz-description:active { transform: scale(0.97); }
 
 /* ========= QUESTION SHOUTOUT ========= */
 
