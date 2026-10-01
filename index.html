@@ -89,9 +89,10 @@
     .question-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.6; white-space: nowrap; }
     .options { margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     @media (max-width: 600px) { .options { grid-template-columns: 1fr; } }
-    .option-btn { border-radius: 999px; border: 1px solid rgba(150, 208, 255, 0.3); padding: 10px 14px; font-size: 0.9rem; cursor: pointer; background: rgba(3, 15, 34, 0.8); color: #e9f4ff; transition: 0.1s ease-out; text-align: left; width: 100%; }
+    .option-btn { border-radius: 999px; border: 1px solid rgba(150, 208, 255, 0.3); padding: 10px 14px; font-size: 0.9rem; cursor: pointer; background: rgba(3, 15, 34, 0.8); color: #e9f4ff; transition: 0.1s ease-out; text-align: left; width: 100%; -webkit-tap-highlight-color: transparent; outline: none; }
     .option-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 12px rgba(55,161,255,0.45); border-color: var(--neon-soft); }
     .option-btn:disabled { cursor: default; }
+    .option-btn.selected { border-color: var(--neon); background: rgba(55,161,255,0.12); box-shadow: 0 0 14px rgba(55,161,255,0.5); color: #e9f4ff; }
     .option-btn.correct { border-color: var(--good); box-shadow: 0 0 14px rgba(56,239,125,0.6); background: rgba(56,239,125,0.08); }
     .option-btn.wrong { border-color: var(--bad); box-shadow: 0 0 14px rgba(255,66,102,0.6); background: rgba(255,66,102,0.08); }
     .input-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
@@ -905,6 +906,35 @@ function launchConfetti(pct) {
   draw();
 }
 document.getElementById("jump-unanswered").addEventListener("click", () => { const idx = states.findIndex(s => !s.checked); if (idx === -1) scoreBox.scrollIntoView({ behavior: "smooth" }); else document.getElementById(`card-${idx}`).scrollIntoView({ behavior: "smooth", block: "center" }); });
+const luckMessages = [
+  "You're going to need it 😏",
+  "Fortune favours the bold (and the Googlers) 🔍",
+  "🍀 x1000, just for you",
+  "Nice try, no cheat codes here 😄",
+  "The quiz gods are watching 👀",
+  "May your guesses be wild and your vibes immaculate ✨",
+  "Legally obligated to say that. Good luck!",
+  "Shh… the secret answer is confidence. That's it. That's the tip.",
+];
+let luckClickCount = 0;
+function handleLuckyClick() {
+  const el = document.getElementById("quiz-description");
+  if (!el || el.dataset.animating === "1") return;
+  el.dataset.animating = "1";
+  if (!el.dataset.originalText) el.dataset.originalText = el.textContent;
+  luckClickCount++;
+  const msg = luckClickCount >= 10
+    ? "Okay, 10 clicks. Go play the quiz already 😂"
+    : luckMessages[Math.floor(Math.random() * luckMessages.length)];
+  el.textContent = msg;
+  if (typeof launchConfetti === "function") launchConfetti(45);
+  setTimeout(() => {
+    el.textContent = el.dataset.originalText;
+    el.dataset.animating = "0";
+  }, 1800);
+}
+const quizDescEl = document.getElementById("quiz-description");
+if (quizDescEl) quizDescEl.addEventListener("click", handleLuckyClick);
 const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
 const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
 let currentTab = "week"; let currentQuizTitle = ""; let scoreSubmitted = false; let quizCompletedEventSent = false;
