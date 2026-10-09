@@ -99,7 +99,7 @@
 
 {
   "title": "Big Fat Sunday Quiz #26",
-  "description": "Good luck!",
+  "description": "Special Announcement: Brisbane's Smartest Venue will be starting next week on the 18th of October! A 6 week competition between 6 Venues... Only 1 can be crowned Brisbane's Smartest Venue! Take a look at Instagram to see who will be competing!",
   "questions": [
     {"id": "lilo-stitch-ohana-quote", "type": "mcq", "tag": "Movie Quote", "text": "What movie is the following quote from? 'Ohana means family, and family means nobody gets left behind or forgotten.'", "options": ["Moana", "Lilo & Stitch", "Encanto", "Coco"], "correctIndex": 1, "maxPoints": 1, "funfact": "'Ohana' is the Hawaiian word for family. Stitch’s nasally, growly voice was provided by none other than his creator Chris Sanders. "},
     {"id": "verity-colleen-hoover", "type": "text-exact", "tag": "Topical", "text": "Which Colleen Hoover novel, similar to the French word for 'truth', has just been adapted for cinemas, starring Anne Hathaway, Dakota Johnson and Josh Hartnett?", "correctAnswer": "Verity", "acceptedAnswers": ["Verity"], "maxPoints": 1, "funfact": "Verity is a 2018 psychological thriller by Colleen Hoover, and the film adaptation hit cinemas in early October 2026. The title comes from the Latin 'veritas', meaning truth."},
