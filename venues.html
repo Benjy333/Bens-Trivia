@@ -104,10 +104,10 @@
         <h2 class="section-heading">🏆 Venue Leaderboard</h2>
         <table class="lb-table">
           <thead>
-            <tr><th>#</th><th>Venue</th><th>Avg %</th></tr>
+            <tr><th>#</th><th>Venue</th><th>Players</th><th>Avg %</th></tr>
           </thead>
           <tbody id="venue-lb-body">
-            <tr><td colspan="3" class="loading-msg">Loading…</td></tr>
+            <tr><td colspan="4" class="loading-msg">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -277,6 +277,7 @@ async function fetchVenueLeaderboard() {
     });
     const venues = Object.keys(byVenue).map(venue => ({
       venue,
+      player_count: byVenue[venue].count,
       avg_percent: Math.round((byVenue[venue].total / byVenue[venue].count) * 10) / 10
     }));
     venues.sort((a, b) => b.avg_percent - a.avg_percent);
@@ -287,7 +288,7 @@ async function fetchVenueLeaderboard() {
 function renderVenueLeaderboard(venues) {
   const tbody = document.getElementById("venue-lb-body");
   if (!venues || !venues.length) {
-    tbody.innerHTML = '<tr><td colspan="3" class="loading-msg">No venue scores yet</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" class="loading-msg">No venue scores yet</td></tr>';
     return;
   }
   const medals = ["🥇","🥈","🥉"];
@@ -295,6 +296,7 @@ function renderVenueLeaderboard(venues) {
     <tr>
       <td>${medals[i] || (i + 1)}</td>
       <td>${VENUE_LOGOS[slugify(v.venue)] ? `<img src="${VENUE_LOGOS[slugify(v.venue)]}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : ""}${escapeHtml(prettyVenueName(v.venue))}</td>
+      <td>${v.player_count}</td>
       <td>${v.avg_percent}%</td>
     </tr>
   `).join("");
