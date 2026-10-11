@@ -978,7 +978,8 @@ async function loadVenueCard() {
   const body = document.getElementById("bsv-body");
   if (!body) return;
   const slugify = s => String(s || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-  const pretty = slug => slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  const NAMES = { "xxxx-brewery": "XXXX Brewery" }; // venues that need special capitalisation
+  const pretty = slug => NAMES[slug] || slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
   try {
     const since = encodeURIComponent(new Date(BSV_START).toISOString());
     let rows = [], from = 0;
