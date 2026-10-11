@@ -194,7 +194,7 @@ function escapeHtml(str) {
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 // Venues that need special capitalisation
-const VENUE_NAMES = { "xxxx-brewery": "XXXX Brewery" };
+const VENUE_NAMES = { "xxxx-brewery": "XXXX Brewery", "the-brisbane-channel": "THE Brisbane Channel" };
 function prettyVenueName(slug) {
   return VENUE_NAMES[slug] || slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
 }
