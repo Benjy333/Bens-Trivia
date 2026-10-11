@@ -294,13 +294,19 @@
         <!-- Brisbane's Smartest Venue -->
         <div id="bsv-card" style="margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid rgba(150,208,255,0.15);">
           <div class="leaderboard-title" style="margin-bottom:6px;">🏟️ Brisbane's Smartest Venue</div>
-          <div style="text-align:center;font-size:0.8rem;opacity:0.65;margin-bottom:12px;">Average score per venue since 1 October</div>
-          <table class="leaderboard-table">
-            <thead><tr><th>#</th><th>Venue</th><th>Avg %</th></tr></thead>
-            <tbody id="bsv-body">
-              <tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
-            </tbody>
-          </table>
+          <div id="bsv-locked" style="text-align:center;padding:20px 16px;opacity:0.7;">
+            <div style="font-size:1.5rem;margin-bottom:8px;">🔒</div>
+            <div style="font-size:0.88rem;">Enter your name and submit your score below to unlock Brisbane's Smartest Venue</div>
+          </div>
+          <div id="bsv-unlocked" style="display:none;">
+            <div style="text-align:center;font-size:0.8rem;opacity:0.65;margin-bottom:12px;">Average score per venue since 1 October</div>
+            <table class="leaderboard-table">
+              <thead><tr><th>#</th><th>Venue</th><th>Avg %</th></tr></thead>
+              <tbody id="bsv-body">
+                <tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="leaderboard-title">🏆 This Week's Leaderboard</div>
         <div class="submit-row" id="submit-row">
@@ -583,6 +589,8 @@ function restoreAnswers() {
       document.getElementById("submit-row").style.display = "none";
       document.getElementById("submit-status").textContent = `✓ Already submitted as ${savedName}`;
       document.getElementById("leaderboard-locked").style.display = "none";
+      document.getElementById("bsv-locked").style.display = "none";
+      document.getElementById("bsv-unlocked").style.display = "block";
       document.getElementById("leaderboard-unlocked").style.display = "block";
     }
     showHighlight();
@@ -1206,6 +1214,8 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
       document.getElementById("submit-status").textContent = `✓ Score submitted! Good luck, ${name}!`;
       document.getElementById("submit-row").style.display = "none";
       document.getElementById("leaderboard-locked").style.display = "none";
+      document.getElementById("bsv-locked").style.display = "none";
+      document.getElementById("bsv-unlocked").style.display = "block";
       document.getElementById("leaderboard-unlocked").style.display = "block";
       loadLeaderboard();
       loadVenueCard(); // refresh venue averages with the new score
