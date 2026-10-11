@@ -104,10 +104,10 @@
         <h2 class="section-heading">🏆 Venue Leaderboard</h2>
         <table class="lb-table">
           <thead>
-            <tr><th>#</th><th>Venue</th><th>Players</th><th>Avg %</th></tr>
+            <tr><th>#</th><th>Venue</th><th>Avg %</th></tr>
           </thead>
           <tbody id="venue-lb-body">
-            <tr><td colspan="4" class="loading-msg">Loading…</td></tr>
+            <tr><td colspan="3" class="loading-msg">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -138,6 +138,32 @@
 <script>
 const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
 const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
+
+// Only count results from this moment onwards (midnight, 1 October 2026, Brisbane time)
+const LEADERBOARD_START = "2026-10-01T00:00:00+10:00";
+const LEADERBOARD_START_LABEL = "1 October 2026";
+// Columns the leaderboard table might use for when a score was submitted (first one that exists is used)
+const DATE_COLUMN_CANDIDATES = ["submitted_at", "created_at"];
+let dateColumn = null;
+
+async function detectDateColumn() {
+  for (const col of DATE_COLUMN_CANDIDATES) {
+    try {
+      const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard?select=${col}&limit=1`, {
+        headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` }
+      });
+      if (res.ok) return col;
+    } catch {}
+  }
+  return null;
+}
+// Where the quiz page remembers the venue the player just played at
+const VENUE_STORAGE_KEY = "bens-trivia-venue";
+
+function sinceFilter() {
+  if (!dateColumn) throw new Error("No date column found on leaderboard table");
+  return `${dateColumn}=gte.${encodeURIComponent(new Date(LEADERBOARD_START).toISOString())}`;
+}
 
 const DEV_MODE_KEY = "bens-trivia-dev-mode";
 if (location.search.includes("nodev")) {
@@ -170,14 +196,38 @@ function escapeHtml(str) {
 function prettyVenueName(slug) {
   return slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
 }
+function slugify(str) {
+  return String(str || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
 
-document.getElementById("month-label").textContent = "All-time leaderboard";
+document.getElementById("month-label").textContent = `Results from ${LEADERBOARD_START_LABEL} onwards`;
+
+// The venue the player just played at: ?venue= in this page's link,
+// then whatever the quiz page saved in the browser, else nothing.
+function getPlayedVenue() {
+  try {
+    const fromUrl = new URLSearchParams(location.search).get("venue");
+    if (fromUrl) return slugify(fromUrl);
+  } catch {}
+  for (const store of [localStorage, sessionStorage]) {
+    try {
+      const direct = store.getItem(VENUE_STORAGE_KEY);
+      if (direct) return slugify(direct);
+      for (let i = 0; i < store.length; i++) {
+        const key = store.key(i);
+        if (/venue/i.test(key) && !/dev-mode/i.test(key)) {
+          const val = store.getItem(key);
+          if (val && val.length < 80) return slugify(val);
+        }
+      }
+    } catch {}
+  }
+  return "";
+}
 
 (async function init() {
-  const [venues, playersByVenue] = await Promise.all([
-    fetchVenueLeaderboard(),
-    null
-  ]);
+  dateColumn = await detectDateColumn();
+  const venues = await fetchVenueLeaderboard();
   renderVenueLeaderboard(venues);
   populateVenuePicker(venues);
 })();
@@ -206,7 +256,7 @@ async function fetchAllRows(query) {
 
 async function fetchVenueLeaderboard() {
   try {
-    const rows = await fetchAllRows("select=venue,percent&venue=not.is.null");
+    const rows = await fetchAllRows(`select=venue,percent&venue=not.is.null&${sinceFilter()}`);
     const byVenue = {};
     rows.forEach(r => {
       if (!r.venue) return;
@@ -216,7 +266,6 @@ async function fetchVenueLeaderboard() {
     });
     const venues = Object.keys(byVenue).map(venue => ({
       venue,
-      player_count: byVenue[venue].count,
       avg_percent: Math.round((byVenue[venue].total / byVenue[venue].count) * 10) / 10
     }));
     venues.sort((a, b) => b.avg_percent - a.avg_percent);
@@ -227,7 +276,7 @@ async function fetchVenueLeaderboard() {
 function renderVenueLeaderboard(venues) {
   const tbody = document.getElementById("venue-lb-body");
   if (!venues || !venues.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="loading-msg">No venue scores yet</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" class="loading-msg">No venue scores yet</td></tr>';
     return;
   }
   const medals = ["🥇","🥈","🥉"];
@@ -235,7 +284,6 @@ function renderVenueLeaderboard(venues) {
     <tr>
       <td>${medals[i] || (i + 1)}</td>
       <td>${escapeHtml(prettyVenueName(v.venue))}</td>
-      <td>${v.player_count}</td>
       <td>${v.avg_percent}%</td>
     </tr>
   `).join("");
@@ -252,6 +300,14 @@ function populateVenuePicker(venues) {
   picker.addEventListener("change", () => {
     if (picker.value) loadVenuePlayers(picker.value);
   });
+
+  // Default to the venue they just played at; leave blank if we can't tell
+  const played = getPlayedVenue();
+  const match = venues.find(v => slugify(v.venue) === played);
+  if (match) {
+    picker.value = match.venue;
+    loadVenuePlayers(match.venue);
+  }
 }
 
 async function loadVenuePlayers(venue) {
@@ -260,6 +316,7 @@ async function loadVenuePlayers(venue) {
   try {
     const rows = await fetchAllRows(
       `venue=eq.${encodeURIComponent(venue)}`
+      + `&${sinceFilter()}`
       + `&select=player_name,score,max_score,percent,country`
       + `&order=score.desc,percent.desc`
     );
