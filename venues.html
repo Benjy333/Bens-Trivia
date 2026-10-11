@@ -193,8 +193,10 @@ function countryFlag(code) {
 function escapeHtml(str) {
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
+// Venues that need special capitalisation
+const VENUE_NAMES = { "xxxx-brewery": "XXXX Brewery" };
 function prettyVenueName(slug) {
-  return slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  return VENUE_NAMES[slug] || slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
 }
 function slugify(str) {
   return String(str || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
