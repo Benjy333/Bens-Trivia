@@ -290,6 +290,18 @@
         <div id="highlight-share-status" style="font-size:11px;opacity:0.8;margin-top:6px;"></div>
       </div>
       <div class="leaderboard-section" id="leaderboard-section" style="display:none;">
+
+        <!-- Brisbane's Smartest Venue -->
+        <div id="bsv-card" style="margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid rgba(150,208,255,0.15);">
+          <div class="leaderboard-title" style="margin-bottom:6px;">🏟️ Brisbane's Smartest Venue</div>
+          <div style="text-align:center;font-size:0.8rem;opacity:0.65;margin-bottom:12px;">Average score per venue since 1 October</div>
+          <table class="leaderboard-table">
+            <thead><tr><th>#</th><th>Venue</th><th>Avg %</th></tr></thead>
+            <tbody id="bsv-body">
+              <tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
         <div class="leaderboard-title">🏆 This Week's Leaderboard</div>
         <div class="submit-row" id="submit-row">
           <input class="name-input" id="player-name" placeholder="Your name…" maxlength="20" aria-label="Your name" />
@@ -941,6 +953,7 @@ let currentTab = "week"; let currentQuizTitle = ""; let scoreSubmitted = false; 
 let detectedCountry = "";
 const urlParams = new URLSearchParams(window.location.search);
 const scannedVenue = urlParams.get("venue");
+try { if (scannedVenue) localStorage.setItem("bens-trivia-venue", scannedVenue); } catch (e) {}
 (async function detectCountry() {
   try {
     const res = await fetch("https://ipapi.co/json/");
@@ -959,7 +972,41 @@ function countryName(code) {
     return dn.of(code.toUpperCase()) || "My Country";
   } catch(e) { return "My Country"; }
 }
-function showLeaderboard() { document.getElementById("leaderboard-section").style.display = "block"; currentQuizTitle = document.getElementById("quiz-title").textContent; loadLeaderboard(); }
+/* ---- BRISBANE'S SMARTEST VENUE ---- */
+const BSV_START = "2026-10-01T00:00:00+10:00"; // counts from 1 October 2026 (Brisbane time), no end date
+async function loadVenueCard() {
+  const body = document.getElementById("bsv-body");
+  if (!body) return;
+  const slugify = s => String(s || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  const pretty = slug => slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  try {
+    const since = encodeURIComponent(new Date(BSV_START).toISOString());
+    let rows = [], from = 0;
+    while (true) {
+      const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard?select=venue,percent&venue=not.is.null&submitted_at=gte.${since}`, {
+        headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Range": `${from}-${from + 999}` }
+      });
+      const page = await res.json();
+      if (!Array.isArray(page) || !page.length) break;
+      rows = rows.concat(page);
+      if (page.length < 1000) break;
+      from += 1000;
+    }
+    if (!rows.length) { body.innerHTML = '<tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">No venue scores yet</td></tr>'; return; }
+    const by = {};
+    rows.forEach(r => { if (!r.venue) return; (by[r.venue] = by[r.venue] || { total: 0, n: 0 }); by[r.venue].total += r.percent; by[r.venue].n += 1; });
+    const venues = Object.keys(by).map(v => ({ venue: v, avg: Math.round((by[v].total / by[v].n) * 10) / 10 })).sort((a, b) => b.avg - a.avg);
+    const mine = slugify(scannedVenue);
+    const medals = ["🥇","🥈","🥉"];
+    body.innerHTML = venues.map((v, i) => {
+      const isMine = mine && slugify(v.venue) === mine;
+      return `<tr${isMine ? ' style="font-weight:700;"' : ""}><td>${medals[i] || (i + 1)}</td><td>${escapeHtml(pretty(v.venue))}${isMine ? " (you)" : ""}</td><td>${v.avg}%</td></tr>`;
+    }).join("");
+  } catch (err) {
+    body.innerHTML = '<tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">Could not load venues.</td></tr>';
+  }
+}
+function showLeaderboard() { document.getElementById("leaderboard-section").style.display = "block"; currentQuizTitle = document.getElementById("quiz-title").textContent; loadLeaderboard(); loadVenueCard(); }
 function switchTab(tab) { currentTab = tab; document.getElementById("tab-week").classList.toggle("active", tab === "week"); document.getElementById("tab-all").classList.toggle("active", tab === "all"); loadLeaderboard(); }
 /* ---- TRIVIA HIGHLIGHT ---- */
 let highlightText = "";
@@ -1160,6 +1207,7 @@ document.getElementById("btn-submit-score").addEventListener("click", async () =
       document.getElementById("leaderboard-locked").style.display = "none";
       document.getElementById("leaderboard-unlocked").style.display = "block";
       loadLeaderboard();
+      loadVenueCard(); // refresh venue averages with the new score
       showHighlight(); // Refresh highlight now that they're on the leaderboard
       if (typeof gtag === "function") {
         gtag("event", "leaderboard_submitted", {
