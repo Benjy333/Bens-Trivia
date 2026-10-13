@@ -21,7 +21,7 @@
   <link rel="canonical" href="https://benstrivia.com/" />
   <meta property="og:title" content="Ben's Trivia" />
   <meta property="og:description" content="Free Weekly Sunday Quiz" />
-  <meta property="og:image" content="https://benstrivia.com/images/share-banner.jpg" />
+  <meta property="og:image" content="https://benstrivia.com/images/preview.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:url" content="https://benstrivia.com/" />
@@ -29,7 +29,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Ben's Trivia" />
   <meta name="twitter:description" content="Free Weekly Sunday Quiz" />
-  <meta name="twitter:image" content="https://benstrivia.com/images/share-banner.jpg" />
+  <meta name="twitter:image" content="https://benstrivia.com/images/preview.png" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -1304,12 +1304,8 @@ document.getElementById("highlight-whatsapp").addEventListener("click", () => {
   if (!btn || !navigator.share) return;
   btn.style.display = "";
   btn.addEventListener("click", () => {
-    // pass the link separately so apps recognise it and build their own preview card
-    const cut = copyShareText.lastIndexOf("\n");
-    const shareData = cut > 0
-      ? { text: copyShareText.slice(0, cut), url: copyShareText.slice(cut + 1) }
-      : { text: copyShareText };
-    navigator.share(shareData).catch(() => {});
+    // link stays inside the text so every app keeps it
+    navigator.share({ text: copyShareText }).catch(() => {});
   });
 })();
 document.getElementById("highlight-copy").addEventListener("click", () => {
