@@ -105,7 +105,7 @@
         <div style="font-size:0.82rem;opacity:0.75;margin:0 0 12px;line-height:1.45;">A 6 week competition running from 18th of October to 28th of November to crown Brisbane's Smartest Venue for 2026. Ranked by average score.</div>
         <table class="lb-table">
           <thead>
-            <tr><th>#</th><th>Venue</th><th>Players</th><th>Avg %</th></tr>
+            <tr><th>#</th><th>Venue</th><th>Quizzes</th><th>Avg %</th></tr>
           </thead>
           <tbody id="venue-lb-body">
             <tr><td colspan="4" class="loading-msg">Loading…</td></tr>
@@ -244,12 +244,12 @@ function getPlayedVenue() {
   populateVenuePicker(venues);
 })();
 
-async function fetchAllRows(query) {
+async function fetchAllRows(query, table = "leaderboard") {
   const pageSize = 1000;
   let allRows = [];
   let from = 0;
   while (true) {
-    const url = `${SUPA_URL}/rest/v1/leaderboard?${query}`;
+    const url = `${SUPA_URL}/rest/v1/${table}?${query}`;
     const res = await fetch(url, {
       headers: {
         "apikey": SUPA_KEY,
@@ -268,7 +268,8 @@ async function fetchAllRows(query) {
 
 async function fetchVenueLeaderboard() {
   try {
-    const rows = await fetchAllRows(`select=venue,percent&venue=not.is.null&${sinceFilter()}`);
+    // Every completed quiz played for a venue (saved when the last question is answered), not just named leaderboard submissions
+    const rows = await fetchAllRows(`select=venue,percent&created_at=gte.${encodeURIComponent(new Date(LEADERBOARD_START).toISOString())}`, "venue_scores");
     const byVenue = {};
     rows.forEach(r => {
       if (!r.venue) return;
