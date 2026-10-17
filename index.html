@@ -495,6 +495,33 @@ function isCorrect(val, q) {
 function getSaveKey(quizTitle) { return `bens-trivia-progress:${quizTitle}`; }
 function getSubmitKey(quizTitle) { return `bens-trivia-submitted:${quizTitle}`; }
 function getCompletedEventKey(quizTitle) { return `bens-trivia-completed-event:${quizTitle}`; }
+function getVenueScoredKey(quizTitle) { return `bens-trivia-venue-scored:${quizTitle}`; }
+/* ---- Brisbane's Smartest Venue: record every completed quiz played for a venue ---- */
+function getDeviceId() {
+  try {
+    let id = localStorage.getItem("bens-trivia-device-id");
+    if (!id) {
+      id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2, 12));
+      localStorage.setItem("bens-trivia-device-id", id);
+    }
+    return id;
+  } catch (e) { return ""; }
+}
+function recordVenueScore(pct, earned, maxPts) {
+  // Only quizzes played for a venue (scanned QR code) count, and only the first completion per device each week.
+  if (!activeVenue || !currentQuizTitle) return;
+  const venue = String(activeVenue).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  const deviceId = getDeviceId();
+  if (!venue || !deviceId) return;
+  try { if (localStorage.getItem(getVenueScoredKey(currentQuizTitle)) === "1") return; } catch (e) {}
+  fetch(`${SUPA_URL}/rest/v1/venue_scores?on_conflict=quiz_title,device_id`, {
+    method: "POST",
+    headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json", "Prefer": "return=minimal,resolution=ignore-duplicates" },
+    body: JSON.stringify({ quiz_title: currentQuizTitle, venue, score: earned, max_score: maxPts, percent: pct, device_id: deviceId })
+  }).then(res => {
+    if (res.ok) { try { localStorage.setItem(getVenueScoredKey(currentQuizTitle), "1"); } catch (e) {} }
+  }).catch(() => {});
+}
 function saveProgress(quizTitle) {
   const save = { savedAt: Date.now(), states: states.map(s => ({ checked: s.checked, points: s.points, maxPoints: s.maxPoints, chosenIndex: s.chosenIndex, chosenValue: s.chosenValue, chosenValues: s.chosenValues })) };
   try { localStorage.setItem(getSaveKey(quizTitle), JSON.stringify(save)); } catch(e) {}
@@ -509,6 +536,7 @@ function clearOldSaves(currentTitle) {
     Object.keys(localStorage).forEach(key => {
       if (key.startsWith("bens-trivia-progress:") && key !== keepKey) localStorage.removeItem(key);
       if (key.startsWith("bens-trivia-completed-event:") && key !== getCompletedEventKey(currentTitle)) localStorage.removeItem(key);
+      if (key.startsWith("bens-trivia-venue-scored:") && key !== getVenueScoredKey(currentTitle)) localStorage.removeItem(key);
     });
   } catch(e) {}
 }
@@ -924,6 +952,7 @@ function updateProgress() {
     document.getElementById("feedback-section").style.display = "block";
     showLeaderboard();
     showHighlight();
+    recordVenueScore(pct, earned, maxPts);
     if (pct >= 60) launchConfetti(pct);
     let alreadySentThisQuiz = false;
     try { alreadySentThisQuiz = localStorage.getItem(getCompletedEventKey(currentQuizTitle)) === "1"; } catch(e) {}
@@ -1044,7 +1073,7 @@ async function loadVenueCard() {
     const since = encodeURIComponent(new Date(BSV_START).toISOString());
     let rows = [], from = 0;
     while (true) {
-      const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard?select=venue,percent&venue=not.is.null&submitted_at=gte.${since}`, {
+      const res = await fetch(`${SUPA_URL}/rest/v1/venue_scores?select=venue,percent&created_at=gte.${since}`, {
         headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Range": `${from}-${from + 999}` }
       });
       const page = await res.json();
