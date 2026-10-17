@@ -682,7 +682,7 @@ const VENUE_NAMES = { "xxxx-brewery": "XXXX Brewery", "the-brisbane-channel": "T
     const since = encodeURIComponent(new Date(BSV_START).toISOString());
     let rows = [], from = 0;
     while (true) {
-      const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard?select=venue,percent&venue=not.is.null&submitted_at=gte.${since}`, {
+      const res = await fetch(`${SUPA_URL}/rest/v1/venue_scores?select=venue,percent&created_at=gte.${since}`, {
         headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Range": `${from}-${from + 999}` }
       });
       const page = await res.json();
