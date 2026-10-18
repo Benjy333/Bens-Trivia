@@ -704,6 +704,36 @@ function renderQuiz() {
     const fb = document.createElement("div"); fb.id = `feedback-${i}`; fb.className = "feedback"; card.appendChild(fb);
     container.appendChild(card);
   });
+  const finishBar = document.createElement("div");
+  finishBar.id = "finish-quiz-bar";
+  finishBar.style.cssText = "display:none;text-align:center;margin-top:4px;";
+  container.appendChild(finishBar);
+}
+/* ---- "Complete quiz": skip every unanswered question at once and finish ---- */
+let finishConfirming = false;
+const FINISH_BUTTON_MAX_LEFT = 10; // button only shows when fewer than this many questions are left
+function updateFinishBar() {
+  const bar = document.getElementById("finish-quiz-bar");
+  if (!bar) return;
+  const answered = states.filter(s => s.checked).length;
+  const left = states.length - answered;
+  if (!answered || !left || left >= FINISH_BUTTON_MAX_LEFT) { bar.style.display = "none"; bar.innerHTML = ""; finishConfirming = false; return; }
+  bar.style.display = "block";
+  const plural = left === 1 ? "question" : "questions";
+  if (!finishConfirming) {
+    bar.innerHTML = `<button type="button" class="btn-secondary" id="finish-quiz-btn">Complete quiz</button><div class="year-hint">Skips your ${left} unanswered ${plural}</div>`;
+    document.getElementById("finish-quiz-btn").onclick = () => { finishConfirming = true; updateFinishBar(); };
+  } else {
+    bar.innerHTML = `<div style="font-size:0.88rem;margin-bottom:8px;">Skip ${left} unanswered ${plural} and finish? They score 0.</div>`
+      + `<button type="button" class="btn-secondary" id="finish-quiz-yes">Yes, complete quiz</button> <button type="button" class="btn-restart" id="finish-quiz-no">Keep playing</button>`;
+    document.getElementById("finish-quiz-yes").onclick = completeQuizNow;
+    document.getElementById("finish-quiz-no").onclick = () => { finishConfirming = false; updateFinishBar(); };
+  }
+}
+function completeQuizNow() {
+  finishConfirming = false;
+  // Skipped questions are not logged to the question stats, so they don't count as wrong answers
+  states.forEach((s, i) => { if (!s.checked) skipQuestion(i, true); });
 }
 function makeSkipButton(q, i) {
   const skip = document.createElement("button");
@@ -711,7 +741,7 @@ function makeSkipButton(q, i) {
   skip.onclick = () => skipQuestion(i);
   return skip;
 }
-function skipQuestion(i) {
+function skipQuestion(i, skipStats) {
   if (states[i].checked) return;
   const q = questions[i];
   const card = document.getElementById(`card-${i}`);
@@ -735,7 +765,7 @@ function skipQuestion(i) {
     setFeedback(i, `Skipped · 0/${q.maxPoints} points`, "skipped");
   }
   if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; card.appendChild(ff); }
-  lockCard(i, false);
+  lockCard(i, false, skipStats);
 }
 function renderMCQ(card, q, i) {
   const grid = document.createElement("div"); grid.className = "options";
@@ -838,7 +868,7 @@ function checkMultiText(i) {
   if (q.funfact) { const ff = document.createElement("div"); ff.className = "question-funfact"; ff.textContent = q.funfact; card.appendChild(ff); }
   lockCard(i, pts > 0);
 }
-function lockCard(i, wasCorrect) {
+function lockCard(i, wasCorrect, skipStats) {
   const card = document.getElementById(`card-${i}`);
   card.querySelectorAll("input, button.option-btn, button.btn-check, .btn-skip").forEach(el => el.disabled = true);
   card.classList.remove("current-q");
@@ -846,7 +876,7 @@ function lockCard(i, wasCorrect) {
   else { card.classList.add("answered"); }
   states[i].checked = true;
   saveProgress(document.getElementById("quiz-title").textContent);
-  if (currentQuizTitle) {
+  if (currentQuizTitle && !skipStats) {
     const q = questions[i];
     let rows;
     if (q.type === "multi-text" && states[i].slotResults) {
@@ -938,6 +968,7 @@ function updateProgress() {
   const earned   = states.reduce((s, x) => s + x.points, 0); const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
   const pct      = maxPts ? Math.round((earned / maxPts) * 100) : 0;
   const progPct  = total ? Math.round((answered / total) * 100) : 0;
+  updateFinishBar();
   progText.textContent = `${answered} / ${total} answered`; progBar.style.width = progPct + "%";
   const glowAlpha = 0.3 + (progPct / 100) * 0.7;
   progBar.style.boxShadow = `0 0 ${8 + progPct * 0.18}px rgba(55,161,255,${glowAlpha}), 0 0 ${14 + progPct * 0.2}px rgba(56,239,125,${glowAlpha})`;
