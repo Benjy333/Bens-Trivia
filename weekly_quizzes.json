@@ -905,7 +905,7 @@
 },
 
     {
-  "title": "Big Fat Sunday Quiz #28",
+  "title": "Big Fat Spooky Quiz #28",
   "description": "Enter if you dare!",
   "questions": [
     {"id": "saw-play-a-game-quote", "type": "mcq", "tag": "Movie Quote", "text": "What movie is the following quote from? 'I want to play a game.'", "options": ["Saw", "Salem's Lot", "Scream", "The Silence of the Lambs"], "correctIndex": 0, "maxPoints": 1, "funfact": "The line is the chilling catchphrase of Jigsaw. Saw (2004) was made for around $1.2 million and went on to gross over $100 million worldwide."},
