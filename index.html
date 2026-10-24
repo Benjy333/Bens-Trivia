@@ -269,7 +269,7 @@
     </style>
     <div id="bsv-proof" style="display:none;text-align:center;margin:0 0 12px;"><span class="bsv-pill">👥 <b id="bsv-proof-n">0</b> players this week</span></div>
     <div id="bsv-countdown" style="text-align:center;margin:0 0 16px;padding:12px 8px;border-radius:14px;border:1px solid rgba(150,208,255,0.25);background:radial-gradient(circle at top left,#12335a 0,#020a16 70%);">
-      <div id="bsv-count-main" style="font-family:'Orbitron',sans-serif;font-size:2.4rem;font-weight:700;line-height:1.1;color:var(--neon-soft);text-shadow:0 0 12px var(--neon-soft);">—</div>
+      <div id="bsv-count-main" style="font-family:'Orbitron',sans-serif;font-size:clamp(1.7rem,9vw,2.4rem);font-weight:700;line-height:1.1;color:var(--neon-soft);text-shadow:0 0 12px var(--neon-soft);">—</div>
       <div id="bsv-count-label" style="font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;opacity:0.7;margin-top:4px;"></div>
     </div>
     <div style="text-align:center;">
@@ -1144,6 +1144,8 @@ const BSV_TEASER_VENUES = [
     return `<div style="display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid rgba(150,208,255,0.07);font-size:0.88rem;">${img}<span>${name}</span></div>`;
   }).join("");
 })();
+const BSV_WEEK1_START = new Date("2026-10-17T15:00:00Z"); // 1am Sun 18 Oct Brisbane, when Week 1's quiz goes live
+const BSV_TOTAL_WEEKS = 6;
 function updateBsvCountdown() {
   const main = document.getElementById("bsv-count-main");
   const label = document.getElementById("bsv-count-label");
@@ -1154,8 +1156,14 @@ function updateBsvCountdown() {
     main.textContent = days;
     label.textContent = (days === 1 ? "day" : "days") + " until it goes live · 18th of October";
   } else if (now < BSV_COMP_END) {
-    main.textContent = "LIVE NOW";
-    label.textContent = "Ends 28th of November · winner crowned 1st of December";
+    const week = Math.min(Math.max(Math.floor((now - BSV_WEEK1_START) / (7 * 86400000)) + 1, 1), BSV_TOTAL_WEEKS);
+    if (week === BSV_TOTAL_WEEKS) {
+      main.textContent = "FINAL WEEK";
+      label.textContent = "Ends 28th of November · winner crowned 1st of December";
+    } else {
+      main.textContent = "WEEK " + week;
+      label.textContent = "of " + BSV_TOTAL_WEEKS + " · ends 28th of November · winner crowned 1st of December";
+    }
   } else {
     main.textContent = "FINISHED";
     label.textContent = "Winner crowned 1st of December";
