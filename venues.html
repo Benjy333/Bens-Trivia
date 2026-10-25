@@ -71,10 +71,8 @@
     }
 
     /* Weekly movement indicators */
-    .rank-cell { white-space: nowrap; line-height: 1.25; }
-    .rank-cell .mv { display: block; margin: 2px 0 0; }
-    .rank-cell .rk { display: inline-block; min-width: 1.6em; }
-    .mv { display: inline-block; margin-left: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em; vertical-align: middle; }
+    .mv-cell { white-space: nowrap; width: 1%; }
+    .mv { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; vertical-align: middle; }
     .mv.up { color: #4ade80; }
     .mv.down { color: #f87171; }
     .mv.same { color: #9fb4c8; opacity: 0.8; }
@@ -116,10 +114,10 @@
         <div class="mv-caption">Movement vs last Monday</div>
         <table class="lb-table">
           <thead>
-            <tr><th>#</th><th>Venue</th><th>Quizzes</th><th>Avg %</th></tr>
+            <tr><th>#</th><th>Venue</th><th>Quizzes</th><th>Move</th><th>Avg %</th></tr>
           </thead>
           <tbody id="venue-lb-body">
-            <tr><td colspan="4" class="loading-msg">Loading…</td></tr>
+            <tr><td colspan="5" class="loading-msg">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -335,15 +333,16 @@ async function fetchVenueLeaderboard() {
 function renderVenueLeaderboard(venues) {
   const tbody = document.getElementById("venue-lb-body");
   if (!venues || !venues.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="loading-msg">No venue scores yet</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="loading-msg">No venue scores yet</td></tr>';
     return;
   }
   const medals = ["🥇","🥈","🥉"];
   tbody.innerHTML = venues.map((v, i) => `
     <tr>
-      <td class="rank-cell"><span class="rk">${medals[i] || (i + 1)}</span>${movementBadge(v.move)}</td>
+      <td>${medals[i] || (i + 1)}</td>
       <td>${VENUE_LOGOS[slugify(v.venue)] ? `<img src="${VENUE_LOGOS[slugify(v.venue)]}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : ""}${escapeHtml(prettyVenueName(v.venue))}</td>
       <td>${v.player_count}</td>
+      <td class="mv-cell">${movementBadge(v.move)}</td>
       <td>${Math.round(v.avg_percent)}%</td>
     </tr>
   `).join("");
