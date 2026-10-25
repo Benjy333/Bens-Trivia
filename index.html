@@ -147,9 +147,8 @@
     .leaderboard-table tr:nth-child(2) td { color: #c0d8e8; }
     .leaderboard-table tr:nth-child(3) td { color: #e8b87a; }
     /* Weekly movement indicators (Brisbane's Smartest Venue) */
-    #bsv-body .rank-cell { white-space: nowrap; line-height: 1.25; }
-    #bsv-body .rk { display: inline-block; min-width: 1.6em; }
-    #bsv-body .mv { display: block; margin: 2px 0 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em; }
+    #bsv-body .mv-cell { white-space: nowrap; width: 1%; }
+    #bsv-body .mv { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; }
     #bsv-body .mv.up { color: #4ade80; }
     #bsv-body .mv.down { color: #f87171; }
     #bsv-body .mv.same { color: #9fb4c8; opacity: 0.8; }
@@ -434,9 +433,9 @@ html.halloween .quiz-shell::after{left:1px;transform:scaleX(-1);border-top-left-
           <div id="bsv-unlocked" style="display:none;">
             <div class="mv-caption">Movement vs last Monday</div>
             <table class="leaderboard-table">
-              <thead><tr><th>#</th><th>Venue</th><th>Avg %</th></tr></thead>
+              <thead><tr><th>#</th><th>Venue</th><th>Move</th><th>Avg %</th></tr></thead>
               <tbody id="bsv-body">
-                <tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
+                <tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
               </tbody>
             </table>
           </div>
@@ -1217,7 +1216,7 @@ async function loadVenueCard() {
       if (page.length < 1000) break;
       from += 1000;
     }
-    if (!rows.length) { body.innerHTML = '<tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">No venue scores yet</td></tr>'; return; }
+    if (!rows.length) { body.innerHTML = '<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">No venue scores yet</td></tr>'; return; }
     // Rank venues by average score (ties: more quizzes first, then name, so the order is stable)
     const rankVenues = list => {
       const by = {};
@@ -1246,10 +1245,10 @@ async function loadVenueCard() {
     const medals = ["🥇","🥈","🥉"];
     body.innerHTML = venues.map((v, i) => {
       const isMine = mine && slugify(v.venue) === mine;
-      return `<tr${isMine ? ' style="font-weight:700;"' : ""}><td class="rank-cell"><span class="rk">${medals[i] || (i + 1)}</span>${badge(v.move)}</td><td>${VENUE_LOGOS[slugify(v.venue)] ? `<img src="${VENUE_LOGOS[slugify(v.venue)]}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : ""}${escapeHtml(pretty(v.venue))}${isMine ? " (you)" : ""}</td><td>${Math.round(v.avg)}%</td></tr>`;
+      return `<tr${isMine ? ' style="font-weight:700;"' : ""}><td>${medals[i] || (i + 1)}</td><td>${VENUE_LOGOS[slugify(v.venue)] ? `<img src="${VENUE_LOGOS[slugify(v.venue)]}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : ""}${escapeHtml(pretty(v.venue))}${isMine ? " (you)" : ""}</td><td class="mv-cell">${badge(v.move)}</td><td>${Math.round(v.avg)}%</td></tr>`;
     }).join("");
   } catch (err) {
-    body.innerHTML = '<tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">Could not load venues.</td></tr>';
+    body.innerHTML = '<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Could not load venues.</td></tr>';
   }
 }
 /* ---- BRISBANE'S SMARTEST VENUE: teaser list + countdown (top of page) ---- */
