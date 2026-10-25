@@ -111,9 +111,8 @@
     .lb-table tr:nth-child(2) td { color: #c0d8e8; }
     .lb-table tr:nth-child(3) td { color: #e8b87a; }
     /* Weekly movement indicators */
-    .rank-cell { white-space: nowrap; line-height: 1.25; }
-    .rank-cell .rk { display: inline-block; min-width: 1.6em; }
-    .mv { display: block; margin: 2px 0 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em; }
+    .mv-cell { white-space: nowrap; width: 1%; }
+    .mv { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; }
     .mv.up { color: #4ade80; }
     .mv.down { color: #f87171; }
     .mv.same { color: #9fb4c8; opacity: 0.8; }
@@ -210,10 +209,10 @@
         <div class="mv-caption">Movement vs last Monday</div>
         <table class="lb-table">
           <thead>
-            <tr><th>#</th><th>Venue</th><th>Avg %</th></tr>
+            <tr><th>#</th><th>Venue</th><th>Move</th><th>Avg %</th></tr>
           </thead>
           <tbody id="bsv-body">
-            <tr><td colspan="3" class="loading-msg">Loading…</td></tr>
+            <tr><td colspan="4" class="loading-msg">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -701,7 +700,7 @@ const VENUE_NAMES = { "xxxx-brewery": "XXXX Brewery", "the-brisbane-channel": "T
       if (page.length < 1000) break;
       from += 1000;
     }
-    if (!rows.length) { body.innerHTML = '<tr><td colspan="3" class="loading-msg">No venue scores yet</td></tr>'; return; }
+    if (!rows.length) { body.innerHTML = '<tr><td colspan="4" class="loading-msg">No venue scores yet</td></tr>'; return; }
     // Rank venues by average score (ties: more quizzes first, then name, so the order is stable)
     const rankVenues = list => {
       const by = {};
@@ -730,10 +729,10 @@ const VENUE_NAMES = { "xxxx-brewery": "XXXX Brewery", "the-brisbane-channel": "T
     body.innerHTML = venues.map((v, i) => {
       const logo = VENUE_LOGOS[slugify(v.venue)];
       const img = logo ? `<img src="${logo}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : "";
-      return `<tr><td class="rank-cell"><span class="rk">${medals[i] || (i + 1)}</span>${badge(v.move)}</td><td>${img}${escapeHtml(pretty(v.venue))}</td><td>${Math.round(v.avg)}%</td></tr>`;
+      return `<tr><td>${medals[i] || (i + 1)}</td><td>${img}${escapeHtml(pretty(v.venue))}</td><td class="mv-cell">${badge(v.move)}</td><td>${Math.round(v.avg)}%</td></tr>`;
     }).join("");
   } catch (err) {
-    body.innerHTML = '<tr><td colspan="3" class="loading-msg">Could not load venues.</td></tr>';
+    body.innerHTML = '<tr><td colspan="4" class="loading-msg">Could not load venues.</td></tr>';
   }
 })();
 </script>
