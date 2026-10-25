@@ -27,6 +27,8 @@ body {
     radial-gradient(80% 60% at 50% -10%, #0b2a55 0%, transparent 60%),
     radial-gradient(80% 60% at 50% 120%, #041022 0%, transparent 60%),
     linear-gradient(var(--bg1), var(--bg2));
+  background-color: var(--bg2);
+  background-repeat: no-repeat;
   color: var(--text);
   min-height: 100svh;
   overflow-x: hidden;
