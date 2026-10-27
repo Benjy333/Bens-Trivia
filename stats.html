@@ -51,6 +51,8 @@
     .lb-fin { text-align: center; font-weight: 600; white-space: nowrap; }
     .lb-fin-1st { color: #4ade80; font-weight: 700; }
     .lb-fin-pb { color: #f87171; font-weight: 700; }
+    .lb-more { margin-top: 8px; padding: 8px 22px; border-radius: 999px; border: 1px solid var(--neon); background: rgba(3,15,34,0.9); color: var(--neon); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .lb-more:hover { background: var(--neon); color: #001; }
     .lb-table th { white-space: nowrap; }
     .venue-cell { width: 100%; }
     .venue-wrap { display: flex; align-items: center; gap: 8px; line-height: 1.25; }
@@ -420,13 +422,14 @@ function renderSummary(lb, quizTitle, qData) {
   document.getElementById("stat-avg-pct").textContent = avgPct;
 }
 
+const LB_STEP = 20;   // rows added per "See more" click
+let lbState = null;
 function renderLeaderboard(lb, quizTitle) {
   const tbody = document.getElementById("lb-body");
   if (!lb.length) {
     tbody.innerHTML = '<tr><td colspan="7" class="loading-msg">No scores yet</td></tr>';
     return;
   }
-  const medals = ["🥇","🥈","🥉"];
   let ranks = [];
   let currentRank = 0;
   lb.forEach((r, i) => {
@@ -435,17 +438,26 @@ function renderLeaderboard(lb, quizTitle) {
     }
     ranks.push(currentRank);
   });
+  // top 10, plus anyone tied with 10th place
+  const initial = lb.filter((r, i) => i < 10 || ranks[i] === ranks[9]).length;
+  lbState = { lb, ranks, quizTitle, initial, shown: initial };
+  tbody.innerHTML = lbRowsHtml(0, initial) + lbFooterHtml();
+  fillFinishes(0, initial);
+}
 
-  const top10 = lb.filter((r, i) => i < 10 || ranks[i] === ranks[9]);
-
-  let html = top10.map((r, i) => {
+function lbRowsHtml(from, to) {
+  const { lb, ranks } = lbState;
+  const medals = ["🥇","🥈","🥉"];
+  let html = "";
+  for (let i = from; i < to; i++) {
+    const r = lb[i];
     const rank = ranks[i];
     const medal = medals[rank];
     const suffix = (rank+1) === 1 ? "st" : (rank+1) === 2 ? "nd" : (rank+1) === 3 ? "rd" : "th";
     const rankDisplay = medal || `${rank+1}${suffix}`;
     const rowStyle = rank <= 2 ? "" : "opacity:0.8;";
     const flag = countryFlag(r.country);
-    return `
+    html += `
       <tr style="${rowStyle}">
         <td>${rankDisplay}</td>
         <td style="font-size:1.1rem;">${flag}</td>
@@ -456,18 +468,45 @@ function renderLeaderboard(lb, quizTitle) {
         <td class="lb-nowrap" style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString()}</td>
       </tr>
     `;
-  }).join("");
+  }
+  return html;
+}
 
-  html += `<tr><td colspan="7" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${lb.length} players total</td></tr>`;
-  tbody.innerHTML = html;
-  fillFinishes(top10, quizTitle, tbody);
+function lbFooterHtml() {
+  const { lb, shown, initial } = lbState;
+  const left = lb.length - shown;
+  let btn = "";
+  if (left > 0) btn = `<button type="button" class="lb-more" onclick="lbSeeMore()">See more</button>`;
+  else if (shown > initial) btn = `<button type="button" class="lb-more" onclick="lbShowLess()">Show less</button>`;
+  return `<tr id="lb-footer"><td colspan="7" style="text-align:center;padding:10px 0 4px;"><div style="font-size:0.75rem;opacity:0.5;">Showing ${shown} of ${lb.length} players</div>${btn}</td></tr>`;
+}
+
+function lbSeeMore() {
+  if (!lbState) return;
+  const tbody = document.getElementById("lb-body");
+  const from = lbState.shown;
+  const to = Math.min(lbState.lb.length, from + LB_STEP);
+  lbState.shown = to;
+  document.getElementById("lb-footer").remove();
+  tbody.insertAdjacentHTML("beforeend", lbRowsHtml(from, to) + lbFooterHtml());
+  fillFinishes(from, to);
+}
+
+function lbShowLess() {
+  if (!lbState) return;
+  renderLeaderboard(lbState.lb, lbState.quizTitle);
+  document.getElementById("lb-table").scrollIntoView({ block: "nearest" });
 }
 
 // Finishes column: "1st" = first quiz, "PB" = beat their previous best, otherwise number of quizzes finished.
 // Matched on player name (case-insensitive); country must match only when both rows have one.
 // Only quizzes submitted BEFORE the row's own score count, so old weeks read correctly too.
 const lbKey = n => String(n || "").trim().toLowerCase();
-async function fillFinishes(rows, quizTitle, tbody) {
+async function fillFinishes(from, to) {
+  const st = lbState;
+  if (!st) return;
+  const rows = st.lb.slice(from, to);
+  const tbody = document.getElementById("lb-body");
   try {
     const names = [...new Set(rows.map(r => String(r.player_name || "").trim()).filter(Boolean))];
     if (!names.length) return;
@@ -476,15 +515,15 @@ async function fillFinishes(rows, quizTitle, tbody) {
     const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard?select=player_name,country,quiz_title,percent,submitted_at&or=${encodeURIComponent(orFilter)}&limit=3000`, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
     if (!res.ok) return;
     const all = await res.json();
-    if (!Array.isArray(all)) return;
+    if (!Array.isArray(all) || lbState !== st) return;   // quiz was switched while this was loading
     const by = {};
     all.forEach(r => { (by[lbKey(r.player_name)] = by[lbKey(r.player_name)] || []).push(r); });
-    rows.forEach((r, i) => {
-      const cell = tbody.querySelector(`.lb-fin[data-i="${i}"]`);
+    rows.forEach((r, k) => {
+      const cell = tbody.querySelector(`.lb-fin[data-i="${from + k}"]`);
       if (!cell) return;
       const t = new Date(r.submitted_at).getTime();
       const prior = (by[lbKey(r.player_name)] || []).filter(h =>
-        h.quiz_title !== quizTitle && new Date(h.submitted_at).getTime() < t && (!h.country || !r.country || h.country === r.country));
+        h.quiz_title !== st.quizTitle && new Date(h.submitted_at).getTime() < t && (!h.country || !r.country || h.country === r.country));
       if (!prior.length) { cell.textContent = "1st"; cell.classList.add("lb-fin-1st"); return; }
       const best = Math.max(...prior.map(h => h.percent));
       if (r.percent > best) { cell.textContent = "PB"; cell.classList.add("lb-fin-pb"); return; }
