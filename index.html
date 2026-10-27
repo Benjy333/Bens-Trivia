@@ -324,6 +324,7 @@
           <button class="highlight-share-btn" id="highlight-whatsapp">Share via WhatsApp</button>
           <button class="highlight-share-btn" id="highlight-native" style="display:none;">📤 Share</button>
           <button class="highlight-share-btn" id="highlight-copy">📋 Copy Result</button>
+          <button class="highlight-share-btn" id="sc-open" type="button">🖼️ Create share image</button>
         </div>
         <div id="highlight-share-status" style="font-size:11px;opacity:0.8;margin-top:6px;"></div>
       </div>
@@ -1628,6 +1629,211 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
   window.addEventListener("load",fitAll);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitAll);
   fitAll();
+})();
+</script>
+<!-- Share card: team photo + score image -->
+<style>
+#sc-overlay{position:fixed;inset:0;z-index:100001;display:none;align-items:flex-start;justify-content:center;padding:12px;background:rgba(0,6,16,.88);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#sc-overlay.open{display:flex;}
+#sc-box{position:relative;width:100%;max-width:420px;box-sizing:border-box;margin:auto;padding:18px 16px 18px;border-radius:16px;background:#0b1624;color:#e6f1ff;border:1px solid rgba(150,208,255,.35);box-shadow:0 0 28px rgba(80,170,255,.25);font-size:.9rem;}
+#sc-box h3{margin:0 36px 12px 0;font-size:1.05rem;color:#9fd4ff;letter-spacing:.02em;}
+#sc-close{position:absolute;top:10px;right:10px;width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(150,208,255,.35);background:transparent;color:#9fd4ff;cursor:pointer;}
+#sc-close:hover,#sc-close:focus-visible{background:#9fd4ff;color:#001;outline:none;}
+#sc-stage{display:flex;justify-content:center;margin:0 0 12px;}
+#sc-canvas{display:block;width:auto;max-width:100%;max-height:52vh;border-radius:12px;border:1px solid rgba(150,208,255,.3);background:#020a16;}
+.sc-row{display:flex;gap:8px;margin:0 0 10px;}
+.sc-field{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.sc-field label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;opacity:.6;}
+.sc-field input{width:100%;box-sizing:border-box;padding:9px 12px;border-radius:10px;border:1px solid rgba(150,208,255,.4);background:rgba(0,8,18,.85);color:#e9f4ff;font-size:16px;font-family:inherit;}
+.sc-field input:focus{outline:2px solid #9fd4ff;outline-offset:1px;}
+.sc-seg{display:flex;gap:6px;margin:0 0 10px;}
+.sc-seg button{flex:1;padding:8px 6px;border-radius:999px;border:1px solid rgba(150,208,255,.4);background:rgba(3,15,34,.9);color:#e9f4ff;font-size:.82rem;cursor:pointer;font-family:inherit;}
+.sc-seg button[aria-pressed="true"]{background:#9fd4ff;color:#001;border-color:#9fd4ff;font-weight:600;}
+.sc-btn{padding:10px 14px;border-radius:999px;border:1px solid rgba(150,208,255,.5);background:rgba(3,15,34,.9);color:#e9f4ff;font-size:.85rem;cursor:pointer;font-family:inherit;flex:1;}
+.sc-btn:hover,.sc-btn:focus-visible{background:#9fd4ff;color:#001;outline:none;}
+.sc-btn.primary{background:#9fd4ff;color:#001;font-weight:600;}
+.sc-btn.primary:hover{background:#c6e5ff;}
+#sc-status{min-height:1.2em;font-size:.78rem;opacity:.85;margin:8px 0 0;text-align:center;}
+#sc-privacy{font-size:.74rem;opacity:.7;margin:-4px 0 10px;text-align:center;line-height:1.4;}
+#sc-tag{font-size:.88rem;margin:12px 0 0;text-align:center;color:#9fd4ff;}
+#sc-tag b{color:#fff;}
+#sc-hint{font-size:.72rem;opacity:.6;margin:8px 0 0;text-align:center;line-height:1.4;}
+</style>
+<div id="sc-overlay" role="dialog" aria-modal="true" aria-labelledby="sc-h">
+  <div id="sc-box">
+    <button type="button" id="sc-close" aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M2 2 L12 12 M12 2 L2 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    <h3 id="sc-h">Share your score</h3>
+    <div id="sc-stage"><canvas id="sc-canvas" width="1080" height="1350" aria-label="Preview of your share image"></canvas></div>
+    <div class="sc-row">
+      <div class="sc-field"><label for="sc-name">Name or team</label><input id="sc-name" type="text" maxlength="24" placeholder="Your name or team" autocomplete="off"></div>
+    </div>
+    <div class="sc-row">
+      <div class="sc-field"><label for="sc-loc">Location</label><input id="sc-loc" type="text" maxlength="30" placeholder="Where are you playing? (optional)" autocomplete="off"></div>
+    </div>
+    <div class="sc-row">
+      <button type="button" class="sc-btn" id="sc-photo-btn">📷 Add team photo</button>
+      <button type="button" class="sc-btn" id="sc-photo-clear" style="display:none;">Remove photo</button>
+      <input type="file" id="sc-photo" accept="image/*" style="display:none;">
+    </div>
+    <div id="sc-privacy">Your photo stays on your phone. We don't upload or store it.</div>
+    <div class="sc-seg" role="group" aria-label="Image layout">
+      <button type="button" data-layout="story" aria-pressed="false">Story</button>
+      <button type="button" data-layout="post" aria-pressed="true">Post</button>
+      <button type="button" data-layout="square" aria-pressed="false">Square</button>
+    </div>
+    <div class="sc-row">
+      <button type="button" class="sc-btn primary" id="sc-share">📤 Share</button>
+      <button type="button" class="sc-btn" id="sc-save">⬇ Save image</button>
+    </div>
+    <div class="sc-row" style="margin-bottom:0;">
+      <button type="button" class="sc-btn" id="sc-copy">📋 Copy score</button>
+    </div>
+    <div id="sc-status" role="status" aria-live="polite"></div>
+    <div id="sc-tag">Posting it? Tag <b>@benstrivia</b> so we can see it!</div>
+    <div id="sc-hint">On iPhone, tap Share then Save Image to put the finished image in your Photos.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay=document.getElementById("sc-overlay"); if(!overlay) return;
+  var canvas=document.getElementById("sc-canvas"), ctx=canvas.getContext("2d");
+  var nameEl=document.getElementById("sc-name"), locEl=document.getElementById("sc-loc");
+  var photoInput=document.getElementById("sc-photo"), photoBtn=document.getElementById("sc-photo-btn"), clearBtn=document.getElementById("sc-photo-clear");
+  var statusEl=document.getElementById("sc-status");
+  var SIZES={story:[1080,1920],post:[1080,1350],square:[1080,1080]};
+  var layout="post", photo=null, lastBtn=null, locEdited=false;
+  var logo=new Image(); logo.onload=function(){ if(overlay.classList.contains("open")) draw(); }; logo.src="images/share-logo.png";
+
+  function setStatus(t){ statusEl.textContent=t||""; if(t) setTimeout(function(){ if(statusEl.textContent===t) statusEl.textContent=""; },2500); }
+  function scoreInfo(){
+    var earned=0,max=0;
+    try{ earned=states.reduce(function(s,x){return s+x.points;},0); max=states.reduce(function(s,x){return s+x.maxPoints;},0); }catch(e){}
+    return {earned:earned,max:max,pct:max?Math.round(earned/max*100):0};
+  }
+  function rr(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+  function fitFont(text,maxW,start,min,weight,family){
+    var s=start; ctx.font=weight+" "+s+"px "+family;
+    while(ctx.measureText(text).width>maxW && s>min){ s-=2; ctx.font=weight+" "+s+"px "+family; }
+    return s;
+  }
+  function cover(img,W,H){
+    var s=Math.max(W/img.width,H/img.height), w=img.width*s, h=img.height*s;
+    ctx.drawImage(img,(W-w)/2,(H-h)/2,w,h);
+  }
+  function pin(cx,cy,size,color){
+    ctx.save(); ctx.strokeStyle=color; ctx.lineWidth=size*0.12; ctx.lineJoin="round";
+    ctx.beginPath(); ctx.moveTo(cx,cy+size*0.5);
+    ctx.bezierCurveTo(cx-size*0.62,cy-size*0.02,cx-size*0.5,cy-size*0.55,cx,cy-size*0.55);
+    ctx.bezierCurveTo(cx+size*0.5,cy-size*0.55,cx+size*0.62,cy-size*0.02,cx,cy+size*0.5); ctx.closePath(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx,cy-size*0.1,size*0.14,0,Math.PI*2); ctx.stroke(); ctx.restore();
+  }
+  function draw(){
+    var dims=SIZES[layout], W=dims[0], H=dims[1];
+    canvas.width=W; canvas.height=H;
+    var DISPLAY="Orbitron, 'Arial Black', sans-serif", BODY="Inter, Arial, sans-serif", NEON="#9fd4ff";
+    // background: the photo, or a plain dark gradient when there isn't one
+    var g=ctx.createRadialGradient(W*0.2,0,0,W*0.2,0,Math.max(W,H)*1.1);
+    g.addColorStop(0,"#12335a"); g.addColorStop(0.7,"#020a16"); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    if(photo){
+      cover(photo,W,H);
+    }
+    var pad=W*0.06, safeTop=H>1800?200:pad, safeBottom=H>1800?260:pad;
+    // logo, top right (transparent PNG, drawn straight onto the photo)
+    var logoH=W*0.085, logoBottom=safeTop;
+    if(logo.complete&&logo.naturalWidth){
+      var lw=logo.naturalWidth*(logoH/logo.naturalHeight); ctx.drawImage(logo,W-pad-lw,safeTop,lw,logoH); logoBottom=safeTop+logoH;
+    }
+    ctx.textAlign="center"; ctx.textBaseline="alphabetic";
+    ctx.shadowColor="rgba(0,0,0,.8)"; ctx.shadowBlur=W*0.025;
+    var name=nameEl.value.trim(), loc=locEl.value.trim(), si=scoreInfo();
+    var nameSize=0, scoreSize=W*0.06, gap=W*0.025;
+    if(name) nameSize=fitFont(name.toUpperCase(),W*0.86,W*0.075,W*0.035,"700",DISPLAY);
+    var blockH=(name?nameSize+gap:0)+scoreSize;
+    // photo: text block sits just under the logo; no photo: centred on the card
+    var y=photo?logoBottom+W*0.05:(H-blockH)/2-W*0.04;
+    if(name){ y+=nameSize; ctx.fillStyle="#fff"; ctx.font="700 "+nameSize+"px "+DISPLAY; ctx.fillText(name.toUpperCase(),W/2,y); y+=gap; }
+    y+=scoreSize; ctx.fillStyle="#fff"; ctx.font="600 "+scoreSize+"px "+BODY; ctx.fillText("Score: "+si.earned+"/"+si.max,W/2,y);
+    // location: pin + text, bottom centre (no photo: just under the score)
+    if(loc){
+      var lf=fitFont(loc,W*0.7,W*0.055,W*0.03,"600",BODY), iconW=lf*1.2;
+      var tw=ctx.measureText(loc).width, total=iconW+tw, x0=(W-total)/2;
+      var ly=photo?H-safeBottom:y+W*0.12;
+      pin(x0+iconW*0.4,ly-lf*0.35,lf*0.95,"#fff");
+      ctx.textAlign="left"; ctx.fillStyle="#fff"; ctx.font="600 "+lf+"px "+BODY; ctx.fillText(loc,x0+iconW,ly);
+      ctx.textAlign="center";
+    }
+    ctx.shadowBlur=0;
+    clearBtn.style.display=photo?"":"none";
+    photoBtn.textContent=photo?"📷 Change photo":"📷 Add team photo";
+  }
+  function render(){
+    var loadFont=(document.fonts&&document.fonts.load)?Promise.all([document.fonts.load("700 40px Orbitron"),document.fonts.load("900 40px Orbitron"),document.fonts.load("700 40px Inter")]).catch(function(){}):Promise.resolve();
+    loadFont.then(draw);
+  }
+  function open(btn){
+    lastBtn=btn;
+    nameEl.value=(document.getElementById("player-name")||{}).value||nameEl.value||"";
+    var vn=""; try{ vn=venueShareName(); }catch(e){}
+    if(!locEdited) locEl.value=vn;
+    overlay.classList.add("open"); document.body.style.overflow="hidden";
+    render(); try{ document.getElementById("sc-close").focus(); }catch(e){}
+  }
+  function close(){ overlay.classList.remove("open"); document.body.style.overflow=""; if(lastBtn) try{lastBtn.focus();}catch(e){} }
+  function toBlob(){ return new Promise(function(res){ canvas.toBlob(function(b){res(b);},"image/png"); }); }
+  function fileName(){ return "bens-trivia-score-"+layout+".png"; }
+  function outText(){ var t=(typeof copyShareText==="string"&&copyShareText)?copyShareText:""; return t?t+"\n\nTag @benstrivia":""; }
+
+  document.addEventListener("click",function(e){
+    var o=e.target.closest&&e.target.closest("#sc-open"); if(o){ e.preventDefault(); open(o); return; }
+    if(e.target===overlay||(e.target.closest&&e.target.closest("#sc-close"))) close();
+  });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&overlay.classList.contains("open")) close(); });
+  [nameEl,locEl].forEach(function(el){ el.addEventListener("input",function(){ if(el===locEl) locEdited=true; draw(); }); });
+  [].forEach.call(overlay.querySelectorAll("[data-layout]"),function(b){
+    b.addEventListener("click",function(){
+      layout=b.getAttribute("data-layout");
+      [].forEach.call(overlay.querySelectorAll("[data-layout]"),function(x){ x.setAttribute("aria-pressed",x===b?"true":"false"); });
+      draw();
+    });
+  });
+  photoBtn.addEventListener("click",function(){ photoInput.click(); });
+  clearBtn.addEventListener("click",function(){ photo=null; photoInput.value=""; draw(); });
+  photoInput.addEventListener("change",function(){
+    var f=photoInput.files&&photoInput.files[0]; if(!f) return;
+    var url=URL.createObjectURL(f), im=new Image();
+    im.onload=function(){
+      // shrink big phone photos; drawImage applies the photo's rotation
+      var max=1800, s=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));
+      var c=document.createElement("canvas"); c.width=Math.round(im.naturalWidth*s); c.height=Math.round(im.naturalHeight*s);
+      c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+      photo=c; URL.revokeObjectURL(url); draw();
+    };
+    im.onerror=function(){ URL.revokeObjectURL(url); setStatus("Couldn't read that photo. Try another."); };
+    im.src=url;
+  });
+  document.getElementById("sc-share").addEventListener("click",async function(){
+    var blob=await toBlob(); if(!blob){ setStatus("Couldn't make the image."); return; }
+    var file=new File([blob],fileName(),{type:"image/png"});
+    var text=outText();
+    try{
+      if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],text:text}); return; }
+    }catch(err){ if(err&&err.name==="AbortError") return; }
+    saveImage(blob); setStatus("Sharing isn't available here, so the image was saved instead.");
+  });
+  function saveImage(blob){
+    var a=document.createElement("a"), url=URL.createObjectURL(blob);
+    a.href=url; a.download=fileName(); document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); },4000);
+  }
+  document.getElementById("sc-save").addEventListener("click",async function(){
+    var blob=await toBlob(); if(!blob){ setStatus("Couldn't make the image."); return; }
+    saveImage(blob); setStatus("Saving image…");
+  });
+  document.getElementById("sc-copy").addEventListener("click",function(){
+    var text=outText();
+    if(!text){ setStatus("Nothing to copy yet."); return; }
+    (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(function(){ setStatus("Copied!"); },function(){ setStatus("Couldn't copy. Long-press the text to copy it."); });
+  });
 })();
 </script>
 </body>
