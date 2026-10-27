@@ -725,7 +725,24 @@ const VENUE_NAMES = { "xxxx-brewery": "XXXX Brewery", "the-brisbane-channel": "T
     const venues = rankVenues(rows);
     // Baseline = rankings as they stood at that moment, worked out from each score's timestamp (nothing to save)
     const baseRank = {};
-    rankVenues(rows.filter(r => new Date(r.created_at).getTime() < monday)).forEach((v, i) => { baseRank[v.venue] = i + 1; });
+    // Last Monday's standings, entered by hand from Ben's screenshot. Update this list each Monday.
+    // If it's empty, the baseline is worked out from the score timestamps instead.
+    const LAST_MONDAY_SNAPSHOT = [
+      "the-german-club",       // 1st, 73%
+      "soapbox-brewery",       // 2nd, 68%
+      "xxxx-brewery",          // 3rd, 67%
+      "x-golf",                // 4th, 65%
+      "sea-legs",              // 5th, 57%
+      "the-brisbane-channel",  // 6th, 38%
+    ];
+    if (LAST_MONDAY_SNAPSHOT.length) {
+      const snapRank = {};
+      LAST_MONDAY_SNAPSHOT.forEach((slug, i) => { snapRank[slug] = i + 1; });
+      const snapAlias = { "x-golf-south-bank": "x-golf" };
+      venues.forEach(v => { const k = slugify(v.venue), r = snapRank[snapAlias[k] || k]; if (r) baseRank[v.venue] = r; });
+    } else {
+      rankVenues(rows.filter(r => new Date(r.created_at).getTime() < monday)).forEach((v, i) => { baseRank[v.venue] = i + 1; });
+    }
     // Compare only venues already on the board, so a brand-new venue doesn't make others look like they dropped
     let liveRank = 0;
     venues.forEach(v => {
