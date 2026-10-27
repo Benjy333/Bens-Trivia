@@ -1911,7 +1911,7 @@ html.halloween .sc-field input{border-color:rgba(255,160,80,.55);}
   function close(){ overlay.classList.remove("open"); document.body.style.overflow=""; if(lastBtn) try{lastBtn.focus();}catch(e){} }
   function toBlob(){ return new Promise(function(res){ canvas.toBlob(function(b){res(b);},"image/png"); }); }
   function fileName(){ return "bens-trivia-score-"+layout+".png"; }
-  function outText(){ var t=(typeof copyShareText==="string"&&copyShareText)?copyShareText:""; return t?t+"\n\nTag @benstrivia":""; }
+  function outText(){ var t=(typeof copyShareText==="string"&&copyShareText)?copyShareText:""; return t; }
 
   document.addEventListener("click",function(e){
     var o=e.target.closest&&e.target.closest("#sc-open"); if(o){ e.preventDefault(); open(o); return; }
@@ -1947,7 +1947,7 @@ html.halloween .sc-field input{border-color:rgba(255,160,80,.55);}
     var file=new File([blob],fileName(),{type:"image/png"});
     var text=outText();
     try{
-      if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],text:text}); return; }
+      if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file]}); return; }
     }catch(err){ if(err&&err.name==="AbortError") return; }
     saveImage(blob); setStatus("Sharing isn't available here, so the image was saved instead.");
   });
