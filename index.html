@@ -142,6 +142,11 @@
     .leaderboard-table tr:first-child td { color: #ffd700; }
     .leaderboard-table tr:nth-child(2) td { color: #c0d8e8; }
     .leaderboard-table tr:nth-child(3) td { color: #e8b87a; }
+    .lb-fin { text-align: center; font-weight: 600; font-size: 0.78rem; line-height: 1.15; width: 3.6rem; padding-left: 2px !important; padding-right: 2px !important; }
+    .leaderboard-table th.lb-fin { font-weight: 500; }
+    .lb-tag { font-weight: 700; }
+    .lb-tag.lb-ft { color: #4ade80; }
+    .lb-tag.lb-pbn { color: #f87171; }
     /* Weekly movement indicators (Brisbane's Smartest Venue) */
     #bsv-body .mv-cell { white-space: nowrap; width: 1%; }
     #bsv-body .mv { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; }
@@ -453,9 +458,9 @@ html.halloween .quiz-shell::after{left:1px;transform:scaleX(-1);border-top-left-
             <button class="lb-tab" id="tab-all" onclick="switchTab('all')">All Time</button>
           </div>
           <table class="leaderboard-table">
-            <thead><tr><th>#</th><th>Flag</th><th>Name</th><th>Score</th><th>%</th></tr></thead>
+            <thead><tr><th>#</th><th>Flag</th><th>Name</th><th>Score</th><th>%</th><th>Finishes</th></tr></thead>
             <tbody id="leaderboard-body">
-              <tr><td colspan="5" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
+              <tr><td colspan="6" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
             </tbody>
           </table>
         </div>
@@ -1520,6 +1525,33 @@ document.getElementById("highlight-copy").addEventListener("click", () => {
     setTimeout(() => document.getElementById("highlight-share-status").textContent = "", 2000);
   });
 });
+/* ---- LEADERBOARD: top 10 with finishes / First Timer / PB (matched on player name) ---- */
+const lbKey = n => String(n || "").trim().toLowerCase();
+// Earlier scores for the players on screen. Matched on name (case-insensitive); the country counts only when both sides have one.
+async function loadPlayerHistory(entries) {
+  const names = [...new Set(entries.map(e => String(e.player_name || "").trim()).filter(Boolean))];
+  if (!names.length) return {};
+  // wildcard / quote characters are swapped for "_" in the search; the exact name is re-checked below
+  const q = n => '"' + n.replace(/[%_*\\"]/g, "_") + '"';
+  const orFilter = "(" + names.map(n => `player_name.ilike.${q(n)}`).join(",") + ")";
+  const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard?select=player_name,country,quiz_title,percent&or=${encodeURIComponent(orFilter)}&limit=3000`, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
+  if (!res.ok) throw new Error("history");
+  const rows = await res.json();
+  const by = {};
+  if (Array.isArray(rows)) rows.forEach(r => { (by[lbKey(r.player_name)] = by[lbKey(r.player_name)] || []).push(r); });
+  return by;
+}
+function lbFinCell(entry, hist, extra) {
+  if (!hist) return `<td class="lb-fin"${extra || ""}></td>`;
+  const same = (hist[lbKey(entry.player_name)] || []).filter(r => !r.country || !entry.country || r.country === entry.country);
+  const titles = new Set(same.map(r => r.quiz_title)); titles.add(currentQuizTitle);
+  const prior = same.filter(r => r.quiz_title !== currentQuizTitle);
+  const best = prior.length ? Math.max(...prior.map(r => r.percent)) : null;
+  const txt = best === null ? '<span class="lb-tag lb-ft">1st</span>'
+    : entry.percent > best ? '<span class="lb-tag lb-pbn">PB</span>'
+    : String(titles.size);
+  return `<td class="lb-fin"${extra || ""}>${txt}</td>`;
+}
 async function loadLeaderboard() {
   const tbody = document.getElementById("leaderboard-body");
   tbody.innerHTML = `<tr><td colspan="6" class="loading-msg">Loading…</td></tr>`;
@@ -1538,17 +1570,20 @@ async function loadLeaderboard() {
     if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="loading-msg">No scores yet — be the first!</td></tr>`; return; }
     let ranks = []; let currentRank = 0;
     rows.forEach((r, i) => { if (i === 0 || r.score !== rows[i-1].score || r.percent !== rows[i-1].percent) { currentRank = i; } ranks.push(currentRank); });
-    const medals = ["🥇","🥈","🥉"]; const podium = rows.filter((r, i) => ranks[i] <= 2);
-    tbody.innerHTML = podium.map((r, i) => `<tr><td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td><td style="font-size:1.1rem;">${countryFlag(r.country)}</td><td>${escapeHtml(r.player_name)}</td><td>${r.score} / ${r.max_score}</td><td>${r.percent}%</td></tr>`).join("");
-    tbody.innerHTML += `<tr><td colspan="6" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} player${rows.length !== 1 ? "s" : ""} this week</td></tr>`;
+    const TOP_N = 10;
+    const medals = ["🥇","🥈","🥉"];
     const submittedName = document.getElementById("player-name").value.trim();
-    if (submittedName && scoreSubmitted) {
-      const userIdx = rows.findIndex(r => r.player_name === submittedName);
-      const podiumSize = rows.filter((r, i) => ranks[i] <= 2).length;
-      if (userIdx !== -1 && userIdx >= podiumSize) {
-        const userRank = ranks[userIdx] + 1; const suffix = userRank === 1 ? "st" : userRank === 2 ? "nd" : userRank === 3 ? "rd" : "th";
-        tbody.innerHTML += `<tr><td colspan="6" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-size:1.1rem;">${countryFlag(rows[userIdx].country)}</td><td style="color:var(--neon-soft);font-weight:600;">${escapeHtml(submittedName)} (you)</td><td style="color:var(--neon-soft);">${rows[userIdx].score} / ${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td></tr>`;
-      }
+    const userIdx = (submittedName && scoreSubmitted) ? rows.findIndex(r => r.player_name === submittedName) : -1;
+    const showUser = userIdx >= TOP_N;
+    // earlier scores for everyone on screen (if this lookup fails the table still shows, just without the extras)
+    let hist = {};
+    try { hist = await loadPlayerHistory(rows.slice(0, TOP_N).concat(showUser ? [rows[userIdx]] : [])); } catch (e) { hist = null; }
+    const fin = (r, extra) => lbFinCell(r, hist, extra);
+    tbody.innerHTML = rows.slice(0, TOP_N).map((r, i) => `<tr><td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td><td style="font-size:1.1rem;">${countryFlag(r.country)}</td><td>${escapeHtml(r.player_name)}</td><td>${r.score} / ${r.max_score}</td><td>${r.percent}%</td>${fin(r)}</tr>`).join("");
+    tbody.innerHTML += `<tr><td colspan="6" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} player${rows.length !== 1 ? "s" : ""} this week</td></tr>`;
+    if (showUser) {
+      const userRank = ranks[userIdx] + 1; const suffix = userRank === 1 ? "st" : userRank === 2 ? "nd" : userRank === 3 ? "rd" : "th";
+      tbody.innerHTML += `<tr><td colspan="6" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-size:1.1rem;">${countryFlag(rows[userIdx].country)}</td><td style="color:var(--neon-soft);font-weight:600;">${escapeHtml(submittedName)} (you)</td><td style="color:var(--neon-soft);">${rows[userIdx].score} / ${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td>${fin(rows[userIdx], ' style="color:var(--neon-soft);"')}</tr>`;
     }
   } catch(err) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.5;padding:16px;">Could not load scores.</td></tr>`; }
 }
