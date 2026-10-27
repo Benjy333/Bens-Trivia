@@ -16,8 +16,8 @@
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Big Fat Spooky Quiz | Free Weekly Trivia Quiz Online</title>
-  <meta name="description" content="Play The Big Fat Spooky Quiz, a free weekly trivia quiz with 25 new questions every week. Submit your score, climb the leaderboard, and challenge friends." />
+  <title>The Big Fat Sunday Quiz | Free Weekly Trivia Quiz Online</title>
+  <meta name="description" content="Play The Big Fat Sunday Quiz, a free weekly trivia quiz with 25 new questions every week. Submit your score, climb the leaderboard, and challenge friends." />
   <link rel="canonical" href="https://benstrivia.com/" />
   <meta property="og:title" content="Ben's Trivia" />
   <meta property="og:description" content="Free Weekly Sunday Quiz" />
@@ -35,7 +35,7 @@
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Ben's Trivia",
-    "alternateName": "The Big Fat Spooky Quiz",
+    "alternateName": "The Big Fat Sunday Quiz",
     "url": "https://benstrivia.com/",
     "description": "A free weekly trivia quiz with 25 new questions every Sunday. Play online, submit your score, and climb the leaderboard."
   }
@@ -93,8 +93,8 @@
     .option-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 12px rgba(55,161,255,0.45); border-color: var(--neon-soft); }
     .option-btn:disabled { cursor: default; }
     .option-btn.selected { border-color: var(--neon); background: rgba(55,161,255,0.12); box-shadow: 0 0 14px rgba(55,161,255,0.5); color: #e9f4ff; }
-    .option-btn.correct { border-color: var(--good); box-shadow: 0 0 14px rgba(56,239,125,0.6); background: rgba(56,239,125,0.08); color: #e9f4ff; }
-    .option-btn.wrong { border-color: var(--bad); box-shadow: 0 0 14px rgba(255,66,102,0.6); background: rgba(255,66,102,0.08); color: #e9f4ff; }
+    .option-btn.correct { border-color: var(--good); box-shadow: 0 0 14px rgba(56,239,125,0.6); background: rgba(56,239,125,0.08); }
+    .option-btn.wrong { border-color: var(--bad); box-shadow: 0 0 14px rgba(255,66,102,0.6); background: rgba(255,66,102,0.08); }
     .input-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
     .question-input { flex: 1; min-width: 160px; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(150,208,255,0.6); background: rgba(0,8,18,0.85); color: #e9f4ff; font-size: 0.9rem; }
     .question-input:disabled { opacity: 0.6; cursor: default; }
@@ -146,14 +146,6 @@
     .leaderboard-table tr:first-child td { color: #ffd700; }
     .leaderboard-table tr:nth-child(2) td { color: #c0d8e8; }
     .leaderboard-table tr:nth-child(3) td { color: #e8b87a; }
-    /* Weekly movement indicators (Brisbane's Smartest Venue) */
-    #bsv-body .mv-cell { white-space: nowrap; width: 1%; }
-    #bsv-body .mv { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; }
-    #bsv-body .mv.up { color: #4ade80; }
-    #bsv-body .mv.down { color: #f87171; }
-    #bsv-body .mv.same { color: #9fb4c8; opacity: 0.8; }
-    #bsv-body .mv.new { color: #9fd4ff; border: 1px solid rgba(150,208,255,0.5); border-radius: 999px; padding: 0 5px; font-size: 0.55rem; width: fit-content; }
-    .mv-caption { text-align: center; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--neon-soft); opacity: 0.6; margin: 0 0 6px; }
     .rank-medal { font-size: 1rem; }
     .lb-status { text-align: center; font-size: 0.82rem; opacity: 0.7; margin-top: 8px; }
     .lb-tabs { display: flex; gap: 8px; margin-bottom: 14px; justify-content: center; }
@@ -221,101 +213,16 @@
       font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em;
       opacity: 0.5; margin-bottom: 10px; text-align: center;
     }
+    /* Venue card: movement vs last Monday */
+    #bsv-body .rank-cell { white-space: nowrap; line-height: 1.25; }
+    #bsv-body .rank-cell .mv { display: block; margin: 2px 0 0; }
+    #bsv-body .rank-cell .rk { display: inline-block; min-width: 1.6em; }
+    .mv { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em; }
+    .mv.up { color: #4ade80; }
+    .mv.down { color: #f87171; }
+    .mv.same { color: #9fb4c8; opacity: 0.8; }
+    .mv.new { color: #9fd4ff; border: 1px solid rgba(150,208,255,0.5); border-radius: 999px; padding: 0 5px; font-size: 0.55rem; width: fit-content; }
   </style>
-
-<style id="halloween-theme">
-/* ===== HALLOWEEN THEME (auto-off 1 Nov 2026; delete this whole block + the script below it to remove) ===== */
-html.halloween{--neon:#ff7a1a;--neon-soft:#ffb36b;--bg1:#12081f;--bg2:#0a0512;--text:#f8efff;--good:#7dff5a;--bad:#ff3d5a;--purple:#b266ff;
-  --shadow:0 0 25px rgba(255,122,26,.25),inset 0 0 20px rgba(178,102,255,.07);}
-html.halloween body{background:linear-gradient(-45deg,#07030d,#160a26,#210e38,#0a0512);background-size:400% 400%;}
-html.halloween .global-header{background:linear-gradient(90deg,#07030dee,#1b0b30ee);border-bottom-color:rgba(255,140,50,.35);}
-html.halloween .global-header #menu-btn{box-shadow:0 0 10px rgba(255,122,26,.45);}
-html.halloween .menu-dropdown{border-color:rgba(255,140,50,.5);box-shadow:0 0 18px rgba(255,122,26,.35);}
-html.halloween .card,html.halloween .game-card{border-color:rgba(255,140,50,.55);}
-html.halloween .quiz-description{border-color:rgba(255,160,80,.28);background:rgba(255,122,26,.07);}
-/* question cards */
-@keyframes pulseNeonH{0%,100%{box-shadow:0 0 12px rgba(0,0,0,.6),0 0 14px rgba(255,122,26,.25);}50%{box-shadow:0 0 12px rgba(0,0,0,.6),0 0 28px rgba(255,122,26,.5),0 0 40px rgba(178,102,255,.18);}}
-html.halloween .question-card{background:radial-gradient(circle at top left,#3a1a5e 0,#09040f 58%);border-color:rgba(255,150,60,.4);box-shadow:0 0 12px rgba(0,0,0,.6),0 0 18px rgba(178,102,255,.22);}
-html.halloween .question-card.current-q{border-color:rgba(255,160,70,.8);animation:pulseNeonH 2.2s ease-in-out infinite;}
-html.halloween .question-card.answered{border-color:rgba(255,150,60,.15);}
-/* options */
-html.halloween .option-btn{border-color:rgba(255,160,80,.38);background:rgba(14,6,24,.85);}
-html.halloween .option-btn:hover:not(:disabled){box-shadow:0 0 12px rgba(255,122,26,.5);border-color:var(--neon-soft);}
-html.halloween .option-btn.selected{border-color:var(--neon);background:rgba(255,122,26,.14);box-shadow:0 0 14px rgba(255,122,26,.55);color:#f8efff;}
-html.halloween .option-btn.correct{border-color:var(--good);box-shadow:0 0 14px rgba(125,255,90,.6);background:rgba(125,255,90,.08);color:#f8efff;}
-html.halloween .option-btn.wrong{border-color:var(--bad);box-shadow:0 0 14px rgba(255,61,90,.6);background:rgba(255,61,90,.08);color:#f8efff;}
-/* inputs + buttons */
-html.halloween .question-input,html.halloween .name-input{border-color:rgba(255,160,80,.65);background:rgba(10,4,18,.88);}
-html.halloween .multi-text-input{border-color:rgba(255,160,80,.65);background:rgba(10,4,18,.88);}
-html.halloween .multi-text-input.mt-correct{border-color:var(--good);box-shadow:0 0 10px rgba(125,255,90,.5);}
-html.halloween .multi-text-input.mt-wrong{border-color:var(--bad);box-shadow:0 0 10px rgba(255,61,90,.4);}
-html.halloween .multi-text-input.mt-empty{border-color:rgba(255,180,50,.6);}
-html.halloween .btn-check{border-color:rgba(255,160,80,.75);background:rgba(14,6,24,.95);}
-html.halloween .btn-check:hover:not(:disabled){background:var(--neon-soft);color:#14061f;}
-html.halloween .btn-secondary{border-color:rgba(255,160,80,.65);background:rgba(14,6,24,.9);}
-html.halloween .btn-skip{border-color:rgba(255,160,80,.3);}
-html.halloween .btn-restart{border-color:rgba(255,160,80,.45);color:rgba(255,179,107,.8);}
-html.halloween .btn-restart:hover{border-color:var(--neon-soft);color:var(--neon-soft);background:rgba(255,160,80,.06);}
-html.halloween .btn-submit-score{border-color:var(--good);}
-html.halloween .highlight-share-btn{border-color:rgba(255,160,80,.6);background:rgba(14,6,24,.9);}
-html.halloween .highlight-share-btn:hover{background:var(--neon-soft);color:#14061f;}
-/* progress + score */
-html.halloween .progress-bar-outer{background:rgba(14,6,24,.9);border-color:rgba(255,160,80,.5);}
-html.halloween .progress-bar-inner{box-shadow:0 0 14px rgba(255,122,26,.55),0 0 22px rgba(125,255,90,.35)!important;}
-html.halloween .sticky-score{background:linear-gradient(90deg,#07030df0,#1b0b30f0);border-top-color:rgba(255,160,80,.3);}
-html.halloween .sticky-score .ss-bar-outer{background:rgba(14,6,24,.9);border-color:rgba(255,160,80,.35);}
-/* leaderboard + highlight */
-html.halloween .leaderboard-section{border-top-color:rgba(255,160,80,.25);}
-html.halloween .lb-tab{border-color:rgba(255,160,80,.35);}
-html.halloween .lb-tab.active{color:#14061f;}
-html.halloween .highlight-panel{background:radial-gradient(circle at top left,#3a1a5e 0,#09040f 70%);border-color:rgba(255,160,80,.35);}
-html.halloween .share-preview-box{border-color:rgba(255,160,80,.3);background:rgba(10,4,18,.8);}
-/* inline-styled blocks (need !important to beat style="") */
-html.halloween #mailing-list-signup,html.halloween #feedback-section{background:radial-gradient(circle at top left,#3a1a5e 0,#09040f 70%)!important;border-color:rgba(255,160,80,.32)!important;}
-html.halloween #mailing-list-signup input,html.halloween #feedback-section input,html.halloween #feedback-section select,html.halloween #feedback-section textarea{border-color:rgba(255,160,80,.6)!important;}
-html.halloween #bsv-countdown{background:radial-gradient(circle at top left,#3a1a5e 0,#09040f 70%)!important;border-color:rgba(255,160,80,.35)!important;}
-html.halloween #bsv-teaser .bsv-pill{border-color:rgba(255,160,80,.4);background:rgba(14,6,24,.85);}
-html.halloween #instagram-handle{border-top-color:rgba(255,160,80,.2)!important;}
-html.halloween #instagram-handle a{border-color:rgba(255,160,80,.6)!important;box-shadow:0 0 12px rgba(255,122,26,.3)!important;}
-/* cobwebs in the top corners of the big cards */
-html.halloween .quiz-shell{position:relative;}
-html.halloween .quiz-shell::before,html.halloween .quiz-shell::after{content:"";position:absolute;top:1px;width:92px;height:92px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Cpath%20d='M100%200L0%200M100%200L6%2038M100%200L30%2070M100%200L62%2092M100%200L100%20100M72.0%200.0Q78.8%204.1%2073.7%2010.6Q82.1%2011.8%2080.4%2019.6Q88.2%2017.7%2089.4%2025.8Q95.9%2021.0%20100.0%2028.0M50.0%200.0Q62.2%207.4%2053.0%2019.0Q68.0%2021.1%2065.0%2035.0Q78.9%2031.6%2081.0%2046.0Q92.6%2037.4%20100.0%2050.0M26.0%200.0Q44.0%2011.0%2030.4%2028.1Q52.7%2031.2%2048.2%2051.8Q68.8%2046.8%2071.9%2068.1Q89.0%2055.4%20100.0%2074.0'%20fill='none'%20stroke='white'%20stroke-opacity='0.55'%20stroke-width='1.1'%20stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center/contain;opacity:.75;}
-html.halloween .quiz-shell::before{right:1px;border-top-right-radius:19px;}
-html.halloween .quiz-shell::after{left:1px;transform:scaleX(-1);border-top-left-radius:19px;}
-@media (max-width:480px){html.halloween .quiz-shell::before,html.halloween .quiz-shell::after{width:54px;height:54px;}}
-/* flying bats */
-#hw-bats{position:fixed;inset:0;z-index:60;pointer-events:none;overflow:hidden;}
-.hw-bat{position:absolute;left:0;width:34px;height:16px;opacity:.55;animation:hwFly 30s linear infinite;}
-.hw-bat svg{width:100%;height:100%;display:block;overflow:visible;fill:#2a1346;stroke:#b266ff;stroke-width:1.3;filter:drop-shadow(0 0 4px rgba(178,102,255,.9));animation:hwFlap 1.3s ease-in-out infinite;}
-.hw-bat.rev{animation-name:hwFlyRev;}
-@keyframes hwFly{from{transform:translateX(-60px);}to{transform:translateX(calc(100vw + 60px));}}
-@keyframes hwFlyRev{from{transform:translateX(calc(100vw + 60px));}to{transform:translateX(-60px);}}
-@keyframes hwFlap{0%,100%{transform:translateY(0) scaleY(1);}25%{transform:translateY(-14px) scaleY(.8);}50%{transform:translateY(6px) scaleY(1);}75%{transform:translateY(-8px) scaleY(.85);}}
-@media (prefers-reduced-motion:reduce){#hw-bats{display:none;}html.halloween .question-card.current-q{animation:none;}}
-</style>
-<script id="halloween-switch">
-(function(){
-  var on=false;
-  try{
-    var n=new Date();
-    if(sessionStorage.getItem("bens-trivia-dev-mode")==="1"){var o=localStorage.getItem("bens-trivia-dev-date");if(o)n=new Date(o);}
-    on = n < new Date("2026-11-01T00:00:00+10:00");   // auto-off after 31 October (Brisbane time)
-    if(location.search.indexOf("nohalloween")>-1) on=false;
-    if(location.search.indexOf("halloween")>-1 && location.search.indexOf("nohalloween")<0) on=true;
-  }catch(e){ on = new Date() < new Date("2026-11-01T00:00:00+10:00"); }
-  if(!on) return;
-  document.documentElement.classList.add("halloween");
-  document.addEventListener("DOMContentLoaded",function(){
-    var wrap=document.createElement("div"); wrap.id="hw-bats"; wrap.setAttribute("aria-hidden","true");
-    var bat='<svg viewBox="0 0 60 28"><path d="M30 10C27 4 25 3 22 5C18 3 10 3 2 8C8 8 11 11 12 16C15 13 19 13 21 18C24 15 27 17 30 24C33 17 36 15 39 18C41 13 45 13 48 16C49 11 52 8 58 8C50 3 42 3 38 5C35 3 33 4 30 10Z"/></svg>';
-    [[150,30,0,""],[260,38,-12,"rev"],[420,26,-21,""],[330,34,-6,"rev"]].forEach(function(b){
-      var d=document.createElement("div"); d.className="hw-bat "+b[3]; d.style.top=b[0]+"px";
-      d.style.animationDuration=b[1]+"s"; d.style.animationDelay=b[2]+"s"; d.innerHTML=bat; wrap.appendChild(d);
-    });
-    document.body.appendChild(wrap);
-  });
-})();
-</script>
 </head>
 <body>
   <div id="dev-panel">
@@ -343,11 +250,11 @@ html.halloween .quiz-shell::after{left:1px;transform:scaleX(-1);border-top-left-
       <div style="width:52px;"></div>
     </div>
     <div class="header-row-bottom">
-      <h1 class="page-title">The Big Fat Spooky Quiz</h1>
+      <h1 class="page-title">The Big Fat Sunday Quiz</h1>
       <span class="page-date" id="page-date"></span>
     </div>
     <nav class="menu-dropdown" id="menu-dropdown">
-      <a href="/">🍻 Big Fat Spooky Quiz</a>
+      <a href="/">🍻 Big Fat Sunday Quiz</a>
       <a href="stats.html">📊 Quiz Stats</a>
       <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
       <a href="countries.html" id="country-stats-link" style="display:none;">🌍 Country Leaderboard</a>
@@ -371,7 +278,7 @@ html.halloween .quiz-shell::after{left:1px;transform:scaleX(-1);border-top-left-
     </style>
     <div id="bsv-proof" style="display:none;text-align:center;margin:0 0 12px;"><span class="bsv-pill">👥 <b id="bsv-proof-n">0</b> players this week</span></div>
     <div id="bsv-countdown" style="text-align:center;margin:0 0 16px;padding:12px 8px;border-radius:14px;border:1px solid rgba(150,208,255,0.25);background:radial-gradient(circle at top left,#12335a 0,#020a16 70%);">
-      <div id="bsv-count-main" style="font-family:'Orbitron',sans-serif;font-size:clamp(1.7rem,9vw,2.4rem);font-weight:700;line-height:1.1;color:var(--neon-soft);text-shadow:0 0 12px var(--neon-soft);">—</div>
+      <div id="bsv-count-main" style="font-family:'Orbitron',sans-serif;font-size:2.4rem;font-weight:700;line-height:1.1;color:var(--neon-soft);text-shadow:0 0 12px var(--neon-soft);">—</div>
       <div id="bsv-count-label" style="font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;opacity:0.7;margin-top:4px;"></div>
     </div>
     <div style="text-align:center;">
@@ -385,7 +292,7 @@ html.halloween .quiz-shell::after{left:1px;transform:scaleX(-1);border-top-left-
     <section class="game-card card quiz-shell">
       <p class="page-subtitle">25 questions. One big weekly trivia quiz.</p>
       <div id="quiz-meta" class="quiz-meta">
-        <strong id="quiz-title">Big Fat Spooky Quiz</strong><br>
+        <strong id="quiz-title">Big Fat Sunday Quiz</strong><br>
         <span id="quiz-week-info">Loading…</span>
       </div>
       <div id="quiz-description" class="quiz-description" style="display:none;"></div>
@@ -431,11 +338,11 @@ html.halloween .quiz-shell::after{left:1px;transform:scaleX(-1);border-top-left-
             <div style="font-size:0.88rem;">Enter your name and submit your score below to unlock Brisbane's Smartest Venue</div>
           </div>
           <div id="bsv-unlocked" style="display:none;">
-            <div class="mv-caption">Movement vs last Monday</div>
+            <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;opacity:0.6;margin:0 0 6px;text-align:center;">Movement vs last Monday</div>
             <table class="leaderboard-table">
-              <thead><tr><th>#</th><th>Venue</th><th>Move</th><th>Avg %</th></tr></thead>
+              <thead><tr><th>#</th><th>Venue</th><th>Avg %</th></tr></thead>
               <tbody id="bsv-body">
-                <tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
+                <tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
               </tbody>
             </table>
           </div>
@@ -1112,7 +1019,7 @@ function animateCounter(el, from, to) {
 function launchConfetti(pct) {
   const canvas = document.getElementById("confetti-canvas"); const ctx = canvas.getContext("2d");
   canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-  const count = Math.floor(80 + pct * 1.2); const colours = document.documentElement.classList.contains("halloween") ? ["#ff7a1a","#ffb36b","#b266ff","#7dff5a","#ffd700","#fff"] : ["#37a1ff","#96d0ff","#38ef7d","#ffd700","#ff4266","#fff"];
+  const count = Math.floor(80 + pct * 1.2); const colours = ["#37a1ff","#96d0ff","#38ef7d","#ffd700","#ff4266","#fff"];
   const pieces = Array.from({ length: count }, () => ({ x: Math.random() * canvas.width, y: -20 - Math.random() * 200, r: 4 + Math.random() * 6, d: 2 + Math.random() * 4, col: colours[Math.floor(Math.random() * colours.length)], tilt: Math.random() * 10 - 5, tiltSpeed: 0.1 + Math.random() * 0.15, angle: 0 }));
   let frame = 0;
   function draw() { ctx.clearRect(0, 0, canvas.width, canvas.height); pieces.forEach(p => { p.angle += p.tiltSpeed; p.y += p.d; p.x += Math.sin(p.angle) * 1.5; p.tilt = Math.sin(p.angle) * 12; ctx.beginPath(); ctx.lineWidth = p.r; ctx.strokeStyle = p.col; ctx.moveTo(p.x + p.tilt + p.r / 2, p.y); ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2); ctx.stroke(); }); frame++; if (frame < 180) requestAnimationFrame(draw); else ctx.clearRect(0, 0, canvas.width, canvas.height); }
@@ -1216,39 +1123,37 @@ async function loadVenueCard() {
       if (page.length < 1000) break;
       from += 1000;
     }
-    if (!rows.length) { body.innerHTML = '<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">No venue scores yet</td></tr>'; return; }
-    // Rank venues by average score (ties: more quizzes first, then name, so the order is stable)
-    const rankVenues = list => {
+    if (!rows.length) { body.innerHTML = '<tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">No venue scores yet</td></tr>'; return; }
+    // Rank venues by average score (ties broken by number of quizzes, then name, so the order is stable)
+    function rankVenues(list) {
       const by = {};
       list.forEach(r => { if (!r.venue) return; (by[r.venue] = by[r.venue] || { total: 0, n: 0 }); by[r.venue].total += r.percent; by[r.venue].n += 1; });
       return Object.keys(by).map(v => ({ venue: v, avg: by[v].total / by[v].n, n: by[v].n }))
         .sort((a, b) => (b.avg - a.avg) || (b.n - a.n) || a.venue.localeCompare(b.venue));
-    };
-    // 12:00 AM last Monday, Brisbane time (UTC+10, no daylight saving)
-    const OFFSET = 10 * 3600 * 1000, nb = new Date(Date.now() + OFFSET);
-    const monday = Date.UTC(nb.getUTCFullYear(), nb.getUTCMonth(), nb.getUTCDate() - ((nb.getUTCDay() + 6) % 7)) - OFFSET;
+    }
     const venues = rankVenues(rows);
-    // Baseline = rankings as they stood at that moment, worked out from each score's timestamp (nothing to save)
+    // Baseline = rankings as they stood at 12:00 AM last Monday, Brisbane time (UTC+10, no daylight saving)
+    const OFFSET = 10 * 3600 * 1000, b = new Date(Date.now() + OFFSET);
+    const monday = Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate() - ((b.getUTCDay() + 6) % 7)) - OFFSET;
     const baseRank = {};
     rankVenues(rows.filter(r => new Date(r.created_at).getTime() < monday)).forEach((v, i) => { baseRank[v.venue] = i + 1; });
-    // Compare only venues already on the board, so a brand-new venue doesn't make others look like they dropped
     let liveRank = 0;
     venues.forEach(v => {
-      if (baseRank[v.venue] === undefined) { v.move = null; return; }
-      liveRank += 1; v.move = baseRank[v.venue] - liveRank;
+      if (baseRank[v.venue] === undefined) { v.move = null; return; } // NEW since last Monday
+      liveRank += 1; v.move = baseRank[v.venue] - liveRank;            // + = up, - = down
     });
-    const badge = m => m === null ? '<span class="mv new" title="New since last Monday">NEW</span>'
-      : m > 0 ? `<span class="mv up" title="Up ${m} since last Monday">&#9650; ${m}</span>`
-      : m < 0 ? `<span class="mv down" title="Down ${-m} since last Monday">&#9660; ${-m}</span>`
-      : '<span class="mv same" title="No change since last Monday">&mdash;</span>';
+    const badge = m => m === null ? '<span class="mv new">NEW</span>'
+      : m > 0 ? `<span class="mv up">&#9650; ${m}</span>`
+      : m < 0 ? `<span class="mv down">&#9660; ${-m}</span>`
+      : '<span class="mv same">&mdash;</span>';
     const mine = slugify(activeVenue);
     const medals = ["🥇","🥈","🥉"];
     body.innerHTML = venues.map((v, i) => {
       const isMine = mine && slugify(v.venue) === mine;
-      return `<tr${isMine ? ' style="font-weight:700;"' : ""}><td>${medals[i] || (i + 1)}</td><td>${VENUE_LOGOS[slugify(v.venue)] ? `<img src="${VENUE_LOGOS[slugify(v.venue)]}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : ""}${escapeHtml(pretty(v.venue))}${isMine ? " (you)" : ""}</td><td class="mv-cell">${badge(v.move)}</td><td>${Math.round(v.avg)}%</td></tr>`;
+      return `<tr${isMine ? ' style="font-weight:700;"' : ""}><td class="rank-cell"><span class="rk">${medals[i] || (i + 1)}</span>${badge(v.move)}</td><td>${VENUE_LOGOS[slugify(v.venue)] ? `<img src="${VENUE_LOGOS[slugify(v.venue)]}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : ""}${escapeHtml(pretty(v.venue))}${isMine ? " (you)" : ""}</td><td>${Math.round(v.avg)}%</td></tr>`;
     }).join("");
   } catch (err) {
-    body.innerHTML = '<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Could not load venues.</td></tr>';
+    body.innerHTML = '<tr><td colspan="3" style="text-align:center;opacity:0.5;padding:16px;">Could not load venues.</td></tr>';
   }
 }
 /* ---- BRISBANE'S SMARTEST VENUE: teaser list + countdown (top of page) ---- */
@@ -1268,8 +1173,6 @@ const BSV_TEASER_VENUES = [
     return `<div style="display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid rgba(150,208,255,0.07);font-size:0.88rem;">${img}<span>${name}</span></div>`;
   }).join("");
 })();
-const BSV_WEEK1_START = new Date("2026-10-17T15:00:00Z"); // 1am Sun 18 Oct Brisbane, when Week 1's quiz goes live
-const BSV_TOTAL_WEEKS = 6;
 function updateBsvCountdown() {
   const main = document.getElementById("bsv-count-main");
   const label = document.getElementById("bsv-count-label");
@@ -1280,14 +1183,8 @@ function updateBsvCountdown() {
     main.textContent = days;
     label.textContent = (days === 1 ? "day" : "days") + " until it goes live · 18th of October";
   } else if (now < BSV_COMP_END) {
-    const week = Math.min(Math.max(Math.floor((now - BSV_WEEK1_START) / (7 * 86400000)) + 1, 1), BSV_TOTAL_WEEKS);
-    if (week === BSV_TOTAL_WEEKS) {
-      main.textContent = "FINAL WEEK";
-      label.textContent = "Ends 28th of November · winner crowned 1st of December";
-    } else {
-      main.textContent = "WEEK " + week;
-      label.textContent = "of " + BSV_TOTAL_WEEKS + " · ends 28th of November · winner crowned 1st of December";
-    }
+    main.textContent = "LIVE NOW";
+    label.textContent = "Ends 28th of November · winner crowned 1st of December";
   } else {
     main.textContent = "FINISHED";
     label.textContent = "Winner crowned 1st of December";
