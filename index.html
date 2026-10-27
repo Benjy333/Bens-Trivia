@@ -21,15 +21,11 @@
   <link rel="canonical" href="https://benstrivia.com/" />
   <meta property="og:title" content="Ben's Trivia" />
   <meta property="og:description" content="Free Weekly Sunday Quiz" />
-  <meta property="og:image" content="https://benstrivia.com/images/preview.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:url" content="https://benstrivia.com/" />
   <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Ben's Trivia" />
   <meta name="twitter:description" content="Free Weekly Sunday Quiz" />
-  <meta name="twitter:image" content="https://benstrivia.com/images/preview.png" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -1378,7 +1374,7 @@ async function showHighlight() {
   // Short redirect links so shared messages stay clean while still letting
   // us tell WhatsApp shares apart from copy/paste shares in analytics.
   const waLink = "https://benstrivia.com/w/";
-  const copyLink = "https://benstrivia.com/c/";
+  const copyLink = "https://benstrivia.com/";   // plain link; WhatsApp share keeps /w/
   // Builds the exact text that gets shared/copied: brand line, an optional
   // achievement line (only for a top-3 world or country placing), the score
   // line, then the link. Kept separate from the on-page headline copy below,
