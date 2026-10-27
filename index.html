@@ -142,11 +142,13 @@
     .leaderboard-table tr:first-child td { color: #ffd700; }
     .leaderboard-table tr:nth-child(2) td { color: #c0d8e8; }
     .leaderboard-table tr:nth-child(3) td { color: #e8b87a; }
-    .lb-fin { text-align: center; font-weight: 600; font-size: 0.78rem; line-height: 1.15; width: 3.6rem; padding-left: 2px !important; padding-right: 2px !important; }
+    .lb-fin { text-align: center; font-weight: 600; font-size: 0.78rem; line-height: 1.15; width: 4.2rem; padding-left: 2px !important; padding-right: 2px !important; }
     .leaderboard-table th.lb-fin { font-weight: 500; }
     .lb-tag { font-weight: 700; }
-    .lb-tag.lb-ft { color: #4ade80; }
-    .lb-tag.lb-pbn { color: #f87171; }
+    .lb-tag.lb-ft, .lb-tag.lb-pbn { display: inline-block; padding: 1px 5px; border-radius: 999px; font-size: 0.62rem; letter-spacing: 0.02em; border: 1px solid; white-space: nowrap; }
+    .lb-tag.lb-ft { color: #4ade80; background: rgba(74,222,128,0.14); border-color: rgba(74,222,128,0.55); }
+    .lb-tag.lb-pbn { color: #f87171; background: rgba(248,113,113,0.14); border-color: rgba(248,113,113,0.55); }
+    .lb-legend { font-size: 0.68rem; opacity: 0.6; line-height: 1.5; margin-top: 8px; text-align: center; }
     /* Weekly movement indicators (Brisbane's Smartest Venue) */
     #bsv-body .mv-cell { white-space: nowrap; width: 1%; }
     #bsv-body .mv { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; }
@@ -463,6 +465,7 @@ html.halloween .quiz-shell::after{left:1px;transform:scaleX(-1);border-top-left-
               <tr><td colspan="6" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
             </tbody>
           </table>
+          <div class="lb-legend"><b style="color:#4ade80">1st quiz</b> = first time playing &nbsp;·&nbsp; <b style="color:#f87171">PB</b> = new personal best &nbsp;·&nbsp; number = quizzes finished</div>
         </div>
       </div>
      <div id="mailing-list-signup" style="margin-top:20px; padding:18px 16px; border:1px solid rgba(150,208,255,0.25); border-radius:16px; background:radial-gradient(circle at top left,#12335a 0,#020a16 70%); text-align:center;">
@@ -1547,8 +1550,8 @@ function lbFinCell(entry, hist, extra) {
   const titles = new Set(same.map(r => r.quiz_title)); titles.add(currentQuizTitle);
   const prior = same.filter(r => r.quiz_title !== currentQuizTitle);
   const best = prior.length ? Math.max(...prior.map(r => r.percent)) : null;
-  const txt = best === null ? '<span class="lb-tag lb-ft">1st</span>'
-    : entry.percent > best ? '<span class="lb-tag lb-pbn">PB</span>'
+  const txt = best === null ? '<span class="lb-tag lb-ft" title="First time playing">1st quiz</span>'
+    : entry.percent > best ? '<span class="lb-tag lb-pbn" title="New personal best">PB</span>'
     : String(titles.size);
   return `<td class="lb-fin"${extra || ""}>${txt}</td>`;
 }
