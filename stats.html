@@ -49,8 +49,11 @@
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .lb-nowrap { white-space: nowrap; }
     .lb-fin { text-align: center; font-weight: 600; white-space: nowrap; }
-    .lb-fin-1st { color: #4ade80; font-weight: 700; }
-    .lb-fin-pb { color: #f87171; font-weight: 700; }
+    .lb-pill { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em; border: 1px solid; white-space: nowrap; }
+    .lb-pill-1st { color: #4ade80; background: rgba(74,222,128,0.14); border-color: rgba(74,222,128,0.55); }
+    .lb-pill-pb { color: #f87171; background: rgba(248,113,113,0.14); border-color: rgba(248,113,113,0.55); }
+    .lb-legend { font-size: 0.72rem; opacity: 0.6; line-height: 1.5; padding: 2px 4px 0; }
+    @media (max-width: 480px) { .lb-pill { padding: 1px 5px; font-size: 0.62rem; } }
     .lb-more { margin-top: 8px; padding: 8px 22px; border-radius: 999px; border: 1px solid var(--neon); background: rgba(3,15,34,0.9); color: var(--neon); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; }
     .lb-more:hover { background: var(--neon); color: #001; }
     .lb-table th { white-space: nowrap; }
@@ -478,7 +481,7 @@ function lbFooterHtml() {
   let btn = "";
   if (left > 0) btn = `<button type="button" class="lb-more" onclick="lbSeeMore()">See more</button>`;
   else if (shown > initial) btn = `<button type="button" class="lb-more" onclick="lbShowLess()">Show less</button>`;
-  return `<tr id="lb-footer"><td colspan="7" style="text-align:center;padding:10px 0 4px;"><div style="font-size:0.75rem;opacity:0.5;">Showing ${shown} of ${lb.length} players</div>${btn}</td></tr>`;
+  return `<tr id="lb-footer"><td colspan="7" style="text-align:center;padding:10px 0 4px;"><div style="font-size:0.75rem;opacity:0.5;">Showing ${shown} of ${lb.length} players</div>${btn}<div class="lb-legend" style="margin-top:10px;"><b style="color:#4ade80">1st quiz</b> = first time playing &nbsp;·&nbsp; <b style="color:#f87171">PB</b> = new personal best &nbsp;·&nbsp; number = quizzes finished</div></td></tr>`;
 }
 
 function lbSeeMore() {
@@ -524,9 +527,9 @@ async function fillFinishes(from, to) {
       const t = new Date(r.submitted_at).getTime();
       const prior = (by[lbKey(r.player_name)] || []).filter(h =>
         h.quiz_title !== st.quizTitle && new Date(h.submitted_at).getTime() < t && (!h.country || !r.country || h.country === r.country));
-      if (!prior.length) { cell.textContent = "1st"; cell.classList.add("lb-fin-1st"); return; }
+      if (!prior.length) { cell.innerHTML = '<span class="lb-pill lb-pill-1st" title="First time playing">1st quiz</span>'; return; }
       const best = Math.max(...prior.map(h => h.percent));
-      if (r.percent > best) { cell.textContent = "PB"; cell.classList.add("lb-fin-pb"); return; }
+      if (r.percent > best) { cell.innerHTML = '<span class="lb-pill lb-pill-pb" title="New personal best">PB</span>'; return; }
       cell.textContent = new Set(prior.map(h => h.quiz_title)).size + 1;
     });
   } catch (e) { /* leave the column blank */ }
