@@ -48,13 +48,19 @@
     .stats-shell { width: min(960px, 100%); min-width: 0; display: flex; flex-direction: column; gap: 20px; }
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .lb-nowrap { white-space: nowrap; }
+    .lb-fin { text-align: center; font-weight: 600; white-space: nowrap; }
+    .lb-fin-1st { color: #4ade80; font-weight: 700; }
+    .lb-fin-pb { color: #f87171; font-weight: 700; }
     .lb-table th { white-space: nowrap; }
     .venue-cell { width: 100%; }
     .venue-wrap { display: flex; align-items: center; gap: 8px; line-height: 1.25; }
     .lb-name { width: 100%; max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     @media (max-width: 480px) {
       .lb-table th, .lb-table td { padding-left: 6px; padding-right: 6px; }
-      #lb-table th:nth-child(6), #lb-table td:nth-child(6) { display: none; }
+      #lb-table th:nth-child(7), #lb-table td:nth-child(7) { display: none; }
+      #lb-table th, #lb-table td { padding-left: 4px; padding-right: 4px; }
+      #lb-table th { font-size: 0.66rem; letter-spacing: 0.02em; }
+      #lb-table td:nth-child(2) { font-size: 1rem !important; }
     }
 
     .quiz-select-wrap { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -232,10 +238,10 @@
         <h2 class="section-heading">Top Scores</h2>
         <div class="table-scroll"><table class="lb-table" id="lb-table">
           <thead>
-            <tr><th>#</th><th>Flag</th><th>Name</th><th>Score</th><th>%</th><th>Date</th></tr>
+            <tr><th>#</th><th>Flag</th><th>Name</th><th>Score</th><th>%</th><th>Finishes</th><th>Date</th></tr>
           </thead>
           <tbody id="lb-body">
-            <tr><td colspan="6" class="loading-msg">Select a quiz above</td></tr>
+            <tr><td colspan="7" class="loading-msg">Select a quiz above</td></tr>
           </tbody>
         </table></div>
       </div>
@@ -335,7 +341,7 @@ let allQuestions = {};
 
 async function loadStats(quizTitle) {
   document.getElementById("question-list").innerHTML = '<div class="loading-msg">Loading…</div>';
-  document.getElementById("lb-body").innerHTML = '<tr><td colspan="6" class="loading-msg">Loading…</td></tr>';
+  document.getElementById("lb-body").innerHTML = '<tr><td colspan="7" class="loading-msg">Loading…</td></tr>';
   document.getElementById("highlights").style.display = "none";
 
   const [lbData, qData, yearData] = await Promise.all([
@@ -345,7 +351,7 @@ async function loadStats(quizTitle) {
   ]);
 
   renderSummary(lbData, quizTitle, qData);
-  renderLeaderboard(lbData);
+  renderLeaderboard(lbData, quizTitle);
   renderQuestions(quizTitle, qData, yearData);
 }
 
@@ -414,10 +420,10 @@ function renderSummary(lb, quizTitle, qData) {
   document.getElementById("stat-avg-pct").textContent = avgPct;
 }
 
-function renderLeaderboard(lb) {
+function renderLeaderboard(lb, quizTitle) {
   const tbody = document.getElementById("lb-body");
   if (!lb.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="loading-msg">No scores yet</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="loading-msg">No scores yet</td></tr>';
     return;
   }
   const medals = ["🥇","🥈","🥉"];
@@ -446,13 +452,45 @@ function renderLeaderboard(lb) {
         <td class="lb-name" title="${escapeHtml(r.player_name)}">${escapeHtml(r.player_name)}</td>
         <td class="lb-nowrap">${r.score}/${r.max_score}</td>
         <td class="lb-nowrap">${r.percent}%</td>
+        <td class="lb-fin" data-i="${i}"></td>
         <td class="lb-nowrap" style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString()}</td>
       </tr>
     `;
   }).join("");
 
-  html += `<tr><td colspan="6" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${lb.length} players total</td></tr>`;
+  html += `<tr><td colspan="7" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${lb.length} players total</td></tr>`;
   tbody.innerHTML = html;
+  fillFinishes(top10, quizTitle, tbody);
+}
+
+// Finishes column: "1st" = first quiz, "PB" = beat their previous best, otherwise number of quizzes finished.
+// Matched on player name (case-insensitive); country must match only when both rows have one.
+// Only quizzes submitted BEFORE the row's own score count, so old weeks read correctly too.
+const lbKey = n => String(n || "").trim().toLowerCase();
+async function fillFinishes(rows, quizTitle, tbody) {
+  try {
+    const names = [...new Set(rows.map(r => String(r.player_name || "").trim()).filter(Boolean))];
+    if (!names.length) return;
+    const q = n => '"' + n.replace(/[%_*\\"]/g, "_") + '"';
+    const orFilter = "(" + names.map(n => `player_name.ilike.${q(n)}`).join(",") + ")";
+    const res = await fetch(`${SUPA_URL}/rest/v1/leaderboard?select=player_name,country,quiz_title,percent,submitted_at&or=${encodeURIComponent(orFilter)}&limit=3000`, { headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` } });
+    if (!res.ok) return;
+    const all = await res.json();
+    if (!Array.isArray(all)) return;
+    const by = {};
+    all.forEach(r => { (by[lbKey(r.player_name)] = by[lbKey(r.player_name)] || []).push(r); });
+    rows.forEach((r, i) => {
+      const cell = tbody.querySelector(`.lb-fin[data-i="${i}"]`);
+      if (!cell) return;
+      const t = new Date(r.submitted_at).getTime();
+      const prior = (by[lbKey(r.player_name)] || []).filter(h =>
+        h.quiz_title !== quizTitle && new Date(h.submitted_at).getTime() < t && (!h.country || !r.country || h.country === r.country));
+      if (!prior.length) { cell.textContent = "1st"; cell.classList.add("lb-fin-1st"); return; }
+      const best = Math.max(...prior.map(h => h.percent));
+      if (r.percent > best) { cell.textContent = "PB"; cell.classList.add("lb-fin-pb"); return; }
+      cell.textContent = new Set(prior.map(h => h.quiz_title)).size + 1;
+    });
+  } catch (e) { /* leave the column blank */ }
 }
 
 function renderQuestions(quizTitle, qData, yearData) {
