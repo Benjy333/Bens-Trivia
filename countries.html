@@ -44,10 +44,10 @@
     .menu-dropdown a:hover { background: var(--neon); color: #001; }
 
     body { padding-top: 130px; }
-    main { display: grid; place-items: center; padding: 24px 16px 48px; }
-    .stats-shell { width: min(960px, 100%); display: flex; flex-direction: column; gap: 20px; }
+    main { display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; padding: 24px 16px 48px; }
+    .stats-shell { width: min(960px, 100%); min-width: 0; display: flex; flex-direction: column; gap: 20px; }
 
-    .card { background: var(--bg2); border: 1px solid rgba(150,208,255,0.2); border-radius: 16px; padding: 18px 16px; }
+    .card { background: var(--bg2); border: 1px solid rgba(150,208,255,0.2); border-radius: 16px; padding: 18px 16px; min-width: 0; }
     .section-heading {
       font-size: 0.85rem; font-weight: 600; letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--neon-soft); opacity: 0.8;
@@ -72,9 +72,19 @@
     }
     .stat-card .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--neon-soft); text-shadow: 0 0 8px var(--neon-soft); }
     .stat-card .stat-label { font-size: 0.75rem; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+    .stat-card.stat-new .stat-value { color: #7cc4ff; }
+    .stat-card.stat-returning .stat-value { color: #9be26b; text-shadow: 0 0 8px rgba(155,226,107,0.55); }
 
-    .week-chart { overflow-x: auto; padding-top: 4px; }
-    .week-chart svg { display: block; }
+    /* Charts: fixed y-axis on the left, the plot scrolls sideways on small screens */
+    .week-chart { padding-top: 4px; }
+    .chart-wrap { display: flex; align-items: flex-start; }
+    .chart-wrap .chart-axis { flex: none; display: block; }
+    .chart-scroll { flex: 1 1 auto; min-width: 0; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+    .chart-scroll svg { display: block; }
+    .chart-hint { text-align: right; font-size: 0.68rem; opacity: 0.45; margin-top: 4px; }
+    .chart-legend { display: flex; gap: 18px; justify-content: center; margin-top: 10px; font-size: 0.8rem; color: #bfe3ff; }
+    .chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .chart-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
     .month-label { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-top: -8px; }
     .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
@@ -111,12 +121,22 @@
           <div class="stat-card"><div class="stat-value" id="stat-total-leaderboard">—</div><div class="stat-label">Leaderboard</div></div>
           <div class="stat-card"><div class="stat-value" id="stat-avg-score">—</div><div class="stat-label">Avg Score</div></div>
           <div class="stat-card"><div class="stat-value" id="stat-completion-rate">—</div><div class="stat-label">Completion Rate</div></div>
+          <div class="stat-card stat-new"><div class="stat-value" id="stat-new-players">—</div><div class="stat-label">New Players</div></div>
+          <div class="stat-card stat-returning"><div class="stat-value" id="stat-returning-players">—</div><div class="stat-label">Returning Players</div></div>
         </div>
       </div>
 
       <div class="card">
         <h2 class="section-heading">📈 Players Per Week</h2>
         <div class="week-chart" id="week-chart">
+          <div class="loading-msg">Loading…</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-heading">🔁 New vs Returning Players</h2>
+        <div class="section-subheading">Players who added their name to the leaderboard each week. New = their first week playing, returning = they had played in an earlier week.</div>
+        <div class="week-chart" id="nr-chart">
           <div class="loading-msg">Loading…</div>
         </div>
       </div>
@@ -232,17 +252,26 @@ async function fetchAllRows(table, query) {
   return allRows;
 }
 
+function quizNumber(title) {
+  const m = String(title || "").match(/#(\d+)/);
+  return m ? parseInt(m[1], 10) : null;
+}
+
 // Total completions per week come from question_stats_summary: the last
 // question of each week's quiz has a total_count that reflects everyone
 // who reached the end, whether or not they went on to add their name to
 // the leaderboard (same logic stats.html uses for its "Players" stat).
 // The first question's total_count is used as the "started" count, so
 // completions ÷ starts gives a completion rate per week and overall.
+//
+// New vs returning players come from the leaderboard, matched by name
+// (case-insensitive): a name is "new" in the first week it appears and
+// "returning" in any later week it shows up again.
 async function fetchHighlights() {
   try {
     const [quizData, leaderboardRows, statsRows] = await Promise.all([
       fetch("weekly_quizzes.json").then(r => r.json()),
-      fetchAllRows("leaderboard", "select=quiz_title,percent"),
+      fetchAllRows("leaderboard", "select=quiz_title,percent,player_name,submitted_at&order=submitted_at.asc"),
       fetchAllRows("question_stats_summary", "select=quiz_title,question_id,total_count")
     ]);
 
@@ -258,8 +287,30 @@ async function fetchHighlights() {
       const lastId = q.questions[q.questions.length - 1].id;
       const starts = countForQuestion(q.title, firstId);
       const completions = countForQuestion(q.title, lastId);
-      return { title: q.title, starts, completions };
+      return { title: q.title, num: quizNumber(q.title), starts, completions, newPlayers: 0, returningPlayers: 0 };
     });
+
+    // Names who played in each quiz number
+    const namesByNum = {};
+    leaderboardRows.forEach(r => {
+      const num = quizNumber(r.quiz_title);
+      const key = String(r.player_name || "").trim().toLowerCase();
+      if (num === null || !key) return;
+      (namesByNum[num] = namesByNum[num] || new Set()).add(key);
+    });
+    const seen = new Set();
+    const weeksPlayed = {};
+    Object.keys(namesByNum).map(Number).sort((a, b) => a - b).forEach(num => {
+      let fresh = 0, back = 0;
+      namesByNum[num].forEach(name => {
+        weeksPlayed[name] = (weeksPlayed[name] || 0) + 1;
+        if (seen.has(name)) back++; else fresh++;
+      });
+      namesByNum[num].forEach(name => seen.add(name));
+      weekStats.filter(w => w.num === num).forEach(w => { w.newPlayers = fresh; w.returningPlayers = back; });
+    });
+    const totalNewPlayers = seen.size;
+    const totalReturningPlayers = Object.values(weeksPlayed).filter(n => n >= 2).length;
 
     const totalPlayed = weekStats.reduce((sum, w) => sum + w.completions, 0);
     const totalStarted = weekStats.reduce((sum, w) => sum + w.starts, 0);
@@ -269,7 +320,7 @@ async function fetchHighlights() {
       ? Math.round(leaderboardRows.reduce((s, r) => s + r.percent, 0) / totalLeaderboard)
       : 0;
 
-    return { weekStats, totalPlayed, totalStarted, completionRate, totalLeaderboard, avgScore };
+    return { weekStats, totalPlayed, totalStarted, completionRate, totalLeaderboard, avgScore, totalNewPlayers, totalReturningPlayers };
   } catch (err) {
     return null;
   }
@@ -277,18 +328,95 @@ async function fetchHighlights() {
 
 function renderHighlights(data) {
   if (!data) {
-    document.getElementById("stat-total-played").textContent = "—";
-    document.getElementById("stat-total-leaderboard").textContent = "—";
-    document.getElementById("stat-avg-score").textContent = "—";
-    document.getElementById("stat-completion-rate").textContent = "—";
+    ["stat-total-played","stat-total-leaderboard","stat-avg-score","stat-completion-rate","stat-new-players","stat-returning-players"]
+      .forEach(id => { document.getElementById(id).textContent = "—"; });
     document.getElementById("week-chart").innerHTML = '<div class="loading-msg">Could not load weekly stats.</div>';
+    document.getElementById("nr-chart").innerHTML = '<div class="loading-msg">Could not load weekly stats.</div>';
     return;
   }
   document.getElementById("stat-total-played").textContent = data.totalPlayed;
   document.getElementById("stat-total-leaderboard").textContent = data.totalLeaderboard;
   document.getElementById("stat-avg-score").textContent = data.totalLeaderboard ? data.avgScore + "%" : "—";
   document.getElementById("stat-completion-rate").textContent = data.completionRate === null ? "—" : data.completionRate + "%";
+  document.getElementById("stat-new-players").textContent = data.totalNewPlayers;
+  document.getElementById("stat-returning-players").textContent = data.totalReturningPlayers;
   renderWeekChart(data.weekStats);
+  renderNewReturningChart(data.weekStats);
+}
+
+function weekLabel(w, i) {
+  return w.num !== null && w.num !== undefined ? "#" + w.num : "Wk " + (i + 1);
+}
+
+// Shared scrolling line chart. The y-axis labels sit in their own fixed column
+// on the left; the plot beside it scrolls sideways and starts scrolled to the
+// latest week.
+//   opts: { labels, series:[{name,color,values,dotStroke}], yMax, ticks, tickStyle:"gold"|"grid",
+//           valueRow:boolean, unit:string }
+function drawScrollChart(el, opts) {
+  const n = opts.labels.length;
+  const axisW = 34, padL = 18, padR = 34, gap = 60;
+  const top = 18, plotH = 120, bottom = top + plotH;
+  const containerWidth = Math.max(220, el.clientWidth || 300);
+  const minPlotWidth = containerWidth - axisW;
+  const idealWidth = padL + padR + (n - 1) * gap;
+  const W = Math.max(idealWidth, minPlotWidth);
+  const xFor = i => n === 1 ? W / 2 : padL + (i * (W - padL - padR)) / (n - 1);
+  const yFor = v => bottom - (v / opts.yMax) * plotH;
+  const valueRowY = bottom + 20;
+  const labelY = bottom + (opts.valueRow ? 36 : 20);
+  const H = labelY + 10;
+
+  const gold = opts.tickStyle === "gold";
+  const lineStroke = gold ? "#ffd700" : "#7fb3d9";
+  const lines = opts.ticks.map(v => {
+    const y = yFor(v).toFixed(1);
+    return gold
+      ? `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="${lineStroke}" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.75" />`
+      : `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="${lineStroke}" stroke-width="1" opacity="${v === 0 ? 0.5 : 0.18}" />`;
+  }).join("");
+  const axisLabels = opts.ticks.map(v => {
+    const y = (yFor(v) + 3.5).toFixed(1);
+    return `<text x="${axisW - 5}" y="${y}" text-anchor="end" font-size="10" fill="${gold ? "#ffd700" : "#7fb3d9"}" opacity="0.9">${v}</text>`;
+  }).join("");
+
+  const seriesSvg = opts.series.map(s => {
+    const pts = s.values.map((v, i) => ({ x: xFor(i), y: yFor(v), v, i }));
+    const poly = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+    const dots = pts.map(p => `
+      <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${s.color}" stroke="#eaf6ff" stroke-width="1.5">
+        <title>${escapeHtml(opts.labels[p.i])}: ${p.v} ${escapeHtml(s.unit || s.name)}</title>
+      </circle>`).join("");
+    const last = pts[pts.length - 1];
+    const endLabel = (!opts.valueRow && last)
+      ? `<text x="${last.x.toFixed(1)}" y="${(last.y - 9).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="${s.color}">${last.v}</text>`
+      : "";
+    return `<polyline points="${poly}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />${dots}${endLabel}`;
+  }).join("");
+
+  const valueRow = opts.valueRow
+    ? opts.series[0].values.map((v, i) => `<text x="${xFor(i).toFixed(1)}" y="${valueRowY}" text-anchor="middle" font-size="11" fill="#bfe3ff">${v}</text>`).join("")
+    : "";
+  const weekLabels = opts.labels.map((l, i) =>
+    `<text x="${xFor(i).toFixed(1)}" y="${labelY}" text-anchor="middle" font-size="10" fill="#7fb3d9" opacity="0.75">${escapeHtml(l)}</text>`).join("");
+
+  const legend = opts.series.length > 1
+    ? `<div class="chart-legend">${opts.series.map(s => `<span><i style="background:${s.color}"></i>${escapeHtml(s.name)}</span>`).join("")}</div>`
+    : "";
+  const scrolls = W > minPlotWidth + 1;
+
+  el.innerHTML = `
+    <div class="chart-wrap">
+      <svg class="chart-axis" width="${axisW}" height="${H}" viewBox="0 0 ${axisW} ${H}">${axisLabels}</svg>
+      <div class="chart-scroll">
+        <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${lines}${seriesSvg}${valueRow}${weekLabels}</svg>
+      </div>
+    </div>
+    ${legend}
+    ${scrolls ? '<div class="chart-hint">Swipe sideways for earlier weeks ↔</div>' : ""}`;
+
+  const sc = el.querySelector(".chart-scroll");
+  if (sc) sc.scrollLeft = sc.scrollWidth;
 }
 
 function renderWeekChart(weekStats) {
@@ -297,58 +425,46 @@ function renderWeekChart(weekStats) {
     el.innerHTML = '<div class="loading-msg">No weekly data yet</div>';
     return;
   }
+  const TICKS = [50, 100, 150, 200, 250];
+  const dataMax = Math.max(...weekStats.map(w => w.completions));
+  // Top of the graph is 250, but grows in steps of 50 if a week ever beats it
+  const yMax = Math.max(250, Math.ceil(dataMax / 50) * 50);
+  const ticks = [];
+  for (let v = 50; v <= yMax; v += 50) ticks.push(v);
+  drawScrollChart(el, {
+    labels: weekStats.map(weekLabel),
+    series: [{ name: "Players", color: "#37a1ff", values: weekStats.map(w => w.completions), unit: "players" }],
+    yMax,
+    ticks: ticks.length ? ticks : TICKS,
+    tickStyle: "gold",
+    valueRow: true
+  });
+}
 
-  const n = weekStats.length;
-  const REFERENCE_VALUES = [50, 100, 150];
-  const max = Math.max(1, ...REFERENCE_VALUES, ...weekStats.map(w => w.completions));
-  const idealPointGap = 60;
-  const leftPad = 34;
-  const rightPad = 30;
-  // Never let the chart grow wider than the card actually is on screen —
-  // that's what forced horizontal scrolling on phones. Use the ideal
-  // per-week spacing when there's room, otherwise shrink to fit exactly.
-  const containerWidth = Math.max(200, el.clientWidth || 300);
-  const idealWidth = leftPad + rightPad + (n - 1) * idealPointGap;
-  const width = n === 1 ? containerWidth : Math.min(containerWidth, idealWidth);
-  const chartTop = 14;
-  const chartBottom = 100;
-  const chartHeight = chartBottom - chartTop;
-
-  const xFor = i => n === 1 ? width / 2 : leftPad + (i * (width - leftPad - rightPad)) / (n - 1);
-  const yFor = c => chartBottom - (c / max) * chartHeight;
-
-  const points = weekStats.map((w, i) => ({ x: xFor(i), y: yFor(w.completions), w }));
-  const polyPoints = points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-
-  const referenceLines = REFERENCE_VALUES.map(v => {
-    const y = yFor(v).toFixed(1);
-    return `
-      <line x1="${leftPad}" y1="${y}" x2="${width - rightPad}" y2="${y}" stroke="#ffd700" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.75" />
-      <text x="${leftPad - 4}" y="${(parseFloat(y) - 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#ffd700" opacity="0.9">${v}</text>`;
-  }).join("");
-
-  const circles = points.map(p => `
-    <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="#37a1ff" stroke="#eaf6ff" stroke-width="1.5">
-      <title>${escapeHtml(p.w.title)}: ${p.w.completions} players</title>
-    </circle>`).join("");
-
-  const valueLabels = points.map(p => `
-    <text x="${p.x.toFixed(1)}" y="120" text-anchor="middle" font-size="11" fill="#bfe3ff">${p.w.completions}</text>`).join("");
-
-  const weekLabels = points.map((p, i) => {
-    const match = p.w.title.match(/#(\d+)/);
-    const label = match ? "#" + match[1] : "Wk " + (i + 1);
-    return `<text x="${p.x.toFixed(1)}" y="136" text-anchor="middle" font-size="10" fill="#7fb3d9" opacity="0.75">${escapeHtml(label)}</text>`;
-  }).join("");
-
-  el.innerHTML = `
-    <svg viewBox="0 0 ${width} 148" width="${width}" height="148" preserveAspectRatio="xMinYMid meet">
-      ${referenceLines}
-      <polyline points="${polyPoints}" fill="none" stroke="#37a1ff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
-      ${circles}
-      ${valueLabels}
-      ${weekLabels}
-    </svg>`;
+function renderNewReturningChart(weekStats) {
+  const el = document.getElementById("nr-chart");
+  if (!weekStats || !weekStats.length) {
+    el.innerHTML = '<div class="loading-msg">No weekly data yet</div>';
+    return;
+  }
+  const newVals = weekStats.map(w => w.newPlayers);
+  const retVals = weekStats.map(w => w.returningPlayers);
+  const dataMax = Math.max(1, ...newVals, ...retVals);
+  const step = [5, 10, 20, 25, 50, 100].find(s => dataMax / s <= 4) || 100;
+  const yMax = Math.ceil(dataMax / step) * step;
+  const ticks = [];
+  for (let v = 0; v <= yMax; v += step) ticks.push(v);
+  drawScrollChart(el, {
+    labels: weekStats.map(weekLabel),
+    series: [
+      { name: "New", color: "#4aa8ff", values: newVals, unit: "new players" },
+      { name: "Returning", color: "#9be26b", values: retVals, unit: "returning players" }
+    ],
+    yMax,
+    ticks,
+    tickStyle: "grid",
+    valueRow: false
+  });
 }
 
 async function fetchCountryLeaderboard() {
