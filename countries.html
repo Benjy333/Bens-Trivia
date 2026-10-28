@@ -252,6 +252,14 @@ async function fetchAllRows(table, query) {
   return allRows;
 }
 
+// Leaderboard rows, with device_id when that column exists (falls back to names only if it doesn't)
+async function fetchLeaderboardRows() {
+  const base = "quiz_title,percent,player_name,submitted_at";
+  const rows = await fetchAllRows("leaderboard", `select=${base},device_id&order=submitted_at.asc`);
+  if (rows.length) return { rows, linked: rows.some(r => r.device_id) };
+  return { rows: await fetchAllRows("leaderboard", `select=${base}&order=submitted_at.asc`), linked: false };
+}
+
 function quizNumber(title) {
   const m = String(title || "").match(/#(\d+)/);
   return m ? parseInt(m[1], 10) : null;
@@ -264,16 +272,18 @@ function quizNumber(title) {
 // The first question's total_count is used as the "started" count, so
 // completions ÷ starts gives a completion rate per week and overall.
 //
-// New vs returning players come from the leaderboard, matched by name
-// (case-insensitive): a name is "new" in the first week it appears and
-// "returning" in any later week it shows up again.
+// New vs returning players: a player is "new" in the first week they appear and
+// "returning" in any later week. Players are matched by device where we have it
+// (venue_scores + leaderboard.device_id) and by name for earlier weeks.
 async function fetchHighlights() {
   try {
-    const [quizData, leaderboardRows, statsRows] = await Promise.all([
+    const [quizData, lb, statsRows, venueRows] = await Promise.all([
       fetch("weekly_quizzes.json").then(r => r.json()),
-      fetchAllRows("leaderboard", "select=quiz_title,percent,player_name,submitted_at&order=submitted_at.asc"),
-      fetchAllRows("question_stats_summary", "select=quiz_title,question_id,total_count")
+      fetchLeaderboardRows(),
+      fetchAllRows("question_stats_summary", "select=quiz_title,question_id,total_count"),
+      fetchAllRows("venue_scores", "select=quiz_title,device_id&order=created_at.asc").catch(() => [])
     ]);
+    const leaderboardRows = lb.rows;
 
     const weeks = (quizData.weekly_quizzes || []).filter(q => q.questions && q.questions.length > 0);
 
@@ -290,26 +300,47 @@ async function fetchHighlights() {
       return { title: q.title, num: quizNumber(q.title), starts, completions, newPlayers: 0, returningPlayers: 0 };
     });
 
-    // Names who played in each quiz number
-    const namesByNum = {};
+    // Who played each quiz, as a set of player keys.
+    //  - Weeks before device tracking existed: the leaderboard name (case-insensitive).
+    //  - Weeks with device tracking: the device. Anyone who also put a name on the
+    //    leaderboard from that device keeps their name key, so their history carries over,
+    //    and players who never typed a name (venue_scores only) are still counted.
+    // Needs leaderboard.device_id to join the two; without it we stay on names only.
+    const nameKey = r => String(r.player_name || "").trim().toLowerCase();
+    const deviceName = {};
+    if (lb.linked) leaderboardRows.forEach(r => { if (r.device_id && nameKey(r)) deviceName[r.device_id] = nameKey(r); });
+    const keyForDevice = id => deviceName[id] ? "n:" + deviceName[id] : "d:" + id;
+
+    const venueNums = venueRows.map(r => quizNumber(r.quiz_title)).filter(n => n !== null && venueRows.length);
+    const firstDeviceNum = lb.linked && venueNums.length ? Math.min(...venueNums) : Infinity;
+
+    const keysByNum = {};
+    const addKey = (num, key) => { (keysByNum[num] = keysByNum[num] || new Set()).add(key); };
     leaderboardRows.forEach(r => {
       const num = quizNumber(r.quiz_title);
-      const key = String(r.player_name || "").trim().toLowerCase();
-      if (num === null || !key) return;
-      (namesByNum[num] = namesByNum[num] || new Set()).add(key);
+      if (num === null) return;
+      if (num >= firstDeviceNum && r.device_id) { addKey(num, keyForDevice(r.device_id)); return; }
+      if (nameKey(r)) addKey(num, "n:" + nameKey(r));
     });
+    venueRows.forEach(r => {
+      const num = quizNumber(r.quiz_title);
+      if (num === null || num < firstDeviceNum || !r.device_id) return;
+      addKey(num, keyForDevice(r.device_id));
+    });
+
     const seen = new Set();
     const weeksPlayed = {};
-    Object.keys(namesByNum).map(Number).sort((a, b) => a - b).forEach(num => {
+    let totalNewPlayers = 0;
+    Object.keys(keysByNum).map(Number).sort((a, b) => a - b).forEach(num => {
       let fresh = 0, back = 0;
-      namesByNum[num].forEach(name => {
-        weeksPlayed[name] = (weeksPlayed[name] || 0) + 1;
-        if (seen.has(name)) back++; else fresh++;
+      keysByNum[num].forEach(k => {
+        weeksPlayed[k] = (weeksPlayed[k] || 0) + 1;
+        if (seen.has(k)) back++; else fresh++;
       });
-      namesByNum[num].forEach(name => seen.add(name));
+      keysByNum[num].forEach(k => seen.add(k));
+      totalNewPlayers += fresh;
       weekStats.filter(w => w.num === num).forEach(w => { w.newPlayers = fresh; w.returningPlayers = back; });
     });
-    const totalNewPlayers = seen.size;
     const totalReturningPlayers = Object.values(weeksPlayed).filter(n => n >= 2).length;
 
     const totalPlayed = weekStats.reduce((sum, w) => sum + w.completions, 0);
