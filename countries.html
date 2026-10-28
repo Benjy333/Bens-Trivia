@@ -82,6 +82,8 @@
     .chart-scroll { flex: 1 1 auto; min-width: 0; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
     .chart-scroll svg { display: block; }
     .chart-hint { text-align: right; font-size: 0.68rem; opacity: 0.45; margin-top: 4px; }
+    .chart-note { font-size: 0.72rem; line-height: 1.4; color: #bfe3ff; opacity: 0.8; margin-top: 8px; padding: 6px 10px; border-left: 3px solid #ffb347; background: rgba(255,179,71,0.08); border-radius: 0 6px 6px 0; }
+    .chart-note b { color: #ffcf8a; }
     .chart-legend { display: flex; gap: 18px; justify-content: center; margin-top: 10px; font-size: 0.8rem; color: #bfe3ff; }
     .chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
     .chart-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
@@ -121,8 +123,7 @@
           <div class="stat-card"><div class="stat-value" id="stat-total-leaderboard">—</div><div class="stat-label">Leaderboard</div></div>
           <div class="stat-card"><div class="stat-value" id="stat-avg-score">—</div><div class="stat-label">Avg Score</div></div>
           <div class="stat-card"><div class="stat-value" id="stat-completion-rate">—</div><div class="stat-label">Completion Rate</div></div>
-          <div class="stat-card stat-new"><div class="stat-value" id="stat-new-players">—</div><div class="stat-label">New Players</div></div>
-          <div class="stat-card stat-returning"><div class="stat-value" id="stat-returning-players">—</div><div class="stat-label">Returning Players</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-subscribers">—</div><div class="stat-label">Email Subscribers</div></div>
         </div>
       </div>
 
@@ -230,6 +231,20 @@ const MIN_SCORES_FOR_LEADERBOARD = 10;
   renderHighlights(highlights);
 })();
 
+// Email subscribers: read from the count-only view mailing_list_count (one row, one "count" column).
+// The page never reads mailing_list itself, so no email addresses can reach the browser.
+// Shows "—" if the view isn't there yet.
+async function fetchSubscriberCount() {
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/mailing_list_count?select=count`, {
+      headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}` }
+    });
+    if (!res.ok) return null;
+    const rows = await res.json();
+    return rows[0] && rows[0].count !== undefined ? Number(rows[0].count) : null;
+  } catch { return null; }
+}
+
 async function fetchAllRows(table, query) {
   const pageSize = 1000;
   let allRows = [];
@@ -328,6 +343,7 @@ async function fetchHighlights() {
       addKey(num, keyForDevice(r.device_id));
     });
 
+    weekStats.forEach(w => { w.device = w.num !== null && w.num >= firstDeviceNum; });
     const seen = new Set();
     const weeksPlayed = {};
     let totalNewPlayers = 0;
@@ -359,7 +375,7 @@ async function fetchHighlights() {
 
 function renderHighlights(data) {
   if (!data) {
-    ["stat-total-played","stat-total-leaderboard","stat-avg-score","stat-completion-rate","stat-new-players","stat-returning-players"]
+    ["stat-total-played","stat-total-leaderboard","stat-avg-score","stat-completion-rate"]
       .forEach(id => { document.getElementById(id).textContent = "—"; });
     document.getElementById("week-chart").innerHTML = '<div class="loading-msg">Could not load weekly stats.</div>';
     document.getElementById("nr-chart").innerHTML = '<div class="loading-msg">Could not load weekly stats.</div>';
@@ -369,11 +385,12 @@ function renderHighlights(data) {
   document.getElementById("stat-total-leaderboard").textContent = data.totalLeaderboard;
   document.getElementById("stat-avg-score").textContent = data.totalLeaderboard ? data.avgScore + "%" : "—";
   document.getElementById("stat-completion-rate").textContent = data.completionRate === null ? "—" : data.completionRate + "%";
-  document.getElementById("stat-new-players").textContent = data.totalNewPlayers;
-  document.getElementById("stat-returning-players").textContent = data.totalReturningPlayers;
   renderWeekChart(data.weekStats);
   renderNewReturningChart(data.weekStats);
 }
+fetchSubscriberCount().then(n => {
+  document.getElementById("stat-subscribers").textContent = n === null ? "—" : n.toLocaleString("en-AU");
+});
 
 function weekLabel(w, i) {
   return w.num !== null && w.num !== undefined ? "#" + w.num : "Wk " + (i + 1);
@@ -398,6 +415,18 @@ function drawScrollChart(el, opts) {
   const labelY = bottom + (opts.valueRow ? 36 : 20);
   const H = labelY + 10;
 
+  // Optional divider where the way players are identified changes (opts.split = index of first new-method week)
+  let splitSvg = "";
+  if (opts.split !== undefined && opts.split >= 0) {
+    const sx = opts.split > 0 ? (xFor(opts.split - 1) + xFor(opts.split)) / 2 : 0;
+    splitSvg += `<rect x="${sx.toFixed(1)}" y="0" width="${(W - sx).toFixed(1)}" height="${bottom}" fill="#ffb347" opacity="0.07" />`;
+    if (opts.split > 0) {
+      splitSvg += `<line x1="${sx.toFixed(1)}" y1="2" x2="${sx.toFixed(1)}" y2="${bottom}" stroke="#ffb347" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.9" />`;
+      splitSvg += `<text x="${(sx - 6).toFixed(1)}" y="11" text-anchor="end" font-size="9" font-weight="700" letter-spacing="0.6" fill="#7fb3d9" opacity="0.9">NAMES</text>`;
+    }
+    splitSvg += `<text x="${(sx + 6).toFixed(1)}" y="11" text-anchor="start" font-size="9" font-weight="700" letter-spacing="0.6" fill="#ffb347">DEVICE ID</text>`;
+  }
+
   const gold = opts.tickStyle === "gold";
   const lineStroke = gold ? "#ffd700" : "#7fb3d9";
   const lines = opts.ticks.map(v => {
@@ -416,7 +445,7 @@ function drawScrollChart(el, opts) {
     const poly = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
     const dots = pts.map(p => `
       <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${s.color}" stroke="#eaf6ff" stroke-width="1.5">
-        <title>${escapeHtml(opts.labels[p.i])}: ${p.v} ${escapeHtml(s.unit || s.name)}</title>
+        <title>${escapeHtml(opts.labels[p.i])}: ${p.v} ${escapeHtml(s.unit || s.name)}${opts.methods ? " (matched by " + opts.methods[p.i] + ")" : ""}</title>
       </circle>`).join("");
     const last = pts[pts.length - 1];
     const endLabel = (!opts.valueRow && last)
@@ -440,10 +469,11 @@ function drawScrollChart(el, opts) {
     <div class="chart-wrap">
       <svg class="chart-axis" width="${axisW}" height="${H}" viewBox="0 0 ${axisW} ${H}">${axisLabels}</svg>
       <div class="chart-scroll">
-        <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${lines}${seriesSvg}${valueRow}${weekLabels}</svg>
+        <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${splitSvg}${lines}${seriesSvg}${valueRow}${weekLabels}</svg>
       </div>
     </div>
     ${legend}
+    ${opts.note ? `<div class="chart-note">${opts.note}</div>` : ""}
     ${scrolls ? '<div class="chart-hint">Swipe sideways for earlier weeks ↔</div>' : ""}`;
 
   const sc = el.querySelector(".chart-scroll");
@@ -494,7 +524,12 @@ function renderNewReturningChart(weekStats) {
     yMax,
     ticks,
     tickStyle: "grid",
-    valueRow: false
+    valueRow: false,
+    split: weekStats.findIndex(w => w.device),
+    methods: weekStats.map(w => w.device ? "device ID" : "name"),
+    note: weekStats.some(w => w.device)
+      ? `<b>Counting changed at the line.</b> Before it, players are matched by <b>name</b>. After it, by <b>device ID</b>, which also counts players who never typed a name, so the step up isn\u2019t a real jump in players.`
+      : ""
   });
 }
 
