@@ -229,14 +229,11 @@
     .bsv-pill { display:inline-block; font-size:0.78rem; padding:5px 12px; border-radius:999px; border:1px solid rgba(150,208,255,0.35); background:rgba(3,15,34,0.8); }
     .bsv-pill b { color:var(--neon-soft); }
     #hero { margin-bottom:14px; text-align:center; }
-    .hero-pills { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:0 0 14px; }
-    .hero-pill { font-size:0.8rem; padding:5px 12px; border-radius:999px; border:1px solid rgba(150,208,255,0.35); background:rgba(3,15,34,0.8); color:var(--text); white-space:nowrap; }
+    .hero-pills { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; max-width:420px; margin:0 auto 14px; }
+    @media (min-width:640px) { .hero-pills { display:flex; flex-wrap:nowrap; justify-content:center; max-width:none; } }
+    .hero-pill { font-size:0.8rem; padding:6px 10px; border-radius:999px; border:1px solid rgba(150,208,255,0.35); background:rgba(3,15,34,0.8); color:var(--text); white-space:nowrap; text-align:center; }
     .hero-pill b { color:var(--neon-soft); }
     #hero .quiz-meta { margin:0 0 10px; }
-    .hero-cta { display:block; width:100%; max-width:340px; margin:0 auto; padding:14px 18px; border-radius:16px; border:1.5px solid var(--neon); background:var(--neon); color:#001020; font-size:1.05rem; font-weight:700; letter-spacing:0.02em; box-shadow:0 0 18px rgba(55,161,255,0.55); }
-    .hero-cta:hover:not(:disabled) { background:var(--neon-soft); color:#001020; box-shadow:0 0 24px var(--neon-soft); }
-    .hero-cta:disabled { opacity:0.55; cursor:default; box-shadow:none; }
-    .hero-cta:focus-visible { outline:2px solid #fff; outline-offset:3px; }
     .hero-note { margin-top:14px; }
     .hero-note > summary { list-style:none; cursor:pointer; display:inline-block; font-size:0.78rem; padding:5px 12px; border-radius:999px; border:1px solid rgba(150,208,255,0.35); background:rgba(3,15,34,0.8); color:var(--neon-soft); }
     .hero-note > summary::-webkit-details-marker { display:none; }
@@ -300,18 +297,17 @@
     <span id="bsv-badge-logo" style="display:flex;"></span>
     <span>Playing for <strong id="bsv-badge-name" style="color:var(--neon-soft);"></strong></span>
   </div>
+    <div id="quiz-meta" class="quiz-meta">
+      <strong id="quiz-title">Big Fat Sunday Quiz</strong><br>
+      <span id="quiz-week-info">Loading…</span>
+    </div>
     <div class="hero-pills">
       <span class="hero-pill"><b id="hero-qcount">25</b> questions</span>
       <span class="hero-pill"><b>10</b> minutes</span>
       <span class="hero-pill"><b>Free</b> to play</span>
       <span class="hero-pill">New quiz every <b>Sunday</b></span>
     </div>
-    <div id="quiz-meta" class="quiz-meta">
-      <strong id="quiz-title">Big Fat Sunday Quiz</strong><br>
-      <span id="quiz-week-info">Loading…</span>
-    </div>
     <div id="bsv-proof" style="display:none;text-align:center;margin:2px 0 12px;"><span class="bsv-pill">👥 <b id="bsv-proof-n">0</b> players this week</span></div>
-    <button type="button" class="hero-cta" id="hero-cta" disabled>Loading questions…</button>
     <details id="hero-note" class="hero-note" style="display:none;">
       <summary>📣 Note from Ben</summary>
       <div id="quiz-description" class="quiz-description" style="display:none;"></div>
@@ -645,7 +641,7 @@ function clearOldSaves(currentTitle) {
     }
     questions = quiz.questions;
     document.getElementById("quiz-title").textContent = quiz.title;
-    document.getElementById("quiz-week-info").textContent = `Week ${weekIdx + 1} · ${questions.length} questions`;
+    document.getElementById("quiz-week-info").textContent = `Week ${weekIdx + 1}`;
     const descEl = document.getElementById("quiz-description");
     const noteEl = document.getElementById("hero-note");
     if (quiz.description) {
@@ -1038,23 +1034,12 @@ function checkYear(i) {
   lockCard(i, pts > 0);
 }
 let _animFrame = null;
-/* ---- Hero: Start / Continue button ---- */
-function updateHeroCta() {
-  const btn = document.getElementById("hero-cta");
-  if (!btn || !Array.isArray(states) || !states.length) return;
-  const total = states.length, answered = states.filter(s => s.checked).length;
-  btn.disabled = false;
-  if (answered === 0) btn.textContent = "Start the quiz ↓";
-  else if (answered < total) btn.textContent = `Continue · question ${states.findIndex(s => !s.checked) + 1} of ${total} ↓`;
-  else btn.textContent = "See your results ↓";
-}
 function updateProgress() {
   const answered = states.filter(s => s.checked).length; const total = states.length;
   const earned   = states.reduce((s, x) => s + x.points, 0); const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
   const pct      = maxPts ? Math.round((earned / maxPts) * 100) : 0;
   const progPct  = total ? Math.round((answered / total) * 100) : 0;
   updateFinishBar();
-  updateHeroCta();
   progText.textContent = `${answered} / ${total} answered`; progBar.style.width = progPct + "%";
   const glowAlpha = 0.3 + (progPct / 100) * 0.7;
   progBar.style.boxShadow = `0 0 ${8 + progPct * 0.18}px rgba(55,161,255,${glowAlpha}), 0 0 ${14 + progPct * 0.2}px rgba(56,239,125,${glowAlpha})`;
@@ -1103,7 +1088,6 @@ function launchConfetti(pct) {
   draw();
 }
 document.getElementById("jump-unanswered").addEventListener("click", () => { const idx = states.findIndex(s => !s.checked); if (idx === -1) scoreBox.scrollIntoView({ behavior: "smooth" }); else document.getElementById(`card-${idx}`).scrollIntoView({ behavior: "smooth", block: "center" }); });
-document.getElementById("hero-cta").addEventListener("click", () => { const idx = states.findIndex(s => !s.checked); if (idx === -1) scoreBox.scrollIntoView({ behavior: "smooth" }); else document.getElementById(`card-${idx}`).scrollIntoView({ behavior: "smooth", block: "center" }); });
 const luckMessages = [
   "You're going to need it 😏",
   "Fortune favours the bold (and the Googlers) 🔍",
