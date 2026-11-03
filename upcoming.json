@@ -33,7 +33,7 @@
 
 {
   "title": "Big Fat Sunday Quiz #29",
-  "description": "Two new updates. I have added Personal Bests and Number of finished to the leaderboard. I have also added a Photo sharing option once you have finished! Enjoy and good luck!",
+  "description": "Couple of updates. I have added Personal Bests, Number of finishes to the leaderboard and Photo sharing option! Enjoy and good luck!",
   "questions": [
     {"id": "anchorman-big-deal-quote", "type": "mcq", "tag": "Movie Quote", "text": "What Will Ferrel movie is the following quote from? 'I'm kind of a big deal... my apartment smells of rich mahogany.'", "options": ["Talladega Nights", "Step Brothers", "Anchorman", "Elf"], "correctIndex": 2, "maxPoints": 1, "funfact": "The line is spoken by Ron Burgundy, in Anchorman (2004). All four movies on the list star Will Ferrell, and Adam McKay directed three of them: Anchorman, Talladega Nights and Step Brothers."},
     {"id": "ballon-dor-2026-harry-kane", "type": "mcq", "tag": "Topical", "text": "Who won the men's Ballon d'Or for 2026?", "options": ["Harry Kane", "Michael Olise", "Kylian Mbappé", "Lamine Yamal"], "correctIndex": 0, "maxPoints": 1, "funfact": "Harry Kane won the 2026 award at a ceremony in London on 26 October 2026. The Ballon d'Or is given out by France Football magazine rather than FIFA, and it has been awarded since 1956."},
