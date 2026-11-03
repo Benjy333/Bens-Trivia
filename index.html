@@ -228,12 +228,6 @@
     /* ----- Hero + compact venue banner ----- */
     .bsv-pill { display:inline-block; font-size:0.78rem; padding:5px 12px; border-radius:999px; border:1px solid rgba(150,208,255,0.35); background:rgba(3,15,34,0.8); }
     .bsv-pill b { color:var(--neon-soft); }
-    #hero { margin-bottom:14px; text-align:center; }
-    .hero-pills { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; max-width:420px; margin:0 auto 14px; }
-    @media (min-width:640px) { .hero-pills { display:flex; flex-wrap:nowrap; justify-content:center; max-width:none; } }
-    .hero-pill { font-size:0.8rem; padding:6px 10px; border-radius:999px; border:1px solid rgba(150,208,255,0.35); background:rgba(3,15,34,0.8); color:var(--text); white-space:nowrap; text-align:center; }
-    .hero-pill b { color:var(--neon-soft); }
-    #hero .quiz-meta { margin:0 0 10px; }
     .hero-note { margin-top:14px; }
     .hero-note > summary { list-style:none; cursor:pointer; display:inline-block; font-size:0.78rem; padding:5px 12px; border-radius:999px; border:1px solid rgba(150,208,255,0.35); background:rgba(3,15,34,0.8); color:var(--neon-soft); }
     .hero-note > summary::-webkit-details-marker { display:none; }
@@ -247,11 +241,16 @@
     .bsv-sum-week::after { content:" \25BE"; opacity:0.7; }
     #bsv-banner[open] .bsv-sum-week::after { content:" \25B4"; }
     #bsv-banner > summary.bsv-sum:focus-visible { outline:2px solid var(--neon-soft); outline-offset:-3px; border-radius:18px; }
+    .bsv-banner-body { padding:4px 18px 20px; }
+    .hero-flat { width:min(640px,100%); margin:0 auto 14px; text-align:center; }
+    .hero-num { font-family:'Orbitron',sans-serif; font-size:clamp(0.82rem, 4.3vw, 1.15rem); font-weight:700; letter-spacing:0.04em; color:var(--neon-soft); margin:2px 0 8px; text-wrap:balance; }
+    .hero-facts { display:flex; flex-wrap:nowrap; justify-content:center; white-space:nowrap; font-size:clamp(0.7rem, 3.5vw, 0.88rem); margin:0 0 10px; }
+    .hero-facts span + span::before { content:"\2022"; margin:0 0.55em; opacity:0.6; }
+    .hero-facts b { color:var(--neon-soft); }
     #bsv-venues > summary { list-style:none; cursor:pointer; display:inline-block; }
     #bsv-venues > summary::-webkit-details-marker { display:none; }
     #bsv-venues > summary::after { content:" \25BE"; opacity:0.7; }
     #bsv-venues[open] > summary::after { content:" \25B4"; }
-    .bsv-banner-body { padding:4px 18px 20px; }
   </style>
 
 </head>
@@ -292,30 +291,28 @@
     </nav>
   </header>
   <main>
-  <section class="card quiz-shell" id="hero" aria-label="This week's quiz">
+  <section id="hero" class="hero-flat" aria-label="This week's quiz">
   <div id="bsv-badge" style="display:none;width:fit-content;max-width:100%;margin-left:auto;margin-right:auto;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;padding:8px 14px;border:1px solid var(--neon);border-radius:999px;background:rgba(3,15,34,0.9);box-shadow:0 0 10px var(--neon-soft);font-size:0.88rem;box-sizing:border-box;">
     <span id="bsv-badge-logo" style="display:flex;"></span>
     <span>Playing for <strong id="bsv-badge-name" style="color:var(--neon-soft);"></strong></span>
   </div>
-    <div id="quiz-meta" class="quiz-meta">
+    <div id="quiz-meta" class="quiz-meta" style="display:none;">
       <strong id="quiz-title">Big Fat Sunday Quiz</strong><br>
       <span id="quiz-week-info">Loading…</span>
     </div>
-    <div class="hero-pills">
-      <span class="hero-pill"><b id="hero-qcount">25</b> questions</span>
-      <span class="hero-pill"><b>10</b> minutes</span>
-      <span class="hero-pill"><b>Free</b> to play</span>
-      <span class="hero-pill">New quiz every <b>Sunday</b></span>
+    <div class="hero-num" id="hero-num">Quiz</div>
+    <div class="hero-facts">
+      <span><b id="hero-qcount">25</b> questions</span><span>Free to play</span><span>New quiz every Sunday</span>
     </div>
-    <div id="bsv-proof" style="display:none;text-align:center;margin:2px 0 12px;"><span class="bsv-pill">👥 <b id="bsv-proof-n">0</b> players this week</span></div>
+    <div id="bsv-proof" style="display:none;text-align:center;margin:0 0 4px;"><span class="bsv-pill">👥 <b id="bsv-proof-n">0</b> players this week</span></div>
     <details id="hero-note" class="hero-note" style="display:none;">
-      <summary>📣 Note from Ben</summary>
+      <summary>Note from Ben</summary>
       <div id="quiz-description" class="quiz-description" style="display:none;"></div>
     </details>
   </section>
   <section class="card quiz-shell" id="bsv-teaser" style="margin-bottom:18px;padding:0;">
     <details id="bsv-banner">
-      <summary class="bsv-sum"><span class="bsv-sum-name">🏟️ Brisbane's Smartest Venue</span><span class="bsv-sum-week" id="bsv-sum-week">6 venues competing</span></summary>
+      <summary class="bsv-sum"><span class="bsv-sum-name">Brisbane's Smartest Venue</span><span class="bsv-sum-week" id="bsv-sum-week">6 venues competing</span></summary>
       <div class="bsv-banner-body">
     <div style="text-align:center;margin:4px 0 10px;font-size:0.78rem;opacity:0.85;"><button type="button" class="bsv-help" aria-label="How Brisbane's Smartest Venue works" aria-haspopup="dialog" style="margin:0 8px 0 0;">?</button>How it works</div>
     <div style="text-align:center;font-size:0.82rem;opacity:0.75;margin:0 auto 14px;max-width:420px;line-height:1.45;">A 6 week competition running from 18th of October to 28th of November to crown Brisbane's Smartest Venue for 2026.</div>
@@ -652,6 +649,8 @@ function clearOldSaves(currentTitle) {
       descEl.style.display = "none";
       if (noteEl) noteEl.style.display = "none";
     }
+    const numEl = document.getElementById("hero-num");
+    if (numEl) { numEl.textContent = /^the /i.test(quiz.title) ? quiz.title : "The " + quiz.title; }
     const qcEl = document.getElementById("hero-qcount");
     if (qcEl) qcEl.textContent = questions.length;
     clearOldSaves(quiz.title);
