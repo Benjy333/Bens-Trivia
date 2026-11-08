@@ -196,6 +196,16 @@
   <main>
     <div class="stats-shell">
 
+      <div class="card signup-card">
+        <div class="signup-label">📬 Get the quiz every Sunday</div>
+        <div class="signup-sub">Drop your email and we'll send you a link each week</div>
+        <div class="signup-row">
+          <input id="stats-signup-email" type="email" placeholder="your@email.com" maxlength="100" aria-label="Your email address" />
+          <button id="stats-signup-btn">Subscribe</button>
+        </div>
+        <div id="stats-signup-status"></div>
+      </div>
+
       <div class="card">
         <div class="quiz-select-wrap">
           <label for="quiz-picker">Showing stats for:</label>
@@ -249,16 +259,6 @@
             <tr><td colspan="7" class="loading-msg">Select a quiz above</td></tr>
           </tbody>
         </table></div>
-      </div>
-
-      <div class="card signup-card">
-        <div class="signup-label">📬 Get the quiz every Sunday</div>
-        <div class="signup-sub">Drop your email and we'll send you a link each week</div>
-        <div class="signup-row">
-          <input id="stats-signup-email" type="email" placeholder="your@email.com" maxlength="100" aria-label="Your email address" />
-          <button id="stats-signup-btn">Subscribe</button>
-        </div>
-        <div id="stats-signup-status"></div>
       </div>
 
       <div class="card">
@@ -715,6 +715,7 @@ function escapeHtml(str) {
 }
 
 /* ---- EMAIL SIGNUP ---- */
+try { if (localStorage.getItem("bens-trivia-subscribed") === "1") { const c = document.querySelector(".signup-card"); if (c) c.style.display = "none"; } } catch (e) {}
 document.getElementById("stats-signup-btn").addEventListener("click", async () => {
   const emailEl = document.getElementById("stats-signup-email");
   const statusEl = document.getElementById("stats-signup-status");
@@ -735,6 +736,7 @@ document.getElementById("stats-signup-btn").addEventListener("click", async () =
     if (res.ok) {
       statusEl.style.color = "var(--good)";
       statusEl.textContent = "✓ You're subscribed! Sending you this week's quiz now... (check your spam if you don't see it)";
+      try { localStorage.setItem("bens-trivia-subscribed", "1"); } catch (e) {}
       emailEl.style.display = "none"; btn.style.display = "none";
       fetch(`${SUPA_URL}/functions/v1/smooth-action/send-one`, {
         method: "POST",
@@ -744,6 +746,7 @@ document.getElementById("stats-signup-btn").addEventListener("click", async () =
     } else if (res.status === 409) {
       statusEl.style.color = "#f5c542";
       statusEl.textContent = "You're already subscribed!";
+      try { localStorage.setItem("bens-trivia-subscribed", "1"); } catch (e) {}
       btn.disabled = false; btn.textContent = "Subscribe";
     } else {
       statusEl.style.color = "var(--bad)";
