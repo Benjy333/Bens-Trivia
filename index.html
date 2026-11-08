@@ -229,11 +229,7 @@
     .bsv-pill { display:inline-block; font-size:0.78rem; padding:5px 12px; border-radius:999px; border:1px solid rgba(150,208,255,0.35); background:rgba(3,15,34,0.8); }
     .bsv-pill b { color:var(--neon-soft); }
     .hero-note { margin-top:14px; }
-    .hero-note > summary { list-style:none; cursor:pointer; display:inline-block; font-size:0.78rem; padding:5px 12px; border-radius:999px; border:1px solid rgba(150,208,255,0.35); background:rgba(3,15,34,0.8); color:var(--neon-soft); }
-    .hero-note > summary::-webkit-details-marker { display:none; }
-    .hero-note > summary::after { content:" \25BE"; opacity:0.7; }
-    .hero-note[open] > summary::after { content:" \25B4"; }
-    .hero-note .quiz-description { margin-top:10px; margin-bottom:0; }
+    .hero-note .quiz-description { margin:0 auto; }
     #bsv-banner > summary.bsv-sum { list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 18px; font-size:0.9rem; }
     #bsv-banner > summary.bsv-sum::-webkit-details-marker { display:none; }
     .bsv-sum-name { font-weight:600; color:var(--neon-soft); }
@@ -242,6 +238,7 @@
     #bsv-banner[open] .bsv-sum-week::after { content:" \25B4"; }
     #bsv-banner > summary.bsv-sum:focus-visible { outline:2px solid var(--neon-soft); outline-offset:-3px; border-radius:18px; }
     .bsv-banner-body { padding:4px 18px 20px; }
+    #mailing-list-signup[data-subscribed="1"] { display:none !important; }
     .hero-flat { width:min(640px,100%); margin:0 auto 14px; text-align:center; }
     .hero-num { font-family:'Orbitron',sans-serif; font-size:clamp(0.82rem, 4.3vw, 1.15rem); font-weight:700; letter-spacing:0.04em; color:var(--neon-soft); margin:2px 0 8px; text-wrap:balance; }
     .hero-facts { display:flex; flex-wrap:nowrap; justify-content:center; white-space:nowrap; font-size:clamp(0.7rem, 3.5vw, 0.88rem); margin:0 0 10px; }
@@ -305,11 +302,23 @@
       <span><b id="hero-qcount">25</b> questions</span><span>Free to play</span><span>New quiz every Sunday</span>
     </div>
     <div id="bsv-proof" style="display:none;text-align:center;margin:0 0 4px;"><span class="bsv-pill">👥 <b id="bsv-proof-n">0</b> players this week</span></div>
-    <details id="hero-note" class="hero-note" style="display:none;">
-      <summary>Note from Ben</summary>
+    <div id="hero-note" class="hero-note" style="display:none;">
       <div id="quiz-description" class="quiz-description" style="display:none;"></div>
-    </details>
+    </div>
   </section>
+  <div id="mailing-list-signup" class="quiz-shell" style="width:min(640px,100%); box-sizing:border-box; margin:0 auto 14px; padding:16px 16px; border:1px solid rgba(150,208,255,0.25); border-radius:16px; background:radial-gradient(circle at top left,#12335a 0,#020a16 70%); text-align:center;">
+        <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">📬 Get the quiz every Sunday</div>
+        <div style="font-size:0.88rem;margin-bottom:12px;opacity:0.85;">Drop your email and we'll send you a link each week</div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+          <input id="signup-email" type="email" placeholder="your@email.com" maxlength="100" aria-label="Your email address"
+            style="flex:1;min-width:180px;max-width:280px;padding:8px 14px;border-radius:999px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;" />
+          <button id="signup-btn"
+            style="padding:8px 18px;border-radius:999px;border:1px solid var(--neon);background:rgba(3,15,34,0.9);color:var(--neon);font-size:0.85rem;cursor:pointer;font-weight:600;white-space:nowrap;">
+            Subscribe
+          </button>
+        </div>
+        <div id="signup-status" style="font-size:0.8rem;margin-top:8px;min-height:18px;"></div>
+      </div>
   <section class="card quiz-shell" id="bsv-teaser" style="margin-bottom:18px;padding:0;">
     <details id="bsv-banner">
       <summary class="bsv-sum"><span class="bsv-sum-name">Brisbane's Smartest Venue</span><span class="bsv-sum-week" id="bsv-sum-week">6 venues competing</span></summary>
@@ -406,19 +415,6 @@
           </table>
           <div class="lb-legend"><b style="color:#4ade80">1st quiz</b> = first time playing &nbsp;·&nbsp; <b style="color:#f87171">PB</b> = new personal best &nbsp;·&nbsp; number = quizzes finished</div>
         </div>
-      </div>
-     <div id="mailing-list-signup" style="margin-top:20px; padding:18px 16px; border:1px solid rgba(150,208,255,0.25); border-radius:16px; background:radial-gradient(circle at top left,#12335a 0,#020a16 70%); text-align:center;">
-        <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">📬 Get the quiz every Sunday</div>
-        <div style="font-size:0.88rem;margin-bottom:12px;opacity:0.85;">Drop your email and we'll send you a link each week</div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <input id="signup-email" type="email" placeholder="your@email.com" maxlength="100" aria-label="Your email address"
-            style="flex:1;min-width:180px;max-width:280px;padding:8px 14px;border-radius:999px;border:1px solid rgba(150,208,255,0.6);background:rgba(0,8,18,0.85);color:#e9f4ff;font-size:0.9rem;" />
-          <button id="signup-btn"
-            style="padding:8px 18px;border-radius:999px;border:1px solid var(--neon);background:rgba(3,15,34,0.9);color:var(--neon);font-size:0.85rem;cursor:pointer;font-weight:600;white-space:nowrap;">
-            Subscribe
-          </button>
-        </div>
-        <div id="signup-status" style="font-size:0.8rem;margin-top:8px;min-height:18px;"></div>
       </div>
      <div id="feedback-section" style="margin-top:20px; padding:18px 16px; border:1px solid rgba(150,208,255,0.25); border-radius:16px; background:radial-gradient(circle at top left,#12335a 0,#020a16 70%); text-align:center;">
         <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">💬 Got something to say?</div>
@@ -1602,6 +1598,7 @@ document.getElementById("player-name").addEventListener("keydown", e => { if (e.
 function escapeHtml(str) { return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 let data_start_date = "2026-04-18";
 /* ---- MAILING LIST SIGNUP ---- */
+try { if (localStorage.getItem("bens-trivia-subscribed") === "1") document.getElementById("mailing-list-signup").setAttribute("data-subscribed", "1"); } catch (e) {}
 document.getElementById("signup-btn").addEventListener("click", async () => {
   const emailEl = document.getElementById("signup-email");
   const statusEl = document.getElementById("signup-status");
@@ -1622,6 +1619,7 @@ document.getElementById("signup-btn").addEventListener("click", async () => {
     if (res.ok) {
       statusEl.style.color = "var(--good)";
       statusEl.textContent = "✓ You're subscribed! Sending you this week's quiz now... (check your spam if you don't see it)";
+      try { localStorage.setItem("bens-trivia-subscribed", "1"); } catch (e) {}
       emailEl.style.display = "none"; btn.style.display = "none";
       // Send welcome email immediately
       fetch(`${SUPA_URL}/functions/v1/smooth-action/send-one`, {
@@ -1632,6 +1630,7 @@ document.getElementById("signup-btn").addEventListener("click", async () => {
     } else if (res.status === 409) {
       statusEl.style.color = "#f5c542";
       statusEl.textContent = "You're already subscribed!";
+      try { localStorage.setItem("bens-trivia-subscribed", "1"); } catch (e) {}
       btn.disabled = false; btn.textContent = "Subscribe";
     } else {
       statusEl.style.color = "var(--bad)";
