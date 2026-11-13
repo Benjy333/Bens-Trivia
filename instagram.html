@@ -277,7 +277,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
   }
   function drawAnswer(W, top, bottom){
     var R = bottom - top, cx = W / 2, mw = W * .86, gap = W * .035;
-    var label = "THE ANSWER";
+    var label = "ANSWER";
     var ls = fitFont(label, mw, W * .05, W * .03, "900", DISPLAY), labelFont = ctx.font;
     var showRecap = $("f-showrecap").checked && !!val("f-text");
     var recap = showRecap ? fitWrap(val("f-text"), mw, R * .16, W * .036, W * .026, "500", BODY, 1.3) : {h:0};
