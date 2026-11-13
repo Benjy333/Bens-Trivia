@@ -206,13 +206,16 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     ctx.fillText(title, pad, safeTop + logoH / 2);
 
     // footer
-    var fs = W * .034, footH = fs * 1.5 * 2;
+    var fs = W * .034, topLine = tab === "question" ? "" : "New quiz every Sunday";
+    var footH = fs * 1.5 * (topLine ? 2 : 1);
     var footTop = H - safeBottom - footH;
     ctx.textAlign = "center"; ctx.textBaseline = "top";
-    ctx.font = "600 " + fs + "px " + BODY; ctx.fillStyle = "#fff";
-    ctx.fillText(tab === "question" ? "Drop your answer in the comments" : "New quiz every Sunday", W / 2, footTop);
+    if(topLine){
+      ctx.font = "600 " + fs + "px " + BODY; ctx.fillStyle = "#fff";
+      ctx.fillText(topLine, W / 2, footTop);
+    }
     ctx.font = "700 " + fs + "px " + BODY; ctx.fillStyle = NEON;
-    ctx.fillText("Play free at benstrivia.com", W / 2, footTop + fs * 1.5);
+    ctx.fillText("Play free at benstrivia.com", W / 2, footTop + (topLine ? fs * 1.5 : 0));
 
     var top = safeTop + logoH + W * .05, bottom = footTop - W * .04;
     if(photo){ ctx.shadowColor = "rgba(0,0,0,.7)"; ctx.shadowBlur = W * .02; }
