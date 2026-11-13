@@ -71,11 +71,13 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
         <div class="field"><label for="f-text">Question text</label><textarea id="f-text"></textarea></div>
         <div class="field"><label for="f-options">Answer options (one per line)</label><textarea id="f-options" style="min-height:90px"></textarea></div>
         <label class="check"><input type="checkbox" id="f-showopts" checked> Show answer options on the image</label>
+        <label class="check"><input type="checkbox" id="f-swipe" checked> Show "Swipe for the answer" (for carousel posts)</label>
       </div>
 
       <div class="a-only hide">
-        <div class="field"><label for="f-answer">Answer</label><input id="f-answer" type="text" maxlength="120" autocomplete="off"></div>
+        <div class="field"><label for="f-answer">Answer (press Enter for a new line, e.g. to show two versions)</label><textarea id="f-answer" style="min-height:64px" maxlength="160"></textarea></div>
         <div class="field"><label for="f-fact">Fun fact</label><textarea id="f-fact" style="min-height:120px"></textarea></div>
+        <label class="check"><input type="checkbox" id="f-shortfact" checked> Short fun fact (first sentence only)</label>
         <label class="check"><input type="checkbox" id="f-showrecap" checked> Show the question on the image (turns off for Square so the fun fact fits)</label>
       </div>
 
@@ -98,10 +100,12 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     <section class="preview" aria-label="Preview">
       <div class="stage"><canvas id="card" width="1080" height="1350" aria-label="Preview of the Instagram image"></canvas></div>
       <div class="row" style="margin-top:12px">
-        <button type="button" class="btn primary" id="download">Download PNG</button>
-        <button type="button" class="btn" id="share">Share</button>
+        <button type="button" class="btn primary" id="download-both">Download both slides</button>
+        <button type="button" class="btn" id="download">Download this slide</button>
+        <button type="button" class="btn" id="share">Share this slide</button>
       </div>
       <div id="status" role="status" aria-live="polite"></div>
+      <p class="hint" id="tips"></p>
       <p class="hint">Story is 1080×1920 with the top and bottom kept clear for Instagram's buttons. Post is 1080×1350, Square is 1080×1080.</p>
     </section>
   </div>
@@ -206,7 +210,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     ctx.fillText(title, pad, safeTop + logoH / 2);
 
     // footer
-    var fs = W * .034, topLine = tab === "question" ? "" : "New quiz every Sunday";
+    var fs = W * .034, topLine = tab === "question" ? ($("f-swipe").checked ? "Swipe for the answer \u2192" : "") : "New quiz every Sunday";
     var footH = fs * 1.5 * (topLine ? 2 : 1);
     var footTop = H - safeBottom - footH;
     ctx.textAlign = "center"; ctx.textBaseline = "top";
@@ -225,25 +229,25 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
 
   function drawQuestion(W, top, bottom){
     var R = bottom - top, cx = W / 2, mw = W * .86;
+    var hook = val("f-meta");
     var label = (val("f-label") || "Hardest question of the week").toUpperCase();
-    var ls = fitFont(label, mw, W * .042, W * .022, "900", DISPLAY);
-    var labelFont = ctx.font;
-    var meta = val("f-meta").toUpperCase(), ms = W * .028;
+    var ls = fitFont(label, mw, hook ? W * .026 : W * .042, W * .02, hook ? "700" : "900", DISPLAY);
+    var labelFont = ctx.font, labelH = ls * 1.3;
+    var hf = hook ? fitWrap(hook, mw, W * .24, W * .09, W * .05, "900", DISPLAY, 1.15) : {h:0};
     var opts = $("f-showopts").checked ? optionList() : [];
     var optH = W * .085, optGap = W * .02;
     var optsH = opts.length ? opts.length * optH + (opts.length - 1) * optGap : 0;
-    var headH = ls * 1.25 + (meta ? ms * 1.7 : 0), gap = W * .04;
+    var gapA = W * .022, gap = W * .04;
+    var headH = labelH + (hook ? gapA + hf.h : 0);
     var qMaxH = Math.max(R - headH - gap - (opts.length ? optsH + gap : 0), W * .12);
-    var qf = fitWrap(val("f-text") || "Type your question…", mw, qMaxH, W * .07, W * .034, "700", BODY, 1.25);
+    var qf = fitWrap(val("f-text") || "Type your question\u2026", mw, qMaxH, W * .07, W * .034, "700", BODY, 1.25);
     var total = headH + gap + qf.h + (opts.length ? gap + optsH : 0);
-    var y = top + Math.max(0, (R - total) / 2);
+    // sit nearer the top instead of floating in the middle
+    var y = top + Math.max(0, (R - total) * .18);
 
-    ctx.font = labelFont; ctx.fillStyle = NEON; ctx.textAlign = "center"; ctx.textBaseline = "top";
-    ctx.fillText(label, cx, y); y += ls * 1.25;
-    if(meta){
-      ctx.font = "600 " + ms + "px " + BODY; ctx.fillStyle = "rgba(255,255,255,.78)";
-      ctx.fillText(meta, cx, y + ms * .25); y += ms * 1.7;
-    }
+    ctx.font = labelFont; ctx.fillStyle = hook ? "rgba(255,255,255,.72)" : NEON; ctx.textAlign = "center"; ctx.textBaseline = "top";
+    ctx.fillText(label, cx, y); y += labelH;
+    if(hook){ y += gapA; drawBlock(hf, cx, y, NEON); y += hf.h; }
     y += gap;
     drawBlock(qf, cx, y, "#fff"); y += qf.h;
     if(opts.length){
@@ -265,6 +269,12 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     }
   }
 
+  function shortFact(t){
+    t = (t || "").trim();
+    var m = t.match(/^.*?[.!?](\s|$)/), r = m ? m[0].trim() : t;
+    if(r.length > 170) r = r.slice(0, 170).replace(/\s+\S*$/, "") + "\u2026";
+    return r;
+  }
   function drawAnswer(W, top, bottom){
     var R = bottom - top, cx = W / 2, mw = W * .86, gap = W * .035;
     var label = "THE ANSWER";
@@ -274,7 +284,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     var padIn = W * .04;
     var af = fitWrap(val("f-answer") || "Type the answer…", mw - padIn * 2, R * .3, W * .085, W * .038, "800", BODY, 1.2);
     var panelH = af.h + padIn * 2;
-    var fact = val("f-fact");
+    var fact = $("f-shortfact").checked ? shortFact(val("f-fact")) : val("f-fact");
     var fls = W * .026, factLabelH = fls * 1.9;
     var used = ls * 1.25 + gap + (showRecap ? recap.h + gap : 0) + panelH;
     var ff = null;
@@ -283,7 +293,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
       ff = fitWrap(fact, mw, room, W * .04, W * .026, "500", BODY, 1.4);
     }
     var total = used + (ff ? gap + factLabelH + ff.h : 0);
-    var y = top + Math.max(0, (R - total) / 2);
+    var y = top + Math.max(0, (R - total) * .18);
 
     ctx.font = labelFont; ctx.fillStyle = NEON; ctx.textAlign = "center"; ctx.textBaseline = "top";
     ctx.fillText(label, cx, y); y += ls * 1.25 + gap;
@@ -310,7 +320,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
       parts.push("", "Drop your answer in the comments. The answer goes up soon!", "", "Play free every Sunday at benstrivia.com (link in bio)", "", TAGS);
       return parts.join("\n");
     }
-    var p = ["The answer to this week's hardest question: " + (val("f-answer") || "…")];
+    var p = ["The answer to this week's hardest question: " + (val("f-answer").replace(/\s*\n\s*/g, " / ") || "…")];
     if(val("f-fact")) p.push("", val("f-fact"));
     p.push("", "How did you go? Play free every Sunday at benstrivia.com (link in bio)", "", TAGS);
     return p.join("\n");
@@ -365,7 +375,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
   function statLine(q){
     var pct = statsByQ[q.id];
     if(pct == null) return "";
-    return pct + (q.type === "multi-text" ? "% got each answer right on average" : "% got this right");
+    return (pct < 50 ? "Only " : "") + pct + (q.type === "multi-text" ? "% got each answer right" : "% got this right");
   }
 
   function fill(q){
@@ -432,16 +442,27 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     [].forEach.call(document.querySelectorAll(".tabs [data-tab]"), function(b){ b.setAttribute("aria-selected", b.getAttribute("data-tab") === t ? "true" : "false"); });
     [].forEach.call(document.querySelectorAll(".q-only"), function(e){ e.classList.toggle("hide", t !== "question"); });
     [].forEach.call(document.querySelectorAll(".a-only"), function(e){ e.classList.toggle("hide", t !== "answer"); });
-    syncCaption(); render();
+    syncCaption(); updateTips(); render();
   }
-  function render(){
-    var p = (document.fonts && document.fonts.load)
+  function fontsReady(){
+    return (document.fonts && document.fonts.load)
       ? Promise.all([document.fonts.load("900 40px Orbitron"), document.fonts.load("700 40px Orbitron"), document.fonts.load("500 40px Inter"), document.fonts.load("700 40px Inter"), document.fonts.load("800 40px Inter")]).catch(function(){})
       : Promise.resolve();
-    p.then(draw);
+  }
+  function render(){ fontsReady().then(draw); }
+  function updateTips(){
+    var t = "";
+    if(layout === "story"){
+      t = tab === "question"
+        ? "Story tip: add Instagram's Question sticker in the empty space under the question, so people can type their answer before you reveal it."
+        : "Story tip: add Instagram's Link sticker (benstrivia.com) under the answer so people can play the quiz.";
+    } else {
+      t = "Carousel: post the question as slide 1 and the answer as slide 2. \"Download both slides\" saves them in order.";
+    }
+    $("tips").textContent = t;
   }
   [].forEach.call(document.querySelectorAll(".tabs [data-tab]"), function(b){ b.addEventListener("click", function(){ setTab(b.getAttribute("data-tab")); }); });
-  ["f-meta","f-label","f-text","f-options","f-showopts","f-answer","f-fact","f-showrecap"].forEach(function(id){
+  ["f-meta","f-label","f-text","f-options","f-showopts","f-answer","f-fact","f-showrecap","f-shortfact","f-swipe"].forEach(function(id){
     $(id).addEventListener("input", function(){ syncCaption(); draw(); });
     $(id).addEventListener("change", function(){ syncCaption(); draw(); });
   });
@@ -452,6 +473,8 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     b.addEventListener("click", function(){
       layout = b.getAttribute("data-layout");
       $("f-showrecap").checked = layout !== "square";
+      $("f-swipe").checked = layout !== "story";
+      updateTips();
       [].forEach.call(document.querySelectorAll("[data-layout]"), function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
       draw();
     });
@@ -472,15 +495,26 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     im.src = url;
   });
   function toBlob(){ return new Promise(function(res){ canvas.toBlob(function(b){ res(b); }, "image/png"); }); }
-  function fileName(){ return "bens-trivia-" + (tab === "question" ? "hardest-question" : "answer") + "-" + layout + ".png"; }
-  function save(blob){
+  function fileName(t){ t = t || tab; return "bens-trivia-" + (t === "question" ? "1-hardest-question" : "2-answer") + "-" + layout + ".png"; }
+  async function slideBlob(t){
+    var prev = tab; tab = t; await fontsReady(); draw();
+    var b = await toBlob(); tab = prev; draw(); return b;
+  }
+  function save(blob, name){
     var a = document.createElement("a"), url = URL.createObjectURL(blob);
-    a.href = url; a.download = fileName(); document.body.appendChild(a); a.click(); a.remove();
+    a.href = url; a.download = name || fileName(); document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
   }
   $("download").addEventListener("click", async function(){
     var b = await toBlob(); if(!b){ setStatus("Couldn't make the image."); return; }
     save(b); setStatus("Saved " + fileName());
+  });
+  $("download-both").addEventListener("click", async function(){
+    var q = await slideBlob("question"), a = await slideBlob("answer");
+    if(!q || !a){ setStatus("Couldn't make the images."); return; }
+    save(q, fileName("question"));
+    setTimeout(function(){ save(a, fileName("answer")); }, 400);
+    setStatus("Saved slide 1 (question) and slide 2 (answer).");
   });
   $("share").addEventListener("click", async function(){
     var b = await toBlob(); if(!b){ setStatus("Couldn't make the image."); return; }
@@ -502,7 +536,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     text:"A standard basketball has black lines called ribs or seams. How many panels does a standard NBA basketball have when it is separated into its individual panels?",
     options:["6","8","10","12"], correctIndex:1,
     funfact:"Most official game balls, like the NBA's, are made from 8 panels, although some international balls use 12. The first basketball game in 1891 was played with a soccer ball and two peach baskets."});
-  render(); loadQuizzes();
+  updateTips(); render(); loadQuizzes();
 })();
 </script>
 </body>
