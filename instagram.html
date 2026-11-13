@@ -64,7 +64,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
       <div class="field"><label for="f-quiz">Quiz</label><select id="f-quiz"><option>Loading quizzes…</option></select></div>
       <div class="field"><label for="f-q">Question</label><select id="f-q"></select></div>
 
-      <div class="field"><label for="f-meta">Category line</label><input id="f-meta" type="text" maxlength="40" autocomplete="off"></div>
+      <div class="field"><label for="f-meta">Percentage line (filled in from your stats)</label><input id="f-meta" type="text" maxlength="48" autocomplete="off" placeholder="e.g. 16% got this right"></div>
 
       <div class="q-only">
         <div class="field"><label for="f-label">Heading</label><input id="f-label" type="text" maxlength="40" autocomplete="off" value="Hardest question of the week"></div>
@@ -323,18 +323,67 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     if(q.correctYear != null) return String(q.correctYear);
     return "";
   }
+  /* ---------- how many people got each question right ---------- */
+  var SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
+  var SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
+  var statsByQ = {};
+  function sbGet(path){
+    return fetch(SUPA_URL + "/rest/v1/" + path, {headers:{apikey:SUPA_KEY, Authorization:"Bearer " + SUPA_KEY}}).then(function(r){ return r.json(); });
+  }
+  function loadStats(quiz){
+    statsByQ = {};
+    var t = encodeURIComponent(quiz.title);
+    return Promise.all([
+      sbGet("question_stats_summary?quiz_title=eq." + t + "&select=question_id,slot_id,total_count,correct_count"),
+      sbGet("question_stats_by_points?quiz_title=eq." + t + "&select=question_id,points_earned,attempt_count")
+    ]).then(function(res){
+      var sum = Array.isArray(res[0]) ? res[0] : [], pts = Array.isArray(res[1]) ? res[1] : [];
+      var by = {}, yr = {};
+      sum.forEach(function(r){
+        var o = by[r.question_id] || (by[r.question_id] = {c:0, t:0, slots:[]});
+        if(r.slot_id) o.slots.push(r.total_count ? r.correct_count / r.total_count : 0);
+        else { o.c += r.correct_count; o.t += r.total_count; }
+      });
+      pts.forEach(function(r){
+        var o = yr[r.question_id] || (yr[r.question_id] = {ok:0, t:0});
+        o.t += r.attempt_count; if(r.points_earned >= 1) o.ok += r.attempt_count;
+      });
+      quiz.questions.forEach(function(q){
+        var pct = null;
+        if(q.type === "year" && yr[q.id] && yr[q.id].t) pct = Math.round(yr[q.id].ok / yr[q.id].t * 100);
+        else if(by[q.id] && by[q.id].t) pct = Math.round(by[q.id].c / by[q.id].t * 100);
+        else if(by[q.id] && by[q.id].slots.length){
+          var a = by[q.id].slots; pct = Math.round(a.reduce(function(x, y){ return x + y; }, 0) / a.length * 100);
+        }
+        if(pct !== null) statsByQ[q.id] = pct;
+      });
+    }).catch(function(){ statsByQ = {}; });
+  }
+  function statLine(q){
+    var pct = statsByQ[q.id];
+    if(pct == null) return "";
+    return pct + (q.type === "multi-text" ? "% got each answer right on average" : "% got this right");
+  }
+
   function fill(q){
     $("f-text").value = q.text || "";
     $("f-options").value = (q.options || []).join("\n");
     $("f-showopts").checked = !!(q.options && q.options.length);
     $("f-answer").value = answerOf(q);
     $("f-fact").value = q.funfact || "";
-    var pts = q.maxPoints || 1;
-    $("f-meta").value = (q.tag ? q.tag + " · " : "") + pts + (pts === 1 ? " point" : " points");
+    $("f-meta").value = statLine(q);
     captionDirty = {question:false, answer:false};
     syncCaption(); draw();
   }
+  // The hardest question is the one the fewest people got right. Falls back to the
+  // "1% Question" tag, then the last question, when there are no stats yet.
   function defaultIndex(qs){
+    var best = -1, bestPct = 101;
+    qs.forEach(function(q, i){
+      var p = statsByQ[q.id];
+      if(p != null && p < bestPct){ bestPct = p; best = i; }
+    });
+    if(best >= 0) return best;
     for(var i = 0; i < qs.length; i++) if(/1%/.test(qs[i].tag || "")) return i;
     return Math.max(qs.length - 1, 0);
   }
@@ -343,7 +392,8 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     sel.innerHTML = "";
     qs.forEach(function(q, i){
       var o = document.createElement("option"); o.value = i;
-      o.textContent = (i + 1) + ". [" + (q.tag || "Question") + "] " + (q.text || "").slice(0, 60);
+      var pc = statsByQ[q.id];
+      o.textContent = (i + 1) + ". " + (pc != null ? pc + "% \u00b7 " : "") + (q.text || "").slice(0, 60);
       sel.appendChild(o);
     });
     var di = defaultIndex(qs); sel.value = di; fill(qs[di]);
@@ -363,7 +413,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
         });
         var start = 0;
         quizzes.forEach(function(q, i){ if(q.title === thisTitle) start = i; });
-        sel.value = start; currentQuiz = quizzes[start]; fillQuestionPicker();
+        sel.value = start; currentQuiz = quizzes[start]; loadStats(currentQuiz).then(fillQuestionPicker);
       })
       .catch(function(){
         $("f-quiz").innerHTML = "<option>Couldn't load quizzes</option>";
@@ -393,7 +443,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     $(id).addEventListener("change", function(){ syncCaption(); draw(); });
   });
   $("f-caption").addEventListener("input", function(){ captionDirty[tab] = true; });
-  $("f-quiz").addEventListener("change", function(){ currentQuiz = quizzes[+$("f-quiz").value]; fillQuestionPicker(); });
+  $("f-quiz").addEventListener("change", function(){ currentQuiz = quizzes[+$("f-quiz").value]; loadStats(currentQuiz).then(fillQuestionPicker); });
   $("f-q").addEventListener("change", function(){ fill(currentQuiz.questions[+$("f-q").value]); });
   [].forEach.call(document.querySelectorAll("[data-layout]"), function(b){
     b.addEventListener("click", function(){
