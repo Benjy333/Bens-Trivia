@@ -7,7 +7,7 @@
 <title>Instagram Posts · Ben's Trivia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700;800&family=Anton&family=Bangers&family=Bebas+Neue&family=Pacifico&family=Permanent+Marker&family=Playfair+Display:wght@800&family=Righteous&family=Russo+One&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#020a16; --panel:#0b1624; --ink:#e6f1ff; --muted:rgba(230,241,255,.62);
@@ -47,24 +47,34 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
 #status{min-height:1.2em;font-size:.8rem;text-align:center;margin:8px 0 0;color:var(--neon);}
 .group{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--neon);margin:4px 0 10px;}
 .hide{display:none!important;}
+.sect{border-top:1px solid var(--line);padding-top:12px;margin:2px 0 12px;}
+.sect .check{margin-bottom:8px;font-weight:600;}
+.field input[type=range]{width:100%;accent-color:var(--neon);}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.two .field{margin-bottom:8px;}
+.sect.off .field,.sect.off .two{opacity:.4;}
+.t-only>.sect:first-child{border-top:0;padding-top:0;}
 </style>
 </head>
 <body>
 <main class="wrap">
   <h1>Instagram Posts</h1>
-  <p class="sub">Make the hardest-question post and the answer reveal for this week's quiz. Add a photo, pick a size, then save or share the image. Everything is made on your device.</p>
+  <p class="sub">Make the hardest-question post, the answer reveal, or a team photo with the score. Add a photo, pick a size, then save or share the image. Everything is made on your device.</p>
 
   <div class="tabs" role="tablist" aria-label="Post type">
     <button type="button" role="tab" id="tab-question" data-tab="question" aria-selected="true">Question post</button>
     <button type="button" role="tab" id="tab-answer" data-tab="answer" aria-selected="false">Answer reveal</button>
+    <button type="button" role="tab" id="tab-team" data-tab="team" aria-selected="false">Team photo</button>
   </div>
 
   <div class="grid">
     <section class="panel" aria-label="Post settings">
+      <div class="qa-only">
       <div class="field"><label for="f-quiz">Quiz</label><select id="f-quiz"><option>Loading quizzes…</option></select></div>
       <div class="field"><label for="f-q">Question</label><select id="f-q"></select></div>
 
       <div class="field"><label for="f-meta">Percentage line (filled in from your stats)</label><input id="f-meta" type="text" maxlength="48" autocomplete="off" placeholder="e.g. 16% got this right"></div>
+      </div>
 
       <div class="q-only">
         <div class="field"><label for="f-label">Heading</label><input id="f-label" type="text" maxlength="40" autocomplete="off" value="Hardest question of the week"></div>
@@ -79,6 +89,35 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
         <div class="field"><label for="f-fact">Fun fact</label><textarea id="f-fact" style="min-height:120px"></textarea></div>
         <label class="check"><input type="checkbox" id="f-shortfact" checked> Short fun fact (first sentence only)</label>
         <label class="check"><input type="checkbox" id="f-showrecap" checked> Show the question on the image (turns off for Square so the fun fact fits)</label>
+      </div>
+
+      <div class="t-only hide">
+        <div class="sect" id="s-name">
+          <label class="check"><input type="checkbox" id="f-t-name-on" checked> Team name</label>
+          <div class="field"><input id="f-t-name" type="text" maxlength="28" autocomplete="off" aria-label="Team name" placeholder="Your team name" value="19th Hole"></div>
+          <div class="two">
+            <div class="field"><label for="f-t-font">Font</label><select id="f-t-font"></select></div>
+            <div class="field"><label for="f-t-name-size">Size</label><input id="f-t-name-size" type="range" min="4" max="14" step="0.5" value="8"></div>
+          </div>
+          <label class="check"><input type="checkbox" id="f-t-caps" checked> All capitals</label>
+        </div>
+        <div class="sect" id="s-score">
+          <label class="check"><input type="checkbox" id="f-t-score-on" checked> Score</label>
+          <div class="two">
+            <div class="field"><label for="f-t-score">Score (shown as "Score: 21/30")</label><input id="f-t-score" type="text" maxlength="12" autocomplete="off" placeholder="21/30" value="21/30"></div>
+            <div class="field"><label for="f-t-score-size">Size</label><input id="f-t-score-size" type="range" min="3" max="12" step="0.5" value="6"></div>
+          </div>
+        </div>
+        <div class="sect" id="s-loc">
+          <label class="check"><input type="checkbox" id="f-t-loc-on" checked> Location</label>
+          <div class="two">
+            <div class="field"><label for="f-t-loc">Venue</label><input id="f-t-loc" type="text" maxlength="34" autocomplete="off" placeholder="Where are you playing?" value="X Golf"></div>
+            <div class="field"><label for="f-t-loc-size">Size</label><input id="f-t-loc-size" type="range" min="3" max="14" step="0.5" value="8.5"></div>
+          </div>
+        </div>
+        <div class="sect">
+          <label class="check"><input type="checkbox" id="f-t-logo-on" checked> Ben's Trivia logo (top right)</label>
+        </div>
       </div>
 
       <div class="group">Photo and size</div>
@@ -119,7 +158,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
   var $ = function(id){ return document.getElementById(id); };
   var canvas = $("card"), ctx = canvas.getContext("2d");
   var tab = "question", layout = "post", photo = null;
-  var captionDirty = {question:false, answer:false};
+  var captionDirty = {question:false, answer:false, team:false};
   var quizzes = [], currentQuiz = null;
 
   var logo = new Image();
@@ -187,6 +226,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
   function draw(){
     var d = SIZES[layout], W = d[0], H = d[1];
     canvas.width = W; canvas.height = H;
+    if(tab === "team"){ drawTeam(W, H); ctx.shadowBlur = 0; return; }
     var g = ctx.createRadialGradient(W * .2, 0, 0, W * .2, 0, Math.max(W, H) * 1.1);
     g.addColorStop(0, "#12335a"); g.addColorStop(.7, "#020a16");
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
@@ -225,6 +265,63 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     if(photo){ ctx.shadowColor = "rgba(0,0,0,.7)"; ctx.shadowBlur = W * .02; }
     if(tab === "question") drawQuestion(W, top, bottom); else drawAnswer(W, top, bottom);
     ctx.shadowBlur = 0;
+  }
+
+
+  /* ---------- team photo ---------- */
+  var TEAM_FONTS = [
+    {label:"Orbitron (default)", family:"Orbitron, 'Arial Black', sans-serif", load:"Orbitron", weight:"700", caps:true},
+    {label:"Inter Bold", family:"Inter, Arial, sans-serif", load:"Inter", weight:"800", caps:false},
+    {label:"Bebas Neue", family:"'Bebas Neue', Impact, sans-serif", load:"'Bebas Neue'", weight:"400", caps:true},
+    {label:"Anton", family:"Anton, Impact, sans-serif", load:"Anton", weight:"400", caps:true},
+    {label:"Russo One", family:"'Russo One', 'Arial Black', sans-serif", load:"'Russo One'", weight:"400", caps:true},
+    {label:"Righteous", family:"Righteous, 'Arial Black', sans-serif", load:"Righteous", weight:"400", caps:false},
+    {label:"Bangers (comic)", family:"Bangers, Impact, sans-serif", load:"Bangers", weight:"400", caps:true},
+    {label:"Permanent Marker", family:"'Permanent Marker', 'Comic Sans MS', cursive", load:"'Permanent Marker'", weight:"400", caps:false},
+    {label:"Pacifico (script)", family:"Pacifico, 'Brush Script MT', cursive", load:"Pacifico", weight:"400", caps:false},
+    {label:"Playfair Display (serif)", family:"'Playfair Display', Georgia, serif", load:"'Playfair Display'", weight:"800", caps:false}
+  ];
+  function teamFont(){ return TEAM_FONTS[+$("f-t-font").value] || TEAM_FONTS[0]; }
+  function pin(cx, cy, size, color){
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = size * 0.12; ctx.lineJoin = "round";
+    ctx.beginPath(); ctx.moveTo(cx, cy + size * 0.5);
+    ctx.bezierCurveTo(cx - size * 0.62, cy - size * 0.02, cx - size * 0.5, cy - size * 0.55, cx, cy - size * 0.55);
+    ctx.bezierCurveTo(cx + size * 0.5, cy - size * 0.55, cx + size * 0.62, cy - size * 0.02, cx, cy + size * 0.5); ctx.closePath(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy - size * 0.1, size * 0.14, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+  }
+  function on(id){ return $(id).checked; }
+  function pct(id){ return parseFloat($(id).value) / 100; }
+  function drawTeam(W, H){
+    var g = ctx.createRadialGradient(W * .2, 0, 0, W * .2, 0, Math.max(W, H) * 1.1);
+    g.addColorStop(0, "#12335a"); g.addColorStop(.7, "#020a16");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    if(photo) cover(photo, W, H);
+    var pad = W * .06, safeTop = H > 1800 ? 200 : pad, safeBottom = H > 1800 ? 260 : pad;
+    var y = safeTop;
+    if(on("f-t-logo-on") && logo.complete && logo.naturalWidth){
+      var logoH = W * .085, lw = logo.naturalWidth * (logoH / logo.naturalHeight);
+      ctx.drawImage(logo, W - pad - lw, safeTop, lw, logoH);
+      y = safeTop + logoH + W * .05;
+    }
+    ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+    ctx.shadowColor = "rgba(0,0,0,.8)"; ctx.shadowBlur = W * .025;
+    var gap = W * .025, name = val("f-t-name"), score = val("f-t-score"), loc = val("f-t-loc"), first = true;
+    if(on("f-t-name-on") && name){
+      var tf = teamFont(), nm = on("f-t-caps") ? name.toUpperCase() : name;
+      var ns = fitFont(nm, W * .86, W * pct("f-t-name-size"), W * .03, tf.weight, tf.family);
+      y += ns; ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.fillText(nm, W / 2, y); first = false;
+    }
+    if(on("f-t-score-on") && score){
+      var ss = fitFont("Score: " + score, W * .86, W * pct("f-t-score-size"), W * .03, "600", BODY);
+      y += (first ? 0 : gap) + ss; ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.fillText("Score: " + score, W / 2, y);
+    }
+    if(on("f-t-loc-on") && loc){
+      var lf = fitFont(loc, W * .72, W * pct("f-t-loc-size"), W * .03, "600", BODY), iconW = lf * 1.2;
+      var tw = ctx.measureText(loc).width, x0 = (W - (iconW + tw)) / 2, ly = H - safeBottom;
+      pin(x0 + iconW * .4, ly - lf * .35, lf * .95, "#fff");
+      ctx.textAlign = "left"; ctx.fillStyle = "#fff"; ctx.font = "600 " + lf + "px " + BODY; ctx.fillText(loc, x0 + iconW, ly);
+      ctx.textAlign = "center";
+    }
   }
 
   function drawQuestion(W, top, bottom){
@@ -313,6 +410,13 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
   /* ---------- captions ---------- */
   var TAGS = "#trivia #triviaquiz #pubtrivia #brisbane #quiznight #benstrivia";
   function captionFor(t){
+    if(t === "team"){
+      var nm = val("f-t-name"), sc = val("f-t-score"), lc = val("f-t-loc");
+      var who = on("f-t-name-on") && nm ? nm : "We", line = who;
+      line += (on("f-t-score-on") && sc) ? " scored " + sc : " played";
+      line += " on The Big Fat Sunday Quiz" + ((on("f-t-loc-on") && lc) ? " at " + lc : "") + ".";
+      return [line, "", "Think you can beat that? Play free every Sunday at benstrivia.com (link in bio)", "", "Tag @benstrivia if you post yours!", "", TAGS].join("\n");
+    }
     if(t === "question"){
       var parts = ["This week's hardest question from The Big Fat Sunday Quiz.", "", val("f-text")];
       var o = optionList();
@@ -385,7 +489,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     $("f-answer").value = answerOf(q);
     $("f-fact").value = q.funfact || "";
     $("f-meta").value = statLine(q);
-    captionDirty = {question:false, answer:false};
+    captionDirty.question = false; captionDirty.answer = false;
     syncCaption(); draw();
   }
   // The hardest question is the one the fewest people got right. Falls back to the
@@ -442,17 +546,24 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     [].forEach.call(document.querySelectorAll(".tabs [data-tab]"), function(b){ b.setAttribute("aria-selected", b.getAttribute("data-tab") === t ? "true" : "false"); });
     [].forEach.call(document.querySelectorAll(".q-only"), function(e){ e.classList.toggle("hide", t !== "question"); });
     [].forEach.call(document.querySelectorAll(".a-only"), function(e){ e.classList.toggle("hide", t !== "answer"); });
+    [].forEach.call(document.querySelectorAll(".t-only"), function(e){ e.classList.toggle("hide", t !== "team"); });
+    [].forEach.call(document.querySelectorAll(".qa-only"), function(e){ e.classList.toggle("hide", t === "team"); });
+    $("download-both").classList.toggle("hide", t === "team");
+    $("download").textContent = t === "team" ? "Download PNG" : "Download this slide";
+    $("share").textContent = t === "team" ? "Share" : "Share this slide";
     syncCaption(); updateTips(); render();
   }
   function fontsReady(){
     return (document.fonts && document.fonts.load)
-      ? Promise.all([document.fonts.load("900 40px Orbitron"), document.fonts.load("700 40px Orbitron"), document.fonts.load("500 40px Inter"), document.fonts.load("700 40px Inter"), document.fonts.load("800 40px Inter")]).catch(function(){})
+      ? Promise.all([document.fonts.load("900 40px Orbitron"), document.fonts.load("700 40px Orbitron"), document.fonts.load("500 40px Inter"), document.fonts.load("700 40px Inter"), document.fonts.load("800 40px Inter"), (function(){ var f = teamFont(); return document.fonts.load(f.weight + " 40px " + f.load); })()]).catch(function(){})
       : Promise.resolve();
   }
   function render(){ fontsReady().then(draw); }
   function updateTips(){
     var t = "";
-    if(layout === "story"){
+    if(tab === "team"){
+      t = "Tick or untick each section to show or hide it. Tag @benstrivia when you post it.";
+    } else if(layout === "story"){
       t = tab === "question"
         ? "Story tip: add Instagram's Question sticker in the empty space under the question, so people can type their answer before you reveal it."
         : "Story tip: add Instagram's Link sticker (benstrivia.com) under the answer so people can play the quiz.";
@@ -462,6 +573,16 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     $("tips").textContent = t;
   }
   [].forEach.call(document.querySelectorAll(".tabs [data-tab]"), function(b){ b.addEventListener("click", function(){ setTab(b.getAttribute("data-tab")); }); });
+  var sel = $("f-t-font");
+  TEAM_FONTS.forEach(function(f, i){ var o = document.createElement("option"); o.value = i; o.textContent = f.label; sel.appendChild(o); });
+  sel.addEventListener("change", function(){ $("f-t-caps").checked = teamFont().caps; render(); });
+  [["f-t-name-on","s-name"],["f-t-score-on","s-score"],["f-t-loc-on","s-loc"]].forEach(function(p){
+    $(p[0]).addEventListener("change", function(){ $(p[1]).classList.toggle("off", !$(p[0]).checked); });
+  });
+  ["f-t-name-on","f-t-name","f-t-caps","f-t-name-size","f-t-score-on","f-t-score","f-t-score-size","f-t-loc-on","f-t-loc","f-t-loc-size","f-t-logo-on"].forEach(function(id){
+    $(id).addEventListener("input", function(){ syncCaption(); draw(); });
+    $(id).addEventListener("change", function(){ syncCaption(); draw(); });
+  });
   ["f-meta","f-label","f-text","f-options","f-showopts","f-answer","f-fact","f-showrecap","f-shortfact","f-swipe"].forEach(function(id){
     $(id).addEventListener("input", function(){ syncCaption(); draw(); });
     $(id).addEventListener("change", function(){ syncCaption(); draw(); });
@@ -495,7 +616,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
     im.src = url;
   });
   function toBlob(){ return new Promise(function(res){ canvas.toBlob(function(b){ res(b); }, "image/png"); }); }
-  function fileName(t){ t = t || tab; return "bens-trivia-" + (t === "question" ? "1-hardest-question" : "2-answer") + "-" + layout + ".png"; }
+  function fileName(t){ t = t || tab; return "bens-trivia-" + (t === "team" ? "team" : t === "question" ? "1-hardest-question" : "2-answer") + "-" + layout + ".png"; }
   async function slideBlob(t){
     var prev = tab; tab = t; await fontsReady(); draw();
     var b = await toBlob(); tab = prev; draw(); return b;
