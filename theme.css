@@ -388,3 +388,60 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 /* page title now sits under the sticky bar (it used to live inside the header) */
 .global-header + .header-row-bottom{max-width:960px;margin:20px auto 4px!important;padding:0 16px;box-sizing:border-box;text-align:center;}
 @media (min-width:900px){ .global-header + .header-row-bottom{max-width:none;margin:44px 0 8px!important;} }
+
+/* =====================================================================
+   READABILITY: leaderboard + quiz stats (bigger headings, dark header strip,
+   striped rows, dark text instead of gold, bold scores, clear top three)
+   ===================================================================== */
+.card .section-heading{font-size:1.4rem!important;font-weight:800!important;margin:0 0 14px!important;}
+.lb-table{border-collapse:separate!important;border-spacing:0!important;font-size:1rem!important;color:var(--t-ink)!important;}
+.lb-table thead th{background:var(--t-btn)!important;color:#fff!important;opacity:1!important;padding:11px 12px!important;border:0!important;font-size:.72rem!important;font-weight:800!important;letter-spacing:.08em!important;}
+.lb-table thead th:first-child{border-radius:10px 0 0 10px;}
+.lb-table thead th:last-child{border-radius:0 10px 10px 0;}
+.lb-table tbody td{padding:12px!important;border-bottom:1px solid rgba(25,162,164,.18)!important;background:none;}
+.lb-table tbody tr:nth-child(n) td{color:var(--t-ink)!important;}
+.lb-table tbody tr{opacity:1!important;}
+.lb-table tbody tr:nth-child(even) td{background:rgba(255,255,255,.55);}
+#lb-footer td,.lb-table tbody tr#lb-footer:nth-child(even) td{background:none!important;border:0!important;}
+.lb-table tr.lb-top td{font-weight:700;}
+.lb-table tr.lb-r1 td:first-child{box-shadow:inset 5px 0 0 #D9A514;}
+.lb-table tr.lb-r2 td:first-child{box-shadow:inset 5px 0 0 #8E9EA6;}
+.lb-table tr.lb-r3 td:first-child{box-shadow:inset 5px 0 0 #C27A3A;}
+.lb-table td.lb-name,.venue-cell{font-weight:700!important;font-size:1.03rem;color:var(--t-ink)!important;}
+#lb-table td:nth-child(4){font-weight:800!important;font-size:1.05rem;}
+#lb-table td:nth-child(5){font-weight:600;}
+.lb-table td.lb-nowrap{font-variant-numeric:tabular-nums;}
+#bsv-body td:last-child{font-weight:800;font-size:1.05rem;}
+#lb-table td:nth-child(7){opacity:1!important;font-size:.78rem!important;font-weight:500!important;color:rgba(11,59,66,.62)!important;}
+.lb-fin{font-weight:700;}
+.mv{font-weight:800!important;font-size:.95rem!important;}
+@media (min-width:700px){
+  #lb-table{table-layout:fixed;}
+  #lb-table th:nth-child(1){width:84px;} #lb-table th:nth-child(2){width:84px;} #lb-table th:nth-child(3){width:300px;}
+  #lb-table td.lb-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lb-table:has(#bsv-body){table-layout:fixed;}
+  .lb-table:has(#bsv-body) th:nth-child(1){width:84px;} .lb-table:has(#bsv-body) th:nth-child(2){width:340px;}
+}
+@media (max-width:480px){
+  .lb-table tbody td{padding:11px 5px!important;}
+  .lb-table thead th{padding:10px 5px!important;}
+  .lb-table thead th:first-child{padding-left:10px!important;}
+  .lb-table tbody td:first-child{padding-left:10px!important;}
+  #lb-table td.lb-name{font-size:1rem;}
+  #lb-table th:nth-child(5),#lb-table td:nth-child(5){display:none;}
+  .card .section-heading{font-size:1.2rem!important;}
+  .bsv-oneline{font-size:1.1rem!important;}
+}
+/* quiz stats: question breakdown */
+.q-row{background:rgba(255,255,255,.55)!important;border:1px solid var(--t-line-soft)!important;padding:15px 16px!important;}
+.q-text{font-size:1.04rem!important;font-weight:700!important;line-height:1.35!important;color:var(--t-ink)!important;}
+.q-pct{font-size:1.25rem!important;font-weight:800!important;font-variant-numeric:tabular-nums;}
+.q-bar-outer{height:11px!important;background:rgba(25,162,164,.22)!important;}
+.q-bar-inner{height:100%!important;}
+.q-tag{font-size:.76rem!important;font-weight:700!important;color:var(--t-link)!important;}
+.q-row [style*="font-size:0.8rem"]{font-size:.92rem!important;}
+.q-row [style*="font-size:0.85rem"]{font-size:.95rem!important;}
+.q-row span[style*="opacity:0.6"],.q-row span[style*="opacity:0.5"]{opacity:.85!important;}
+.stat-card .stat-value{font-size:2rem!important;}
+.stat-card .stat-label{font-size:.78rem!important;letter-spacing:.07em;}
+#lb-table th:nth-child(6),#lb-table td:nth-child(6){text-align:center;}
