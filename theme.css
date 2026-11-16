@@ -206,14 +206,14 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--t-banner)!import
    DESKTOP LAYOUT (900px and up): full-width top bar, big hero, wide centred question cards
    ===================================================================== */
 @media (min-width:900px){
-  .global-header{display:grid!important;flex-direction:initial;grid-template-columns:auto 1fr;grid-template-rows:68px auto;max-width:none!important;padding:0 36px!important;
-    background:linear-gradient(var(--t-line),var(--t-line)) 0 67px/100% 1px no-repeat!important;}
+  .global-header{display:grid!important;flex-direction:initial;grid-template-columns:auto 1fr;grid-template-rows:88px auto;max-width:none!important;padding:0 40px!important;
+    background:linear-gradient(var(--t-line),var(--t-line)) 0 87px/100% 1px no-repeat!important;}
   /* Ben's Trivia logo, top left of the bar */
   .global-header::before{display:none!important;}
   .header-row-top{grid-column:1;grid-row:1;order:0;align-self:center;justify-content:flex-start;margin:0;}
-  .header-logo{height:46px!important;margin:0;border-radius:8px;}
-  .menu-dropdown{grid-column:2;grid-row:1;order:0;align-items:stretch;gap:30px;margin:0!important;padding:0 0 0 28px!important;border:0!important;overflow:visible;}
-  .menu-dropdown a{display:flex;align-items:center;padding:0 2px!important;margin:0;font-size:.78rem!important;font-weight:800;letter-spacing:.07em;text-transform:uppercase;border-bottom:3px solid transparent;}
+  .header-logo{height:60px!important;margin:0;border-radius:10px;}
+  .menu-dropdown{grid-column:2;grid-row:1;order:0;align-items:stretch;gap:40px;margin:0!important;padding:0 0 0 36px!important;border:0!important;overflow:visible;}
+  .menu-dropdown a{display:flex;align-items:center;padding:0 2px!important;margin:0;font-size:1rem!important;font-weight:800;letter-spacing:.07em;text-transform:uppercase;border-bottom:3px solid transparent;}
   .menu-dropdown a.active{border-bottom-color:var(--t-ink);}
   .header-row-bottom{grid-column:1 / -1;grid-row:2;order:0;margin:44px 0 8px!important;}
   .page-title{font-size:clamp(2.4rem,4.4vw,3.6rem)!important;letter-spacing:-.02em!important;line-height:1.05;}
