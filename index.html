@@ -252,7 +252,7 @@
     #bsv-venues[open] > summary::after { content:" \25B4"; }
   </style>
 
-  <link rel="stylesheet" href="theme.css?v=22" />
+  <link rel="stylesheet" href="theme.css?v=25" />
 </head>
 <body>
   <div id="dev-panel">
@@ -1806,8 +1806,8 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
   <div id="sc-box">
     <button type="button" id="sc-close" aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M2 2 L12 12 M12 2 L2 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
     <h3 id="sc-h">Share your score</h3>
-    <div id="sc-stage"><div id="sc-canvas-wrap"><canvas id="sc-canvas" width="1080" height="1350" aria-label="Preview of your share image"></canvas><input id="sc-name" class="sc-edit sc-edit-name" type="text" maxlength="24" placeholder="Add team name" autocomplete="off" aria-label="Team name"><input id="sc-loc" class="sc-edit sc-edit-loc" type="text" maxlength="30" placeholder="Add location" autocomplete="off" aria-label="Location"><button type="button" id="sc-card-add" aria-label="Add team photo"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 8h3l1.6-2.4h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.6"/></svg><span>Add team photo</span></button></div></div>
-    <div id="sc-hint">Tap the team name or location on the card to change it.</div>
+    <div id="sc-stage"><div id="sc-canvas-wrap"><canvas id="sc-canvas" width="1080" height="1350" aria-label="Preview of your share image"></canvas><div id="sc-block"><input id="sc-name" class="sc-edit sc-edit-name" type="text" maxlength="24" placeholder="Add team name" autocomplete="off" aria-label="Team name"></div><input id="sc-loc" class="sc-edit sc-edit-loc" type="text" maxlength="30" placeholder="Add location" autocomplete="off" aria-label="Location"><button type="button" id="sc-card-add" aria-label="Add team photo"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 8h3l1.6-2.4h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.6"/></svg><span>Add team photo</span></button></div></div>
+    <button type="button" id="sc-reset" style="display:none;">Reset name and score</button>
     <div class="sc-row">
       <button type="button" class="sc-btn" id="sc-photo-btn" style="display:none;">Change photo</button>
       <button type="button" class="sc-btn" id="sc-photo-clear" style="display:none;">Remove photo</button>
@@ -1866,58 +1866,66 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
     ctx.fillStyle=bg; rr(cx-w/2,cy-h/2,w,h,h/2); ctx.fill();
     ctx.fillStyle=fg; ctx.textAlign="center"; ctx.fillText(txt,cx,cy+size*0.34);
   }
-  function placeInputs(W,H,nameBase,nameSz,ly,lf){
-    var scale=(canvas.clientWidth||W)/W;
-    function put(el,top,h,fs,wPct){
-      el.style.top=(top/H*100)+"%"; el.style.height=(h/H*100)+"%";
-      el.style.left=((100-wPct)/2)+"%"; el.style.width=wPct+"%";
-      el.style.fontSize=Math.max(16,fs*scale)+"px";
-    }
-    put(nameEl,nameBase-nameSz*1.15,nameSz*1.6,nameSz,86);
-    put(locEl,ly-lf*1.2,lf*1.7,lf,76);
+  var blk={x:0,y:0,s:1}, curW=1080, curH=1350, geom=null;
+  var blockEl=document.getElementById("sc-block"), wrap=document.getElementById("sc-canvas-wrap"), resetBtn=document.getElementById("sc-reset");
+  function dispScale(W){ return (canvas.clientWidth||W)/W; }
+  function placeBlock(W,H,ax,ay,bw0,blockH0,ns,nameBase0){
+    var s=blk.s, bw=bw0*s, bh=blockH0*s;
+    blockEl.style.left=((ax-bw/2)/W*100)+"%"; blockEl.style.top=(ay/H*100)+"%";
+    blockEl.style.width=(bw/W*100)+"%"; blockEl.style.height=(bh/H*100)+"%";
+    nameEl.style.top="0%"; nameEl.style.left="0%"; nameEl.style.width="100%"; nameEl.style.height=((ns*1.5)/blockH0*100)+"%";
+    nameEl.style.fontSize=Math.max(16,ns*s*dispScale(W))+"px";
+  }
+  function placeLoc(W,H,ly,lf){
+    locEl.style.top=((ly-lf*1.2)/H*100)+"%"; locEl.style.height=(lf*1.7/H*100)+"%";
+    locEl.style.left="12%"; locEl.style.width="76%"; locEl.style.fontSize=Math.max(16,lf*dispScale(W))+"px";
   }
   window.addEventListener("resize",function(){ if(overlay.classList.contains("open")) draw(); });
   function draw(){
     var dims=SIZES[layout], W=dims[0], H=dims[1]; canvas.width=W; canvas.height=H;
     var safeTop=H>1800?200:W*0.07, safeBottom=H>1800?260:W*0.07*1.5;
     var FONT="'Plus Jakarta Sans', Inter, Arial, sans-serif", INK="#0B3B42";
-    // turquoise card with a soft ring motif; the photo (if any) covers it, with a tint top and bottom so the text always reads
+    // turquoise card with a soft ring motif; a photo (if any) covers it untouched, the text gets a soft shadow so it still reads
     var g=ctx.createLinearGradient(0,0,W*0.6,H); g.addColorStop(0,"#14CBC6"); g.addColorStop(1,"#00706B"); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
     ctx.save(); ctx.strokeStyle="rgba(255,255,255,.14)"; ctx.lineWidth=W*0.03; ctx.beginPath(); ctx.arc(W*0.95,H*0.92,W*0.42,0,Math.PI*2); ctx.stroke();
     ctx.lineWidth=W*0.02; ctx.beginPath(); ctx.arc(W*0.02,H*0.1,W*0.2,0,Math.PI*2); ctx.stroke(); ctx.restore();
-    if(photo){
-      cover(photo,W,H);
-      var t=ctx.createLinearGradient(0,0,0,H*0.42); t.addColorStop(0,"rgba(0,48,50,.78)"); t.addColorStop(1,"rgba(0,48,50,0)"); ctx.fillStyle=t; ctx.fillRect(0,0,W,H*0.42);
-      var bt=ctx.createLinearGradient(0,H*0.58,0,H); bt.addColorStop(0,"rgba(0,48,50,0)"); bt.addColorStop(1,"rgba(0,48,50,.88)"); ctx.fillStyle=bt; ctx.fillRect(0,H*0.58,W,H*0.42);
-    }
+    if(photo) cover(photo,W,H);
     var pad=W*0.07;
+    function shade(on){ if(on&&photo){ ctx.shadowColor="rgba(0,0,0,.7)"; ctx.shadowBlur=W*0.03; } else { ctx.shadowBlur=0; ctx.shadowColor="transparent"; } }
     // logo: the white Ben's Trivia logo, top right (transparent PNG)
     var logoH=W*0.085, logoBottom=safeTop;
     if(logo.complete&&logo.naturalWidth){
-      var lw=logo.naturalWidth*(logoH/logo.naturalHeight); ctx.drawImage(logo,W-pad-lw,safeTop,lw,logoH); logoBottom=safeTop+logoH;
+      var lw=logo.naturalWidth*(logoH/logo.naturalHeight); shade(true); ctx.drawImage(logo,W-pad-lw,safeTop,lw,logoH); shade(false); logoBottom=safeTop+logoH;
     }
     ctx.textAlign="center"; ctx.textBaseline="alphabetic";
     var name=nameEl.value.trim(), loc=locEl.value.trim(), si=scoreInfo();
-    if(photo){ ctx.shadowColor="rgba(0,30,32,.55)"; ctx.shadowBlur=W*0.02; }
-    // score block, upper part of the card
-    var y=logoBottom+W*0.04;
-    ctx.fillStyle="#fff";
+    // team name + score: one block that can be dragged and pinched (blk = offset + scale)
     var ns=W*0.055; if(name) ns=fitFont(name.toUpperCase(),W*0.86,W*0.055,W*0.034,"800",FONT);
-    y+=ns; if(name) ctx.fillText(name.toUpperCase(),W/2,y);
-    var nameBase=y, nameSz=ns; y+=W*0.028;
-    var hero=W*0.07; y+=hero; ctx.font="800 "+hero+"px "+FONT; ctx.fillStyle="#fff"; ctx.fillText("Score: "+si.earned+"/"+si.max,W/2,y);
-    ctx.shadowBlur=0; ctx.shadowColor="transparent";
+    var hero=W*0.07, nameBase0=ns*1.2, scoreBase0=nameBase0+W*0.028+hero, blockH0=scoreBase0+hero*0.35;
+    var scoreTxt="Score: "+si.earned+"/"+si.max;
+    ctx.font="800 "+ns+"px "+FONT; var nW=name?ctx.measureText(name.toUpperCase()).width:0;
+    ctx.font="800 "+hero+"px "+FONT; var sW=ctx.measureText(scoreTxt).width;
+    var bw0=Math.max(W*0.5,nW,sW)+W*0.04;
+    var ax=W/2+blk.x, ay=logoBottom+W*0.03+blk.y;
+    ctx.save(); ctx.translate(ax,ay); ctx.scale(blk.s,blk.s); ctx.fillStyle="#fff"; ctx.textAlign="center";
+    shade(true);
+    if(name){ ctx.font="800 "+ns+"px "+FONT; ctx.fillText(name.toUpperCase(),0,nameBase0); if(photo) ctx.fillText(name.toUpperCase(),0,nameBase0); }
+    ctx.font="800 "+hero+"px "+FONT; ctx.fillText(scoreTxt,0,scoreBase0); if(photo) ctx.fillText(scoreTxt,0,scoreBase0);
+    shade(false); ctx.restore();
+    placeBlock(W,H,ax,ay,bw0,blockH0,ns,nameBase0);
     // bottom: location (space is always reserved so the on-card box has somewhere to sit)
     var lf=W*0.05, ly=H-Math.max(pad*1.5,safeBottom);
     if(loc){
-      if(photo){ ctx.shadowColor="rgba(0,30,32,.55)"; ctx.shadowBlur=W*0.02; }
+      shade(true);
       lf=fitFont(loc,W*0.7,W*0.05,W*0.03,"700",FONT); var iconW=lf*1.2;
       var tw=ctx.measureText(loc).width, x0=(W-(iconW+tw))/2;
       pin(x0+iconW*0.4,ly-lf*0.35,lf*0.95,"#fff");
-      ctx.textAlign="left"; ctx.fillStyle="#fff"; ctx.fillText(loc,x0+iconW,ly); ctx.textAlign="center";
-      ctx.shadowBlur=0; ctx.shadowColor="transparent";
+      ctx.textAlign="left"; ctx.fillStyle="#fff"; ctx.fillText(loc,x0+iconW,ly); if(photo) ctx.fillText(loc,x0+iconW,ly); ctx.textAlign="center";
+      shade(false);
     }
-    placeInputs(W,H,nameBase,nameSz,ly,lf);
+    placeLoc(W,H,ly,lf);
+    resetBtn.style.display=(blk.x||blk.y||blk.s!==1)?"":"none";
+    curW=W; curH=H; geom={ax:ax,ay:ay,bw0:bw0,bw:bw0*blk.s,bh:blockH0*blk.s,safeTop:safeTop,safeBottom:safeBottom};
     cardAdd.style.setProperty("--sc-tile-top",(layout==="square"?"55%":"52%")); cardAdd.style.setProperty("--sc-tile-w",(layout==="square"?"42%":(layout==="story"?"58%":"52%")));
     cardAdd.style.display=photo?"none":"";
     clearBtn.style.display=photo?"":"none";
@@ -1954,6 +1962,30 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
       draw();
     });
   });
+  /* drag + pinch the name/score block */
+  var ptrs={}, drag=null, pinch=null, moved=false;
+  function clampBlk(){ if(!geom) return; var W=curW,H=curH;
+    blk.s=Math.max(0.5,Math.min(3,W*0.94/geom.bw0,blk.s));
+    var cx=W/2+blk.x; cx=Math.max(W*0.08,Math.min(W*0.92,cx)); blk.x=cx-W/2;
+    var topDefault=geom.ay-blk.y, y=topDefault+blk.y; y=Math.max(geom.safeTop*0.4,Math.min(H-geom.safeBottom*0.8-30,y)); blk.y=y-topDefault; }
+  function dist(a,b){ var dx=a.x-b.x, dy=a.y-b.y; return Math.sqrt(dx*dx+dy*dy); }
+  wrap.addEventListener("pointerdown",function(e){
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; var ids=Object.keys(ptrs);
+    if(ids.length===2){ pinch={d0:dist(ptrs[ids[0]],ptrs[ids[1]])||1,s0:blk.s}; drag=null; blockEl.classList.add("moving"); }
+    else if(ids.length===1&&e.target.closest&&e.target.closest("#sc-block")){ drag={sx:e.clientX,sy:e.clientY,bx:blk.x,by:blk.y}; moved=false; }
+  });
+  document.addEventListener("pointermove",function(e){
+    if(!ptrs[e.pointerId]) return; ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; var ids=Object.keys(ptrs);
+    if(pinch&&ids.length>=2){ blk.s=pinch.s0*dist(ptrs[ids[0]],ptrs[ids[1]])/pinch.d0; clampBlk(); draw(); return; }
+    if(drag){ var k=curW/(canvas.clientWidth||curW), dx=(e.clientX-drag.sx), dy=(e.clientY-drag.sy);
+      if(!moved&&Math.abs(dx)+Math.abs(dy)<6) return; if(!moved){ moved=true; blockEl.classList.add("moving"); try{ if(document.activeElement===nameEl) nameEl.blur(); }catch(_){} }
+      blk.x=drag.bx+dx*k; blk.y=drag.by+dy*k; clampBlk(); draw(); }
+  });
+  function endPtr(e){ delete ptrs[e.pointerId]; var n=Object.keys(ptrs).length; if(n<2) pinch=null; if(n===0){ drag=null; blockEl.classList.remove("moving"); } else if(n===1&&!pinch){ drag=null; } }
+  document.addEventListener("pointerup",endPtr); document.addEventListener("pointercancel",endPtr);
+  blockEl.addEventListener("wheel",function(e){ e.preventDefault(); blk.s*=e.deltaY<0?1.06:0.94; clampBlk(); draw(); },{passive:false});
+  ["gesturestart","gesturechange"].forEach(function(n){ wrap.addEventListener(n,function(e){ e.preventDefault(); }); });
+  resetBtn.addEventListener("click",function(){ blk.x=0; blk.y=0; blk.s=1; draw(); });
   photoBtn.addEventListener("click",function(){ photoInput.click(); });
   cardAdd.addEventListener("click",function(){ photoInput.click(); });
   clearBtn.addEventListener("click",function(){ photo=null; photoInput.value=""; draw(); });
