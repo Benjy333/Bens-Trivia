@@ -364,3 +364,7 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 #sc-hint{color:var(--t-link);opacity:1;margin:0 0 12px;}
 .sc-edit::placeholder,.sc-edit::-webkit-input-placeholder{color:rgba(255,255,255,.92)!important;opacity:1!important;}
 #sc-hint{opacity:1!important;font-size:.78rem;}
+
+/* ---- Exit dev mode ---- */
+.menu-dropdown a.exit-dev{color:#A3141B!important;font-weight:800!important;}
+#dev-exit{margin-left:auto;}
