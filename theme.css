@@ -445,3 +445,25 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 .stat-card .stat-value{font-size:2rem!important;}
 .stat-card .stat-label{font-size:.78rem!important;letter-spacing:.07em;}
 #lb-table th:nth-child(6),#lb-table td:nth-child(6){text-align:center;}
+
+/* phones only: slightly smaller, lighter text on leaderboard + quiz stats */
+@media (max-width:899px){
+  .card .section-heading{font-size:1.1rem!important;font-weight:700!important;}
+  .bsv-oneline{font-size:1.02rem!important;}
+  .lb-table{font-size:.92rem!important;}
+  .lb-table thead th{font-size:.7rem!important;font-weight:700!important;}
+  .lb-table tr.lb-top td{font-weight:600;}
+  .lb-table td.lb-name,.venue-cell{font-weight:600!important;font-size:.92rem;}
+  #lb-table td:nth-child(4){font-weight:700!important;font-size:.95rem;}
+  #lb-table td:nth-child(5){font-weight:500;}
+  #bsv-body td:last-child{font-weight:700;font-size:.95rem;}
+  .lb-fin{font-weight:600;}
+  .mv{font-weight:700!important;font-size:.88rem!important;}
+  .q-text{font-size:.95rem!important;font-weight:600!important;}
+  .q-pct{font-size:1.1rem!important;font-weight:700!important;}
+  .q-tag{font-size:.72rem!important;font-weight:600!important;}
+  .q-row [style*="font-size:0.8rem"]{font-size:.85rem!important;}
+  .q-row [style*="font-size:0.85rem"]{font-size:.88rem!important;}
+  .stat-card .stat-value{font-size:1.8rem!important;}
+  .stat-card .stat-label{font-size:.72rem!important;}
+}
