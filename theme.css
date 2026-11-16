@@ -320,3 +320,22 @@ main>*{min-width:0;max-width:100%;box-sizing:border-box;}
 .chart-hint,.section-subheading,.month-label{color:var(--t-link)!important;opacity:1!important;}
 .loading-msg{color:var(--t-link);opacity:.8!important;}
 .global-footer{color:var(--t-link)!important;opacity:1!important;}
+
+/* ---- Share buttons: one solid primary, two quiet outlined extras ---- */
+.share-main{margin-top:6px;}
+.share-primary{display:block;width:100%;max-width:340px;margin:0 auto;padding:13px 20px;border-radius:999px;border:0!important;background:var(--t-btn)!important;color:#fff!important;font:700 1.02rem/1.2 inherit;font-family:inherit;cursor:pointer;box-shadow:none!important;-webkit-tap-highlight-color:transparent;}
+.share-primary:hover{background:#00564f!important;}
+.share-secondary{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+.share-alt{padding:9px 18px;border-radius:999px;border:1px solid var(--t-line)!important;background:transparent!important;color:var(--t-ink)!important;font:600 .88rem/1.2 inherit;font-family:inherit;cursor:pointer;box-shadow:none!important;margin:0;-webkit-tap-highlight-color:transparent;}
+.share-alt:hover{background:rgba(0,150,146,.12)!important;}
+.share-preview-box{background:rgba(255,255,255,.4)!important;}
+
+/* ---- Share: image first, then one "Share result" chooser ---- */
+.share-second{display:block;width:100%;max-width:340px;margin:12px auto 0;padding:12px 20px;border-radius:999px;border:1.5px solid var(--t-btn)!important;background:transparent!important;color:var(--t-btn)!important;font:700 .98rem/1.2 inherit;font-family:inherit;cursor:pointer;box-shadow:none!important;-webkit-tap-highlight-color:transparent;}
+.share-second::after{content:"";display:inline-block;width:7px;height:7px;margin:0 0 3px 10px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .15s;}
+.share-second.open::after{transform:rotate(-135deg);margin-bottom:-2px;}
+.share-second:hover{background:rgba(0,150,146,.10)!important;}
+.share-menu{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+.share-menu[hidden]{display:none;}
+.share-menu .share-alt{padding:9px 13px;font-size:.84rem;}
+.share-second.open::after{margin:0 0 -2px 10px;}
