@@ -252,7 +252,7 @@
     #bsv-venues[open] > summary::after { content:" \25B4"; }
   </style>
 
-  <link rel="stylesheet" href="theme.css?v=26" />
+  <link rel="stylesheet" href="theme.css?v=30" />
 </head>
 <body>
   <div id="dev-panel">
@@ -1989,6 +1989,23 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
     a.href=url; a.download=fileName(); document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); },4000);
   }
+})();
+</script>
+<script>
+/* Sticky menu: the logo + menu bar stays on screen. On phones it slides away when you scroll down and back when you scroll up. */
+(function(){
+  var h=document.querySelector(".global-header"); if(!h) return;
+  var lastY=window.pageYOffset||0, ticking=false;
+  function onScroll(){
+    var y=window.pageYOffset||0;
+    h.classList.toggle("is-stuck",y>8);
+    if(window.innerWidth<900){
+      if(y>lastY+6&&y>140) h.classList.add("nav-hidden");
+      else if(y<lastY-6||y<60) h.classList.remove("nav-hidden");
+    } else h.classList.remove("nav-hidden");
+    lastY=y; ticking=false;
+  }
+  window.addEventListener("scroll",function(){ if(!ticking){ ticking=true; requestAnimationFrame(onScroll); } },{passive:true});
 })();
 </script>
 </body>
