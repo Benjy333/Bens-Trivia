@@ -252,7 +252,7 @@
     #bsv-venues[open] > summary::after { content:" \25B4"; }
   </style>
 
-  <link rel="stylesheet" href="theme.css?v=31" />
+  <link rel="stylesheet" href="theme.css?v=33" />
 </head>
 <body>
   <div id="dev-panel">
@@ -1105,25 +1105,24 @@ const luckMessages = [
   "Legally obligated to say that. Good luck!",
   "Shh… the secret answer is confidence. That's it. That's the tip.",
 ];
-let luckClickCount = 0;
+let luckClickCount = 0, luckTimer = null;
 function handleLuckyClick() {
-  const el = document.getElementById("quiz-description");
-  if (!el || el.dataset.animating === "1") return;
-  el.dataset.animating = "1";
-  if (!el.dataset.originalText) el.dataset.originalText = el.textContent;
   luckClickCount++;
   const msg = luckClickCount >= 10
     ? "Okay, 10 clicks. Go play the quiz already 😂"
     : luckMessages[Math.floor(Math.random() * luckMessages.length)];
-  el.textContent = msg;
+  let t = document.getElementById("luck-toast");
+  if (!t) {
+    t = document.createElement("div"); t.id = "luck-toast"; t.setAttribute("role", "status");
+    t.style.cssText = "position:fixed;left:50%;top:84px;transform:translateX(-50%);z-index:200;max-width:min(92vw,520px);box-sizing:border-box;padding:12px 20px;border-radius:999px;background:#006C64;color:#fff;font:700 .95rem/1.3 'Plus Jakarta Sans',system-ui,sans-serif;text-align:center;box-shadow:0 8px 24px rgba(11,59,66,.3);transition:opacity .25s ease;pointer-events:none;";
+    document.body.appendChild(t);
+  }
+  t.textContent = msg; t.style.opacity = "1";
+  clearTimeout(luckTimer); luckTimer = setTimeout(() => { t.style.opacity = "0"; }, 2200);
   if (typeof launchConfetti === "function") launchConfetti(45);
-  setTimeout(() => {
-    el.textContent = el.dataset.originalText;
-    el.dataset.animating = "0";
-  }, 1800);
 }
-const quizDescEl = document.getElementById("quiz-description");
-if (quizDescEl) quizDescEl.addEventListener("click", handleLuckyClick);
+const logoEgg = document.querySelector(".global-header .header-logo");
+if (logoEgg) { logoEgg.style.cursor = "pointer"; logoEgg.addEventListener("click", handleLuckyClick); }
 const SUPA_URL = "https://cxgndxmvyerwejwyitrf.supabase.co";
 const SUPA_KEY = "sb_publishable_LMgLiRKeCPREBMa9r-pEOQ_et-2xo0L";
 let currentTab = "week"; let currentQuizTitle = ""; let scoreSubmitted = false; let quizCompletedEventSent = false;
