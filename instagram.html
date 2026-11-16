@@ -58,7 +58,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="theme.css?v=25">
+<link rel="stylesheet" href="theme.css?v=28">
 <style>
 /* turquoise look for the tool itself (the post images it makes are unchanged) */
 :root{--bg:#CEF7F5;--panel:rgba(255,255,255,.55);--ink:#0B3B42;--muted:#2B6A70;--neon:#006C64;--line:rgba(25,162,164,.6);--field:#fff;}
@@ -200,6 +200,7 @@ h1{text-align:center;font-family:var(--t-font)!important;font-size:clamp(1.9rem,
   var BASE = new Date("2026-04-18T15:00:00Z");
   var SIZES = {story:[1080,1920], post:[1080,1350], square:[1080,1080]};
   var DISPLAY = "Orbitron, 'Arial Black', sans-serif", BODY = "Inter, Arial, sans-serif", NEON = "#9fd4ff";
+  var PJS = "'Plus Jakarta Sans', Inter, Arial, sans-serif";
   var $ = function(id){ return document.getElementById(id); };
   var canvas = $("card"), ctx = canvas.getContext("2d");
   var tab = "question", layout = "post", photo = null;
@@ -315,7 +316,8 @@ h1{text-align:center;font-family:var(--t-font)!important;font-size:clamp(1.9rem,
 
   /* ---------- team photo ---------- */
   var TEAM_FONTS = [
-    {label:"Orbitron (default)", family:"Orbitron, 'Arial Black', sans-serif", load:"Orbitron", weight:"700", caps:true},
+    {label:"Plus Jakarta Sans (default)", family:PJS, load:"'Plus Jakarta Sans'", weight:"800", caps:true},
+    {label:"Orbitron", family:"Orbitron, 'Arial Black', sans-serif", load:"Orbitron", weight:"700", caps:true},
     {label:"Inter Bold", family:"Inter, Arial, sans-serif", load:"Inter", weight:"800", caps:false},
     {label:"Bebas Neue", family:"'Bebas Neue', Impact, sans-serif", load:"'Bebas Neue'", weight:"400", caps:true},
     {label:"Anton", family:"Anton, Impact, sans-serif", load:"Anton", weight:"400", caps:true},
@@ -357,14 +359,14 @@ h1{text-align:center;font-family:var(--t-font)!important;font-size:clamp(1.9rem,
       y += ns; ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.fillText(nm, W / 2, y); first = false;
     }
     if(on("f-t-score-on") && score){
-      var ss = fitFont("Score: " + score, W * .86, W * pct("f-t-score-size"), W * .03, "600", BODY);
+      var ss = fitFont("Score: " + score, W * .86, W * pct("f-t-score-size"), W * .03, "800", PJS);
       y += (first ? 0 : gap) + ss; ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.fillText("Score: " + score, W / 2, y);
     }
     if(on("f-t-loc-on") && loc){
-      var lf = fitFont(loc, W * .72, W * pct("f-t-loc-size"), W * .03, "600", BODY), iconW = lf * 1.2;
+      var lf = fitFont(loc, W * .72, W * pct("f-t-loc-size"), W * .03, "700", PJS), iconW = lf * 1.2;
       var tw = ctx.measureText(loc).width, x0 = (W - (iconW + tw)) / 2, ly = H - safeBottom;
       pin(x0 + iconW * .4, ly - lf * .35, lf * .95, "#fff");
-      ctx.textAlign = "left"; ctx.fillStyle = "#fff"; ctx.font = "600 " + lf + "px " + BODY; ctx.fillText(loc, x0 + iconW, ly);
+      ctx.textAlign = "left"; ctx.fillStyle = "#fff"; ctx.font = "700 " + lf + "px " + PJS; ctx.fillText(loc, x0 + iconW, ly);
       ctx.textAlign = "center";
     }
   }
@@ -600,7 +602,7 @@ h1{text-align:center;font-family:var(--t-font)!important;font-size:clamp(1.9rem,
   }
   function fontsReady(){
     return (document.fonts && document.fonts.load)
-      ? Promise.all([document.fonts.load("900 40px Orbitron"), document.fonts.load("700 40px Orbitron"), document.fonts.load("500 40px Inter"), document.fonts.load("700 40px Inter"), document.fonts.load("800 40px Inter"), (function(){ var f = teamFont(); return document.fonts.load(f.weight + " 40px " + f.load); })()]).catch(function(){})
+      ? Promise.all([document.fonts.load("800 40px \"Plus Jakarta Sans\""), document.fonts.load("700 40px \"Plus Jakarta Sans\""), document.fonts.load("900 40px Orbitron"), document.fonts.load("700 40px Orbitron"), document.fonts.load("500 40px Inter"), document.fonts.load("700 40px Inter"), document.fonts.load("800 40px Inter"), (function(){ var f = teamFont(); return document.fonts.load(f.weight + " 40px " + f.load); })()]).catch(function(){})
       : Promise.resolve();
   }
   function render(){ fontsReady().then(draw); }
