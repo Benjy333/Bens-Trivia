@@ -58,7 +58,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="theme.css?v=8">
+<link rel="stylesheet" href="theme.css?v=22">
 <style>
 /* turquoise look for the tool itself (the post images it makes are unchanged) */
 :root{--bg:#CEF7F5;--panel:rgba(255,255,255,.55);--ink:#0B3B42;--muted:#2B6A70;--neon:#006C64;--line:rgba(25,162,164,.6);--field:#fff;}
@@ -99,6 +99,7 @@ h1{text-align:center;font-family:var(--t-font)!important;font-size:clamp(1.9rem,
     <a href="venues.html">Venues</a>
     <a href="countries.html">Countries</a>
     <a href="instagram.html" class="active">Instagram</a>
+    <a href="?nodev" id="exit-dev-link" class="exit-dev" style="display:none;">Exit dev</a>
   </nav>
 </header>
 <main class="wrap">
@@ -702,6 +703,12 @@ h1{text-align:center;font-family:var(--t-font)!important;font-size:clamp(1.9rem,
     options:["6","8","10","12"], correctIndex:1,
     funfact:"Most official game balls, like the NBA's, are made from 8 panels, although some international balls use 12. The first basketball game in 1891 was played with a soccer ball and two peach baskets."});
   updateTips(); render(); loadQuizzes();
+})();
+</script>
+<script>
+(function(){ var on=false; try{ if(location.search.indexOf("nodev")>-1) sessionStorage.removeItem("bens-trivia-dev-mode"); else if(location.search.indexOf("dev")>-1) sessionStorage.setItem("bens-trivia-dev-mode","1"); on=sessionStorage.getItem("bens-trivia-dev-mode")==="1"; }catch(_){}
+  var x=document.getElementById("exit-dev-link"); if(!x||!on) return; x.style.display="block";
+  x.addEventListener("click",function(e){ e.preventDefault(); try{ sessionStorage.removeItem("bens-trivia-dev-mode"); }catch(_){} location.href="/"; });
 })();
 </script>
 </body>
