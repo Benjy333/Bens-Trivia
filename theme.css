@@ -261,3 +261,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--t-banner)!import
   .stats-shell{width:min(1180px,100%)!important;}
   .stats-shell>.card:not(.signup-card){max-width:none!important;width:100%;box-sizing:border-box;}
 }
+
+
+/* ---------- email + Subscribe on one row ---------- */
+#mailing-list-signup div:has(>#signup-email),.signup-row{flex-wrap:nowrap!important;gap:8px!important;}
+#signup-email,#stats-signup-email,.signup-row input[type="email"]{min-width:0!important;max-width:none!important;flex:1 1 auto!important;width:auto!important;}
+#signup-btn,#stats-signup-btn{flex:none;padding-left:16px!important;padding-right:16px!important;}
+
+/* ---------- link to the live rankings (quiz page, venue row) ---------- */
+.bsv-rank-link{display:inline-block;padding:9px 20px;border-radius:999px;background:var(--t-btn);color:#fff!important;font-weight:700;font-size:.9rem;text-decoration:none;border:1px solid var(--t-btn);}
+.bsv-rank-link:hover{background:var(--t-ink);border-color:var(--t-ink);}
