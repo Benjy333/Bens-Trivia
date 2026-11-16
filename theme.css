@@ -43,7 +43,7 @@ a{color:var(--t-link);}
 .menu-dropdown{order:0;display:flex!important;position:static!important;flex-direction:row;gap:18px;min-width:0;overflow-x:auto;white-space:nowrap;margin:0 0 18px;padding:14px 2px 0!important;background:none!important;border:0!important;border-bottom:1px solid var(--t-line)!important;border-radius:0!important;box-shadow:none!important;scrollbar-width:none;}
 .menu-dropdown::-webkit-scrollbar{display:none;}
 /* mini circle logo, top left of the tab bar */
-.global-header::before{content:"";position:absolute;left:16px;top:9px;width:34px;height:34px;border-radius:50%;background:url("images/logo-square.png") center/cover no-repeat;z-index:1;}
+.global-header::before{content:"";position:absolute;left:16px;top:9px;width:34px;height:34px;border-radius:50%;background:url("images/logo-circle.png") center/cover no-repeat;z-index:1;}
 .menu-dropdown{padding-left:48px!important;}
 @media (max-width:420px){.menu-dropdown{gap:14px!important;padding-left:46px!important;}.menu-dropdown a{font-size:.88rem!important;}}
 @media (max-width:400px){.bsv-sum-name{font-size:.9rem!important;white-space:nowrap;}.bsv-sum-week{font-size:.8rem!important;white-space:nowrap;}}
@@ -271,3 +271,19 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--t-banner)!import
 /* ---------- link to the live rankings (quiz page, venue row) ---------- */
 .bsv-rank-link{display:inline-block;padding:9px 20px;border-radius:999px;background:var(--t-btn);color:#fff!important;font-weight:700;font-size:.9rem;text-decoration:none;border:1px solid var(--t-btn);}
 .bsv-rank-link:hover{background:var(--t-ink);border-color:var(--t-ink);}
+
+/* =====================================================================
+   PHONE BAR (under 900px): Ben's Trivia logo top left, small menu beside it
+   ===================================================================== */
+@media (max-width:899px){
+  .global-header::before{display:none!important;}
+  .header-row-top{position:absolute!important;left:16px;top:8px;z-index:2;order:0;}
+  .header-logo{height:34px!important;width:auto!important;border-radius:6px;margin:0;}
+  .menu-dropdown{gap:9px!important;padding:11px 2px 0 110px!important;margin-bottom:16px!important;}
+  .menu-dropdown a{font-size:.74rem!important;padding:7px 1px 10px!important;}
+  .signup-card{width:100%!important;max-width:100%!important;box-sizing:border-box;}
+}
+
+/* keep the page from getting wider than a small phone */
+main>*{min-width:0;max-width:100%;box-sizing:border-box;}
+@media (max-width:600px){.hero-facts{font-size:clamp(.6rem,3.2vw,.88rem)!important;}}
