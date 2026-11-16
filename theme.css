@@ -506,3 +506,6 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
   .stat-card .stat-value{font-size:1.6rem!important;}
   .stat-card .stat-label{font-size:.66rem!important;}
 }
+
+/* simple + tidy: light table header (no solid dark strip) */
+.lb-table thead th,#lb-table thead th:nth-child(n){background:transparent!important;color:var(--t-btn)!important;border-radius:0!important;border-bottom:2px solid var(--t-btn)!important;}
