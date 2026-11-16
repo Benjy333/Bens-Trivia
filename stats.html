@@ -171,7 +171,8 @@
     }
     #stats-signup-status { font-size: 0.8rem; margin-top: 8px; min-height: 18px; }
   </style>
-  <link rel="stylesheet" href="theme.css?v=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css?v=2" />
 </head>
 <body>
   <header class="global-header">
@@ -187,11 +188,11 @@
       <h1 class="page-title">📊 Quiz Stats</h1>
     </div>
     <nav class="menu-dropdown" id="menu-dropdown">
-      <a href="/">🍻 Big Fat Sunday Quiz</a>
-      <a href="stats.html">📊 Quiz Stats</a>
-      <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
-      <a href="countries.html" id="country-stats-link" style="display:none;">🌍 Country Leaderboard</a>
-      <a href="instagram.html" id="instagram-link" style="display:none;">📸 Instagram Posts</a>
+      <a href="/">Play Quiz</a>
+      <a href="stats.html" class="active">Quiz Stats</a>
+      <a href="venues.html" id="venue-stats-link" style="display:none;">Venues</a>
+      <a href="countries.html" id="country-stats-link" style="display:none;">Countries</a>
+      <a href="instagram.html" id="instagram-link" style="display:none;">Instagram</a>
     </nav>
   </header>
 
@@ -199,7 +200,7 @@
     <div class="stats-shell">
 
       <div class="card signup-card">
-        <div class="signup-label">📬 Get the quiz every Sunday</div>
+        <div class="signup-label"><span class="sig-ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>Get the quiz every Sunday</div>
         <div class="signup-sub">Drop your email and we'll send you a link each week</div>
         <div class="signup-row">
           <input id="stats-signup-email" type="email" placeholder="your@email.com" maxlength="100" aria-label="Your email address" />
