@@ -173,7 +173,7 @@
     }
     #stats-signup-status { font-size: 0.8rem; margin-top: 8px; min-height: 18px; }
   </style>
-  <link rel="stylesheet" href="theme.css?v=8" />
+  <link rel="stylesheet" href="theme.css?v=22" />
   <style>
     /* two views on one page: Quiz Stats (default) and Leaderboard (#leaderboard) */
     body.view-lb [data-view="stats"]{display:none!important}
@@ -200,6 +200,7 @@
       <a href="venues.html" id="venue-stats-link" style="display:none;">Venues</a>
       <a href="countries.html" id="country-stats-link" style="display:none;">Countries</a>
       <a href="instagram.html" id="instagram-link" style="display:none;">Instagram</a>
+      <a href="?nodev" id="exit-dev-link" class="exit-dev" style="display:none;">Exit dev</a>
     </nav>
   </header>
 
@@ -296,6 +297,10 @@ if (location.search.includes("nodev")) {
     document.getElementById("venue-stats-link").style.display = "block";
     document.getElementById("country-stats-link").style.display = "block";
     document.getElementById("instagram-link").style.display = "block";
+  (function(){ var x=document.getElementById("exit-dev-link"); if(!x) return;
+    x.style.display="block";
+    x.addEventListener("click",function(e){ e.preventDefault(); try{ sessionStorage.removeItem("bens-trivia-dev-mode"); }catch(_){} location.replace(location.pathname); });
+  })();
   }
 }
 
