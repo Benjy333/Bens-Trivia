@@ -547,3 +547,34 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 .page-title:not(#x):not(#y),.hero-num:not(#x):not(#y),.card .section-heading:not(#x):not(#y),.leaderboard-title:not(#x):not(#y),.highlight-headline:not(#x):not(#y),.stat-card .stat-value:not(#x):not(#y){text-transform:uppercase!important;}
 .q-bar-outer{background:rgba(255,255,255,.5)!important;}
 @media (max-width:899px){ .page-title{font-size:clamp(1.9rem,8.4vw,2.5rem)!important;} }
+
+/* ---------- minor details (round 2) ---------- */
+/* correct / wrong: clear light fills with strong borders, easy to tell apart from the maroon theme */
+.option-btn.correct:not(#x){background:#CFEEDA!important;border:2px solid #17803F!important;color:#0E3B20!important;}
+.option-btn.wrong:not(#x){background:#F8D5CF!important;border:2px solid #D03B2D!important;color:#5E1510!important;}
+.option-btn.correct:not(#x) *,.option-btn.wrong:not(#x) *{font-weight:600;}
+.feedback.correct:not(#x){background:#CFEEDA!important;color:#0B4A26!important;border:1px solid #17803F!important;}
+.feedback.incorrect:not(#x){background:#F8D5CF!important;color:#8C1A10!important;border:1px solid #D03B2D!important;}
+.feedback.partial:not(#x){background:#F8E9B8!important;color:#5E4300!important;border:1px solid #C89A1B!important;}
+.feedback.skipped:not(#x){background:rgba(255,255,255,.45)!important;color:var(--t-ink)!important;border:1px solid var(--t-line-soft)!important;}
+.multi-text-input.mt-correct:not(#x){border:2px solid #17803F!important;background:#E3F5EA!important;}
+.multi-text-input.mt-wrong:not(#x){border:2px solid #D03B2D!important;background:#FCE6E2!important;}
+.multi-text-input.mt-empty:not(#x){border:2px solid #C89A1B!important;}
+.question-card.flash-correct{animation:correctFlash2 .7s ease forwards!important;}
+@keyframes correctFlash2{0%{box-shadow:0 0 0 4px rgba(23,128,63,.35);}100%{box-shadow:none;}}
+
+/* signup line must stay inside its box */
+#mailing-list-signup>div:nth-child(2),#feedback-section>div:nth-child(2),.signup-card .signup-sub{font-size:.82rem!important;line-height:1.35;padding:0 4px;text-wrap:balance;box-sizing:border-box;max-width:100%;}
+@media (max-width:480px){
+  #mailing-list-signup>div:nth-child(2){font-size:.78rem!important;}
+  /* Brisbane's Smartest Venue stays on one line */
+  .bsv-sum-name{white-space:nowrap!important;font-size:.88rem!important;}
+  .bsv-sum-week{white-space:nowrap!important;font-size:.78rem!important;}
+}
+@media (max-width:360px){
+  .bsv-sum-name{font-size:.78rem!important;}
+  .bsv-sum-week{font-size:.7rem!important;}
+  .bsv-sum-week::after{margin-left:6px!important;}
+}
+/* answer boxes must never poke past the card on narrow phones */
+.multi-text-input,.question-input,.name-input{box-sizing:border-box!important;max-width:100%!important;}
