@@ -377,3 +377,14 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 /* ---- Cards keep the original tint while the page behind them is a little lighter ---- */
 .card,.question-card,#mailing-list-signup,#feedback-section,.signup-card,.highlight-panel,.stat-card,.q-row,.highlight-card,#bsv-teaser,.leaderboard-section,.venue-card,.score-box{background:var(--t-card)!important;}
 .game-card,.game-card.card,.quiz-shell{background:transparent!important;}
+
+/* ---- Sticky menu: only the logo + menu row stays on screen ---- */
+.global-header{position:sticky!important;top:0;z-index:120!important;background-color:var(--t-bg)!important;transition:transform .25s ease,box-shadow .2s ease;}
+.global-header.is-stuck{box-shadow:0 6px 12px -8px rgba(11,59,66,.35)!important;}
+@media (max-width:899px){
+  .global-header.nav-hidden{transform:translateY(-100%);}
+}
+@media (prefers-reduced-motion:reduce){.global-header{transition:none;}}
+/* page title now sits under the sticky bar (it used to live inside the header) */
+.global-header + .header-row-bottom{max-width:960px;margin:20px auto 4px!important;padding:0 16px;box-sizing:border-box;text-align:center;}
+@media (min-width:900px){ .global-header + .header-row-bottom{max-width:none;margin:44px 0 8px!important;} }
