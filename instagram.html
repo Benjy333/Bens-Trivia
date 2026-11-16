@@ -58,7 +58,7 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="theme.css?v=28">
+<link rel="stylesheet" href="theme.css?v=30">
 <style>
 /* turquoise look for the tool itself (the post images it makes are unchanged) */
 :root{--bg:#CEF7F5;--panel:rgba(255,255,255,.55);--ink:#0B3B42;--muted:#2B6A70;--neon:#006C64;--line:rgba(25,162,164,.6);--field:#fff;}
@@ -711,6 +711,23 @@ h1{text-align:center;font-family:var(--t-font)!important;font-size:clamp(1.9rem,
 (function(){ var on=false; try{ if(location.search.indexOf("nodev")>-1) sessionStorage.removeItem("bens-trivia-dev-mode"); else if(location.search.indexOf("dev")>-1) sessionStorage.setItem("bens-trivia-dev-mode","1"); on=sessionStorage.getItem("bens-trivia-dev-mode")==="1"; }catch(_){}
   var x=document.getElementById("exit-dev-link"); if(!x||!on) return; x.style.display="block";
   x.addEventListener("click",function(e){ e.preventDefault(); try{ sessionStorage.removeItem("bens-trivia-dev-mode"); }catch(_){} location.href="/"; });
+})();
+</script>
+<script>
+/* Sticky menu: the logo + menu bar stays on screen. On phones it slides away when you scroll down and back when you scroll up. */
+(function(){
+  var h=document.querySelector(".global-header"); if(!h) return;
+  var lastY=window.pageYOffset||0, ticking=false;
+  function onScroll(){
+    var y=window.pageYOffset||0;
+    h.classList.toggle("is-stuck",y>8);
+    if(window.innerWidth<900){
+      if(y>lastY+6&&y>140) h.classList.add("nav-hidden");
+      else if(y<lastY-6||y<60) h.classList.remove("nav-hidden");
+    } else h.classList.remove("nav-hidden");
+    lastY=y; ticking=false;
+  }
+  window.addEventListener("scroll",function(){ if(!ticking){ ticking=true; requestAnimationFrame(onScroll); } },{passive:true});
 })();
 </script>
 </body>
