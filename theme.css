@@ -1,4 +1,4 @@
-@font-face{font-family:"Plus Jakarta Sans";font-style:normal;font-weight:200 800;font-display:swap;src:url("fonts/plus-jakarta-sans-var.woff2") format("woff2");}
+@font-face{font-family:"Plus Jakarta Sans";font-style:normal;font-weight:200 800;font-display:swap;src:url("images/plus-jakarta-sans-var.woff2") format("woff2");}
 /* ==========================================================================
    Ben's Trivia: turquoise theme (v2, matches the mockup)
    Loaded LAST on every page (one <link> before </head>), so it overrides the
@@ -48,7 +48,7 @@ a{color:var(--t-link);}
 .header-row-top{order:1;display:flex;justify-content:center;position:static!important;}
 #menu-btn,.header-row-top>div{display:none!important;}
 .header-row-top picture{display:block;background:var(--t-banner);padding:7px 34px;isolation:isolate;}
-.header-logo{position:static!important;transform:none!important;display:block;height:58px!important;width:auto!important;margin:0 auto;padding:0;background:none!important;border-radius:0;filter:grayscale(1) contrast(1.9)!important;mix-blend-mode:screen;}   /* screen blend turns a dark navy logo background into the turquoise banner */
+.header-logo{position:static!important;transform:none!important;display:block;height:58px!important;width:auto!important;margin:0 auto;padding:0;background:none!important;border-radius:0;filter:grayscale(1) brightness(.62) contrast(6)!important;mix-blend-mode:screen;}   /* white stays white, any dark or mid-tone logo background drops to black, then screen blends it into the turquoise banner */
 @media (min-width:700px){.header-row-top picture{padding:9px 46px;}.header-logo{height:72px!important;}}
 .header-row-bottom{order:2;margin-top:14px!important;text-align:center;}
 .page-title{margin:0!important;color:var(--t-ink)!important;font-size:clamp(1.3rem,6vw,1.9rem)!important;font-weight:800!important;text-transform:none!important;letter-spacing:0!important;}
