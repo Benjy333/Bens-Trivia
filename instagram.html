@@ -55,8 +55,52 @@ h1{margin:0 0 4px;font-family:Orbitron,'Arial Black',sans-serif;font-size:1.25re
 .sect.off .field,.sect.off .two{opacity:.4;}
 .t-only>.sect:first-child{border-top:0;padding-top:0;}
 </style>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="stylesheet" href="theme.css?v=8">
+<style>
+/* turquoise look for the tool itself (the post images it makes are unchanged) */
+:root{--bg:#CEF7F5;--panel:rgba(255,255,255,.55);--ink:#0B3B42;--muted:#2B6A70;--neon:#006C64;--line:rgba(25,162,164,.6);--field:#fff;}
+html,body{background:#CEF7F5!important;color:var(--ink);}
+body{background:#CEF7F5!important;}
+.wrap{padding-top:26px;}
+h1{text-align:center;font-family:var(--t-font)!important;font-size:clamp(1.9rem,5vw,2.8rem)!important;font-weight:800;letter-spacing:-.02em!important;color:var(--t-ink)!important;margin:6px 0 6px;}
+.sub{text-align:center;max-width:640px;margin:0 auto 20px;color:var(--muted);}
+.tabs{max-width:640px;margin-left:auto;margin-right:auto;}
+.tabs button,.seg button,.btn{background:#fff!important;color:var(--t-ink)!important;border:1px solid var(--line)!important;box-shadow:none!important;}
+.tabs button[aria-selected="true"],.seg button[aria-pressed="true"],.btn.primary,.btn:hover,.tabs button:hover,.seg button:hover{background:var(--t-btn)!important;color:#fff!important;border-color:var(--t-btn)!important;}
+.panel{background:rgba(255,255,255,.55)!important;border:1px solid var(--line)!important;box-shadow:none!important;color:var(--t-ink);}
+.field label,.group,.hint{color:var(--muted)!important;}
+.group{color:var(--t-link)!important;}
+.field input[type=text],.field select,.field textarea{background:#fff!important;color:var(--t-ink)!important;border:1px solid var(--line)!important;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--t-banner)!important;}
+.sect{border-top-color:var(--line)!important;}
+.check input,.field input[type=range]{accent-color:#006C64;}
+#status{color:var(--t-link)!important;}
+#card{border:1px solid var(--line)!important;}
+.menu-dropdown a{text-decoration:none!important;}
+</style>
 </head>
 <body>
+<header class="global-header">
+  <div class="header-row-top">
+    <button id="menu-btn" type="button" aria-label="Open menu">&#9776;</button>
+    <picture>
+      <source srcset="images/logo.webp" type="image/webp">
+      <img src="images/logo.png" class="header-logo" alt="Ben's Trivia Logo" width="147" height="52">
+    </picture>
+    <div style="width:52px;"></div>
+  </div>
+  <nav class="menu-dropdown" id="menu-dropdown">
+    <a href="/">Play Quiz</a>
+    <a href="stats.html">Quiz Stats</a>
+    <a href="stats.html#leaderboard">Leaderboard</a>
+    <a href="venues.html">Venues</a>
+    <a href="countries.html">Countries</a>
+    <a href="instagram.html" class="active">Instagram</a>
+  </nav>
+</header>
 <main class="wrap">
   <h1>Instagram Posts</h1>
   <p class="sub">Make the hardest-question post, the answer reveal, or a team photo with the score. Add a photo, pick a size, then save or share the image. Everything is made on your device.</p>
