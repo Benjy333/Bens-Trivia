@@ -480,7 +480,7 @@ function lbRowsHtml(from, to) {
         <td>${rankDisplay}</td>
         <td style="font-size:1.1rem;">${flag}</td>
         <td class="lb-name" title="${escapeHtml(r.player_name)}">${escapeHtml(r.player_name)}</td>
-        <td class="lb-nowrap" style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}</td>
+        <td class="lb-nowrap" style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'numeric' })}</td>
         <td class="lb-nowrap">${r.score}/${r.max_score}</td>
         <td class="lb-nowrap">${r.percent}%</td>
         <td class="lb-fin" data-i="${i}"></td>
