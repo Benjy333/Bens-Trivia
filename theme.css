@@ -348,3 +348,8 @@ main>*{min-width:0;max-width:100%;box-sizing:border-box;}
 #sc-share{padding:13px 18px;font-size:1rem;font-weight:700;}
 #sc-privacy{margin:-6px 0 12px;}
 .sc-field label{color:var(--t-link);opacity:1;font-weight:700;}
+
+/* ---- Stats: compact picker + solid Reveal answers button ---- */
+select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!important;min-width:230px;max-width:100%;}
+.mt-reveal-btn{background:var(--t-btn)!important;color:#fff!important;border:1px solid var(--t-btn)!important;font-weight:700!important;box-shadow:none!important;}
+.mt-reveal-btn:hover{background:var(--t-ink)!important;border-color:var(--t-ink)!important;color:#fff!important;}
