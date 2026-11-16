@@ -250,7 +250,8 @@
     #bsv-venues[open] > summary::after { content:" \25B4"; }
   </style>
 
-  <link rel="stylesheet" href="theme.css?v=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css?v=2" />
 </head>
 <body>
   <div id="dev-panel">
@@ -282,11 +283,11 @@
       <span class="page-date" id="page-date"></span>
     </div>
     <nav class="menu-dropdown" id="menu-dropdown">
-      <a href="/">🍻 Big Fat Sunday Quiz</a>
-      <a href="stats.html">📊 Quiz Stats</a>
-      <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
-      <a href="countries.html" id="country-stats-link" style="display:none;">🌍 Country Leaderboard</a>
-      <a href="instagram.html" id="instagram-link" style="display:none;">📸 Instagram Posts</a>
+      <a href="/" class="active">Play Quiz</a>
+      <a href="stats.html">Quiz Stats</a>
+      <a href="venues.html" id="venue-stats-link" style="display:none;">Venues</a>
+      <a href="countries.html" id="country-stats-link" style="display:none;">Countries</a>
+      <a href="instagram.html" id="instagram-link" style="display:none;">Instagram</a>
     </nav>
   </header>
   <main>
@@ -303,13 +304,13 @@
     <div class="hero-facts">
       <span><b id="hero-qcount">25</b> questions</span><span>Free to play</span><span>New quiz every Sunday</span>
     </div>
-    <div id="bsv-proof" style="display:none;text-align:center;margin:0 0 4px;"><span class="bsv-pill">👥 <b id="bsv-proof-n">0</b> players this week</span></div>
+    <div id="bsv-proof" style="display:none;text-align:center;margin:0 0 4px;"><span class="bsv-pill"><span class="pill-ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M17 14.2c2.4 0 4 1.8 4 4.3"/></svg></span><span><b id="bsv-proof-n">0</b> players this week</span></span></div>
     <div id="hero-note" class="hero-note" style="display:none;">
       <div id="quiz-description" class="quiz-description" style="display:none;"></div>
     </div>
   </section>
   <div id="mailing-list-signup" class="quiz-shell" style="width:min(640px,100%); box-sizing:border-box; margin:0 auto 14px; padding:16px 16px; border:1px solid rgba(150,208,255,0.25); border-radius:16px; background:radial-gradient(circle at top left,#12335a 0,#020a16 70%); text-align:center;">
-        <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">📬 Get the quiz every Sunday</div>
+        <div style="font-size:0.78rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;"><span class="sig-ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>Get the quiz every Sunday</div>
         <div style="font-size:0.88rem;margin-bottom:12px;opacity:0.85;">Drop your email and we'll send you a link each week</div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
           <input id="signup-email" type="email" placeholder="your@email.com" maxlength="100" aria-label="Your email address"
