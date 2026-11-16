@@ -408,11 +408,11 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 .lb-table tr.lb-r2 td:first-child{box-shadow:inset 5px 0 0 #8E9EA6;}
 .lb-table tr.lb-r3 td:first-child{box-shadow:inset 5px 0 0 #C27A3A;}
 .lb-table td.lb-name,.venue-cell{font-weight:700!important;font-size:1.03rem;color:var(--t-ink)!important;}
-#lb-table td:nth-child(4){font-weight:800!important;font-size:1.05rem;}
-#lb-table td:nth-child(5){font-weight:600;}
+#lb-table td:nth-child(5){font-weight:800!important;font-size:1.05rem;}
+#lb-table td:nth-child(6){font-weight:600;}
 .lb-table td.lb-nowrap{font-variant-numeric:tabular-nums;}
 #bsv-body td:last-child{font-weight:800;font-size:1.05rem;}
-#lb-table td:nth-child(7){opacity:1!important;font-size:.78rem!important;font-weight:500!important;color:rgba(11,59,66,.62)!important;}
+#lb-table td:nth-child(4){opacity:1!important;font-size:.78rem!important;font-weight:500!important;color:rgba(11,59,66,.62)!important;}
 .lb-fin{font-weight:700;}
 .mv{font-weight:800!important;font-size:.95rem!important;}
 @media (min-width:700px){
@@ -428,7 +428,7 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
   .lb-table thead th:first-child{padding-left:10px!important;}
   .lb-table tbody td:first-child{padding-left:10px!important;}
   #lb-table td.lb-name{font-size:1rem;}
-  #lb-table th:nth-child(5),#lb-table td:nth-child(5){display:none;}
+  #lb-table th:nth-child(6),#lb-table td:nth-child(6){display:none;}
   .card .section-heading{font-size:1.2rem!important;}
   .bsv-oneline{font-size:1.1rem!important;}
 }
@@ -444,7 +444,7 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 .q-row span[style*="opacity:0.6"],.q-row span[style*="opacity:0.5"]{opacity:.85!important;}
 .stat-card .stat-value{font-size:2rem!important;}
 .stat-card .stat-label{font-size:.78rem!important;letter-spacing:.07em;}
-#lb-table th:nth-child(6),#lb-table td:nth-child(6){text-align:center;}
+#lb-table th:nth-child(7),#lb-table td:nth-child(7){text-align:center;}
 
 /* phones only: slightly smaller, lighter text on leaderboard + quiz stats */
 @media (max-width:899px){
@@ -454,8 +454,8 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
   .lb-table thead th{font-size:.7rem!important;font-weight:700!important;}
   .lb-table tr.lb-top td{font-weight:600;}
   .lb-table td.lb-name,.venue-cell{font-weight:600!important;font-size:.92rem;}
-  #lb-table td:nth-child(4){font-weight:700!important;font-size:.95rem;}
-  #lb-table td:nth-child(5){font-weight:500;}
+  #lb-table td:nth-child(5){font-weight:700!important;font-size:.95rem;}
+  #lb-table td:nth-child(6){font-weight:500;}
   #bsv-body td:last-child{font-weight:700;font-size:.95rem;}
   .lb-fin{font-weight:600;}
   .mv{font-weight:700!important;font-size:.88rem!important;}
@@ -479,22 +479,24 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
   #lb-table td:nth-child(2){font-size:1rem!important;}
   #lb-table td.lb-name{padding-left:6px!important;}
   #lb-table thead th:nth-child(3){padding-left:6px!important;}
-  #lb-table td:nth-child(4){white-space:nowrap;}
-  #lb-table th:nth-child(6),#lb-table td:nth-child(6){padding-right:6px!important;}
+  #lb-table td:nth-child(5){white-space:nowrap;}
+  #lb-table th:nth-child(7),#lb-table td:nth-child(7){padding-right:6px!important;}
   #lb-table .lb-pill{padding:1px 5px;font-size:.6rem;}
 }
 @media (max-width:480px){
   #lb-table td.lb-name{font-size:.86rem!important;padding-left:4px!important;}
-  #lb-table td:nth-child(4){font-size:.88rem!important;}
-  #lb-table th:nth-child(6),#lb-table td:nth-child(6){padding-left:0!important;padding-right:4px!important;}
+  #lb-table td:nth-child(5){font-size:.88rem!important;}
+  #lb-table th:nth-child(7),#lb-table td:nth-child(7){padding-left:0!important;padding-right:4px!important;}
 }
 
-/* ---- phone fixes: show the date under the name, round the header strip, smaller question stats ---- */
-.lb-date-sub{display:none;}
+/* ---- phone fixes: date in its own column on the far right, smaller question stats ---- */
+.lb-date-sub{display:none!important;}
 @media (max-width:480px){
-  .lb-date-sub{display:block;font-size:.68rem;font-weight:500;color:rgba(11,59,66,.6);line-height:1.2;margin-top:2px;overflow:hidden;text-overflow:ellipsis;}
-  #lb-table thead th:nth-child(6){border-radius:0 10px 10px 0;}
-  #lb-table tbody td{padding-top:9px!important;padding-bottom:9px!important;}
+  #lb-table th:nth-child(4),#lb-table td:nth-child(4){display:table-cell!important;text-align:left;white-space:nowrap;padding-left:3px!important;padding-right:3px!important;}
+  #lb-table td:nth-child(4){font-size:.68rem!important;}
+  #lb-table thead th:nth-child(4){border-radius:0;}
+  #lb-table thead th:nth-child(7){border-radius:0 10px 10px 0;}
+  #lb-table th:nth-child(7),#lb-table td:nth-child(7){padding-right:2px!important;}
   .q-row{padding:12px 14px!important;}
   .q-text{font-size:.86rem!important;}
   .q-pct{font-size:1rem!important;}
