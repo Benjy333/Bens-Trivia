@@ -368,3 +368,7 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 /* ---- Exit dev mode ---- */
 .menu-dropdown a.exit-dev{color:#A3141B!important;font-weight:800!important;}
 #dev-exit{margin-left:auto;}
+
+/* ---- Share image: name sits on the card, tap it to type ---- */
+#sc-block{position:absolute;pointer-events:none;}
+#sc-block .sc-edit{pointer-events:auto;}
