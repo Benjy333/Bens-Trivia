@@ -15,6 +15,8 @@
   <title>Country Leaderboard · Ben's Trivia</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
   <style>
     .global-header {
@@ -91,6 +93,7 @@
     .month-label { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-top: -8px; }
     .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
   </style>
+  <link rel="stylesheet" href="theme.css?v=9" />
 </head>
 <body>
   <header class="global-header">
@@ -103,13 +106,15 @@
       <div style="width:52px;"></div>
     </div>
     <div class="header-row-bottom">
-      <h1 class="page-title">🌍 Country Leaderboard</h1>
+      <h1 class="page-title">Country Leaderboard</h1>
     </div>
     <nav class="menu-dropdown" id="menu-dropdown">
-      <a href="/">🍻 Big Fat Sunday Quiz</a>
-      <a href="stats.html">📊 Quiz Stats</a>
-      <a href="venues.html" id="venue-stats-link" style="display:none;">🏟️ Venue Stats</a>
-      <a href="countries.html" id="country-stats-link" style="display:none;">🌍 Country Leaderboard</a>
+      <a href="/">Play Quiz</a>
+      <a href="stats.html">Quiz Stats</a>
+      <a href="stats.html#leaderboard">Leaderboard</a>
+      <a href="venues.html" id="venue-stats-link" style="display:none;">Venues</a>
+      <a href="countries.html" id="country-stats-link" class="active" style="display:none;">Countries</a>
+      <a href="instagram.html" id="instagram-link" style="display:none;">Instagram</a>
     </nav>
   </header>
 
@@ -187,6 +192,7 @@ if (location.search.includes("nodev")) {
   if (sessionStorage.getItem(DEV_MODE_KEY) === "1") {
     document.getElementById("venue-stats-link").style.display = "block";
     document.getElementById("country-stats-link").style.display = "block";
+    document.getElementById("instagram-link").style.display = "block";
   }
 }
 
@@ -528,7 +534,7 @@ function renderNewReturningChart(weekStats) {
     split: weekStats.findIndex(w => w.device),
     methods: weekStats.map(w => w.device ? "device ID" : "name"),
     note: weekStats.some(w => w.device)
-      ? `<b>Counting changed at the line.</b> Before it, players are matched by <b>name</b>. After it, by <b>device ID</b>, which also counts players who never typed a name, so the step up isn\u2019t a real jump in players.`
+      ? `<b>Counting changed at the line.</b> Before it, players are matched by <b>name</b>. After it, by <b>device ID</b>, which also counts players who never typed a name, so the step up isn’t a real jump in players.`
       : ""
   });
 }
