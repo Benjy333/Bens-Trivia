@@ -484,7 +484,7 @@ function lbRowsHtml(from, to) {
         <td class="lb-nowrap">${r.score}/${r.max_score}</td>
         <td class="lb-nowrap">${r.percent}%</td>
         <td class="lb-fin" data-i="${i}"></td>
-        <td class="lb-nowrap" style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString()}</td>
+        <td class="lb-nowrap" style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}</td>
       </tr>
     `;
   }
