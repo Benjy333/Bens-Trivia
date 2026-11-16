@@ -488,3 +488,19 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
   #lb-table td:nth-child(4){font-size:.88rem!important;}
   #lb-table th:nth-child(6),#lb-table td:nth-child(6){padding-left:0!important;padding-right:4px!important;}
 }
+
+/* ---- phone fixes: show the date under the name, round the header strip, smaller question stats ---- */
+.lb-date-sub{display:none;}
+@media (max-width:480px){
+  .lb-date-sub{display:block;font-size:.68rem;font-weight:500;color:rgba(11,59,66,.6);line-height:1.2;margin-top:2px;overflow:hidden;text-overflow:ellipsis;}
+  #lb-table thead th:nth-child(6){border-radius:0 10px 10px 0;}
+  #lb-table tbody td{padding-top:9px!important;padding-bottom:9px!important;}
+  .q-row{padding:12px 14px!important;}
+  .q-text{font-size:.86rem!important;}
+  .q-pct{font-size:1rem!important;}
+  .q-tag{font-size:.66rem!important;}
+  .q-row [style*="font-size:0.8rem"]{font-size:.78rem!important;}
+  .q-row [style*="font-size:0.85rem"]{font-size:.8rem!important;}
+  .stat-card .stat-value{font-size:1.6rem!important;}
+  .stat-card .stat-label{font-size:.66rem!important;}
+}
