@@ -286,3 +286,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--t-banner)!import
 /* keep the page from getting wider than a small phone */
 main>*{min-width:0;max-width:100%;box-sizing:border-box;}
 @media (max-width:600px){.hero-facts{font-size:clamp(.6rem,3.2vw,.88rem)!important;}}
+
+/* ---------- ?dev mode ----------
+   the dev script nudges the header down and shows the Venues / Countries / Instagram links;
+   keep the header in place and line those links up with the rest of the menu */
+.global-header{top:0!important;}
+.menu-dropdown a[style*="display: block"]{display:flex!important;align-items:center;}
+#dev-panel{position:static!important;margin:0 0 6px;}
+@media (max-width:899px){
+  .menu-dropdown a[style*="display: block"]{display:block!important;}
+}
