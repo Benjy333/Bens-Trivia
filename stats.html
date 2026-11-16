@@ -477,7 +477,7 @@ function lbRowsHtml(from, to) {
     const rowStyle = rank <= 2 ? "" : "opacity:0.8;";
     const flag = countryFlag(r.country);
     html += `
-      <tr style="${rowStyle}">
+      <tr class="${rank <= 2 ? 'lb-top lb-r' + (rank+1) : ''}" style="${rowStyle}">
         <td>${rankDisplay}</td>
         <td style="font-size:1.1rem;">${flag}</td>
         <td class="lb-name" title="${escapeHtml(r.player_name)}">${escapeHtml(r.player_name)}</td>
@@ -856,7 +856,7 @@ const VENUE_NAMES = { "xxxx-brewery": "XXXX Brewery", "the-brisbane-channel": "T
     body.innerHTML = venues.map((v, i) => {
       const logo = VENUE_LOGOS[slugify(v.venue)];
       const img = logo ? `<img src="${logo}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;flex:none;">` : "";
-      return `<tr><td>${medals[i] || (i + 1)}</td><td class="venue-cell"><span class="venue-wrap">${img}<span>${escapeHtml(pretty(v.venue))}</span></span></td><td class="mv-cell">${badge(v.move)}</td><td class="lb-nowrap">${Math.round(v.avg)}%</td></tr>`;
+      return `<tr class="${i < 3 ? 'lb-top lb-r' + (i+1) : ''}"><td>${medals[i] || (i + 1)}</td><td class="venue-cell"><span class="venue-wrap">${img}<span>${escapeHtml(pretty(v.venue))}</span></span></td><td class="mv-cell">${badge(v.move)}</td><td class="lb-nowrap">${Math.round(v.avg)}%</td></tr>`;
     }).join("");
   } catch (err) {
     body.innerHTML = '<tr><td colspan="4" class="loading-msg">Could not load venues.</td></tr>';
