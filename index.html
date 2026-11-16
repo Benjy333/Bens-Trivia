@@ -252,7 +252,7 @@
     #bsv-venues[open] > summary::after { content:" \25B4"; }
   </style>
 
-  <link rel="stylesheet" href="theme.css?v=15" />
+  <link rel="stylesheet" href="theme.css?v=19" />
 </head>
 <body>
   <div id="dev-panel">
@@ -364,11 +364,8 @@
       <div class="score-box" id="score-box"></div>
       <!-- Trivia Highlight panel (shown after finishing) -->
       <div id="highlight-panel" class="highlight-panel" style="display:none;">
-        <div class="highlight-label">⚡ Your Trivia Highlight</div>
         <div class="highlight-headline" id="highlight-headline">—</div>
         <div class="highlight-sub" id="highlight-sub"></div>
-        <div class="share-preview-label">Preview — this is what gets shared</div>
-        <div class="share-preview-box" id="share-preview-box">—</div>
         <div class="share-main">
           <button type="button" class="share-primary" id="sc-open">Share as image</button>
           <button type="button" class="share-second" id="share-toggle" aria-expanded="false" aria-controls="share-menu">Share result</button>
@@ -1349,7 +1346,7 @@ async function showHighlight() {
   panel.style.display = "block";
   headlineEl.textContent = "Calculating your highlight…";
   subEl.textContent = "";
-  previewEl.textContent = "—";
+  if (previewEl) previewEl.textContent = "—";
   const earned = states.reduce((s, x) => s + x.points, 0);
   const maxPts = states.reduce((s, x) => s + x.maxPoints, 0);
   const myPct  = maxPts ? Math.round((earned / maxPts) * 100) : 0;
@@ -1362,16 +1359,9 @@ async function showHighlight() {
   // achievement line (only for a top-3 world or country placing), the score
   // line, then the link. Kept separate from the on-page headline copy below,
   // which can stay more playful (hardest-question callouts etc).
+  // The share message is just the link
   function buildShareText(achievementLine, linkToUse) {
-    const weekMatch = String(currentQuizTitle || "").match(/#\s*(\d+)/);
-    const lines = ["Ben's Trivia" + (weekMatch ? " Week #" + weekMatch[1] : "")];
-    if (achievementLine) lines.push(achievementLine);
-    lines.push(scoreStr);
-    const venueName = venueShareName();
-    if (venueName) lines.push("Playing for " + venueName);
-    lines.push("Think you can beat me?");
-    lines.push(linkToUse);
-    return lines.join("\n");
+    return linkToUse;
   }
   try {
     // Fetch full leaderboard
@@ -1474,7 +1464,7 @@ async function showHighlight() {
     subEl.textContent = sub ? `${sub}` : "";
     highlightText = buildShareText(achievementLine, waLink);
     copyShareText = buildShareText(achievementLine, copyLink);
-    previewEl.textContent = highlightText;
+    if (previewEl) previewEl.textContent = highlightText;
   } catch(e) {
     console.error("Highlight error:", e);
     const headline = `I scored ${earned}/${maxPts} (${myPct}%) — can you beat it?`;
@@ -1482,7 +1472,7 @@ async function showHighlight() {
     document.getElementById("highlight-sub").textContent = "";
     highlightText = buildShareText(null, waLink);
     copyShareText = buildShareText(null, copyLink);
-    previewEl.textContent = highlightText;
+    if (previewEl) previewEl.textContent = highlightText;
   }
 }
 (function initShare() {
@@ -1808,13 +1798,8 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
   <div id="sc-box">
     <button type="button" id="sc-close" aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M2 2 L12 12 M12 2 L2 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
     <h3 id="sc-h">Share your score</h3>
-    <div id="sc-stage"><div id="sc-canvas-wrap"><canvas id="sc-canvas" width="1080" height="1350" aria-label="Preview of your share image"></canvas><button type="button" id="sc-card-add" aria-label="Add team photo"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 8h3l1.6-2.4h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.6"/></svg><span>Add team photo</span></button></div></div>
-    <div class="sc-row">
-      <div class="sc-field"><label for="sc-name">Name or team</label><input id="sc-name" type="text" maxlength="24" placeholder="Your name or team" autocomplete="off"></div>
-    </div>
-    <div class="sc-row">
-      <div class="sc-field"><label for="sc-loc">Location</label><input id="sc-loc" type="text" maxlength="30" placeholder="Where are you playing? (optional)" autocomplete="off"></div>
-    </div>
+    <div id="sc-stage"><div id="sc-canvas-wrap"><canvas id="sc-canvas" width="1080" height="1350" aria-label="Preview of your share image"></canvas><input id="sc-name" class="sc-edit sc-edit-name" type="text" maxlength="24" placeholder="Add team name" autocomplete="off" aria-label="Team name"><input id="sc-loc" class="sc-edit sc-edit-loc" type="text" maxlength="30" placeholder="Add location" autocomplete="off" aria-label="Location"><button type="button" id="sc-card-add" aria-label="Add team photo"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 8h3l1.6-2.4h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.6"/></svg><span>Add team photo</span></button></div></div>
+    <div id="sc-hint">Tap the team name or location on the card to change it.</div>
     <div class="sc-row">
       <button type="button" class="sc-btn" id="sc-photo-btn" style="display:none;">Change photo</button>
       <button type="button" class="sc-btn" id="sc-photo-clear" style="display:none;">Remove photo</button>
@@ -1868,6 +1853,17 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
     ctx.fillStyle=bg; rr(cx-w/2,cy-h/2,w,h,h/2); ctx.fill();
     ctx.fillStyle=fg; ctx.textAlign="center"; ctx.fillText(txt,cx,cy+size*0.34);
   }
+  function placeInputs(W,H,nameBase,nameSz,ly,lf){
+    var scale=(canvas.clientWidth||W)/W;
+    function put(el,top,h,fs,wPct){
+      el.style.top=(top/H*100)+"%"; el.style.height=(h/H*100)+"%";
+      el.style.left=((100-wPct)/2)+"%"; el.style.width=wPct+"%";
+      el.style.fontSize=Math.max(16,fs*scale)+"px";
+    }
+    put(nameEl,nameBase-nameSz*1.15,nameSz*1.6,nameSz,86);
+    put(locEl,ly-lf*1.2,lf*1.7,lf,76);
+  }
+  window.addEventListener("resize",function(){ if(overlay.classList.contains("open")) draw(); });
   function draw(){
     var W=1080,H=1350; canvas.width=W; canvas.height=H;
     var FONT="'Plus Jakarta Sans', Inter, Arial, sans-serif", INK="#0B3B42";
@@ -1892,18 +1888,22 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
     // score block, upper part of the card
     var y=logoBottom+W*0.04;
     ctx.fillStyle="#fff";
-    if(name){ var ns=fitFont(name.toUpperCase(),W*0.86,W*0.055,W*0.034,"800",FONT); y+=ns; ctx.fillText(name.toUpperCase(),W/2,y); y+=W*0.028; }
+    var ns=W*0.055; if(name) ns=fitFont(name.toUpperCase(),W*0.86,W*0.055,W*0.034,"800",FONT);
+    y+=ns; if(name) ctx.fillText(name.toUpperCase(),W/2,y);
+    var nameBase=y, nameSz=ns; y+=W*0.028;
     var hero=W*0.07; y+=hero; ctx.font="800 "+hero+"px "+FONT; ctx.fillStyle="#fff"; ctx.fillText(si.earned+"/"+si.max,W/2,y);
     ctx.shadowBlur=0; ctx.shadowColor="transparent";
-    // bottom: location
+    // bottom: location (space is always reserved so the on-card box has somewhere to sit)
+    var lf=W*0.05, ly=H-pad*1.5;
     if(loc){
       if(photo){ ctx.shadowColor="rgba(0,30,32,.55)"; ctx.shadowBlur=W*0.02; }
-      var lf=fitFont(loc,W*0.7,W*0.05,W*0.03,"700",FONT), iconW=lf*1.2;
-      var tw=ctx.measureText(loc).width, x0=(W-(iconW+tw))/2, ly=H-pad*1.5;
+      lf=fitFont(loc,W*0.7,W*0.05,W*0.03,"700",FONT); var iconW=lf*1.2;
+      var tw=ctx.measureText(loc).width, x0=(W-(iconW+tw))/2;
       pin(x0+iconW*0.4,ly-lf*0.35,lf*0.95,"#fff");
       ctx.textAlign="left"; ctx.fillStyle="#fff"; ctx.fillText(loc,x0+iconW,ly); ctx.textAlign="center";
       ctx.shadowBlur=0; ctx.shadowColor="transparent";
     }
+    placeInputs(W,H,nameBase,nameSz,ly,lf);
     cardAdd.style.display=photo?"none":"";
     clearBtn.style.display=photo?"":"none";
     photoBtn.style.display=photo?"":"none";
