@@ -205,24 +205,23 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--t-banner)!import
    DESKTOP LAYOUT (900px and up): full-width top bar, big hero, wide centred question cards
    ===================================================================== */
 @media (min-width:900px){
-  .global-header{display:grid!important;flex-direction:initial;grid-template-columns:auto 1fr;grid-template-rows:68px auto auto;max-width:none!important;padding:0 36px!important;
+  .global-header{display:grid!important;flex-direction:initial;grid-template-columns:auto 1fr;grid-template-rows:68px auto;max-width:none!important;padding:0 36px!important;
     background:linear-gradient(var(--t-line),var(--t-line)) 0 67px/100% 1px no-repeat!important;}
-  /* mini square logo, top left of the bar */
-  .global-header::before{position:static;grid-column:1;grid-row:1;align-self:center;width:44px;height:44px;border-radius:50%;}
-  /* full logo, top middle under the bar */
-  .header-row-top{grid-column:1 / -1;grid-row:2;order:0;justify-content:center;margin-top:30px;}
-  .header-logo{height:104px!important;margin:0 auto;border-radius:12px;}
+  /* Ben's Trivia logo, top left of the bar */
+  .global-header::before{display:none!important;}
+  .header-row-top{grid-column:1;grid-row:1;order:0;align-self:center;justify-content:flex-start;margin:0;}
+  .header-logo{height:46px!important;margin:0;border-radius:8px;}
   .menu-dropdown{grid-column:2;grid-row:1;order:0;align-items:stretch;gap:30px;margin:0!important;padding:0 0 0 28px!important;border:0!important;overflow:visible;}
   .menu-dropdown a{display:flex;align-items:center;padding:0 2px!important;margin:0;font-size:.78rem!important;font-weight:800;letter-spacing:.07em;text-transform:uppercase;border-bottom:3px solid transparent;}
   .menu-dropdown a.active{border-bottom-color:var(--t-ink);}
-  .header-row-bottom{grid-column:1 / -1;grid-row:3;order:0;margin:26px 0 8px!important;}
+  .header-row-bottom{grid-column:1 / -1;grid-row:2;order:0;margin:44px 0 8px!important;}
   .page-title{font-size:clamp(2.4rem,4.4vw,3.6rem)!important;letter-spacing:-.02em!important;line-height:1.05;}
 
   main{padding:20px 40px 110px!important;}
 
   /* hero */
-  .hero-flat{width:min(980px,100%)!important;margin:26px auto 22px!important;}
-  .hero-num{font-size:clamp(2.8rem,5.6vw,4.9rem)!important;line-height:1.02!important;letter-spacing:-.03em!important;margin:0 0 14px!important;text-wrap:balance;}
+  .hero-flat{width:min(1180px,100%)!important;margin:50px auto 22px!important;}
+  .hero-num{font-size:clamp(2rem,3.9vw,3.8rem)!important;line-height:1.05!important;letter-spacing:-.03em!important;margin:0 0 14px!important;white-space:nowrap;}
   .hero-facts{font-size:1rem!important;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin:0 0 18px!important;}
   .hero-facts span + span::before{margin:0 .9em;}
   #bsv-proof{margin:0 0 6px!important;}
