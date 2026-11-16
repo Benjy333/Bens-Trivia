@@ -93,7 +93,7 @@
     .month-label { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-top: -8px; }
     .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
   </style>
-  <link rel="stylesheet" href="theme.css?v=9" />
+  <link rel="stylesheet" href="theme.css?v=22" />
 </head>
 <body>
   <header class="global-header">
@@ -115,6 +115,7 @@
       <a href="venues.html" id="venue-stats-link" style="display:none;">Venues</a>
       <a href="countries.html" id="country-stats-link" class="active" style="display:none;">Countries</a>
       <a href="instagram.html" id="instagram-link" style="display:none;">Instagram</a>
+      <a href="?nodev" id="exit-dev-link" class="exit-dev" style="display:none;">Exit dev</a>
     </nav>
   </header>
 
@@ -193,6 +194,10 @@ if (location.search.includes("nodev")) {
     document.getElementById("venue-stats-link").style.display = "block";
     document.getElementById("country-stats-link").style.display = "block";
     document.getElementById("instagram-link").style.display = "block";
+  (function(){ var x=document.getElementById("exit-dev-link"); if(!x) return;
+    x.style.display="block";
+    x.addEventListener("click",function(e){ e.preventDefault(); try{ sessionStorage.removeItem("bens-trivia-dev-mode"); }catch(_){} location.replace(location.pathname); });
+  })();
   }
 }
 
