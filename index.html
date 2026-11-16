@@ -250,7 +250,7 @@
     #bsv-venues[open] > summary::after { content:" \25B4"; }
   </style>
 
-  <link rel="stylesheet" href="theme.css?v=6" />
+  <link rel="stylesheet" href="theme.css?v=7" />
 </head>
 <body>
   <div id="dev-panel">
@@ -338,7 +338,7 @@
         <div id="bsv-teaser-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 14px;margin-top:12px;text-align:left;"></div>
       </details>
     </div>
-    <div style="text-align:center;font-size:0.85rem;opacity:0.7;margin-top:14px;">🔒 Complete Trivia to see live rankings</div>
+    <div style="text-align:center;margin-top:14px;"><a class="bsv-rank-link" href="stats.html#leaderboard">See live rankings</a></div>
       </div>
     </details>
   </section>
@@ -1322,7 +1322,7 @@ function renderVenueBadge() {
   el.style.display = "flex";
 }
 renderVenueBadge();
-function showLeaderboard() { document.getElementById("leaderboard-section").style.display = "block"; currentQuizTitle = document.getElementById("quiz-title").textContent; loadLeaderboard(); loadVenueCard(); }
+function showLeaderboard() { document.getElementById("leaderboard-section").style.display = "block"; ["leaderboard-locked","bsv-locked"].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = "none"; }); ["leaderboard-unlocked","bsv-unlocked"].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = "block"; }); currentQuizTitle = document.getElementById("quiz-title").textContent; loadLeaderboard(); loadVenueCard(); }
 function switchTab(tab) { currentTab = tab; document.getElementById("tab-week").classList.toggle("active", tab === "week"); document.getElementById("tab-all").classList.toggle("active", tab === "all"); loadLeaderboard(); }
 /* ---- TRIVIA HIGHLIGHT ---- */
 let highlightText = "";
