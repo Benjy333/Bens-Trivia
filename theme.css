@@ -467,3 +467,24 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
   .stat-card .stat-value{font-size:1.8rem!important;}
   .stat-card .stat-label{font-size:.72rem!important;}
 }
+
+/* small phones: make sure the Top Scores table always fits inside its card */
+@media (max-width:480px){
+  .table-scroll{overflow-x:visible;}
+  #lb-table{table-layout:auto;width:100%;}
+  #lb-table thead th{padding:10px 3px!important;font-size:.62rem!important;letter-spacing:.03em!important;}
+  #lb-table tbody td{padding:11px 3px!important;}
+  #lb-table thead th:first-child,#lb-table tbody td:first-child{padding-left:8px!important;padding-right:2px!important;}
+  #lb-table th:nth-child(2),#lb-table td:nth-child(2){width:26px;padding-left:2px!important;padding-right:2px!important;}
+  #lb-table td:nth-child(2){font-size:1rem!important;}
+  #lb-table td.lb-name{padding-left:6px!important;}
+  #lb-table thead th:nth-child(3){padding-left:6px!important;}
+  #lb-table td:nth-child(4){white-space:nowrap;}
+  #lb-table th:nth-child(6),#lb-table td:nth-child(6){padding-right:6px!important;}
+  #lb-table .lb-pill{padding:1px 5px;font-size:.6rem;}
+}
+@media (max-width:480px){
+  #lb-table td.lb-name{font-size:.86rem!important;padding-left:4px!important;}
+  #lb-table td:nth-child(4){font-size:.88rem!important;}
+  #lb-table th:nth-child(6),#lb-table td:nth-child(6){padding-left:0!important;padding-right:4px!important;}
+}
