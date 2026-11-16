@@ -93,7 +93,7 @@
     .month-label { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-top: -8px; }
     .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
   </style>
-  <link rel="stylesheet" href="theme.css?v=25" />
+  <link rel="stylesheet" href="theme.css?v=30" />
 </head>
 <body>
   <header class="global-header">
@@ -105,9 +105,6 @@
       </picture>
       <div style="width:52px;"></div>
     </div>
-    <div class="header-row-bottom">
-      <h1 class="page-title">Country Leaderboard</h1>
-    </div>
     <nav class="menu-dropdown" id="menu-dropdown">
       <a href="/">Play Quiz</a>
       <a href="stats.html">Quiz Stats</a>
@@ -118,6 +115,9 @@
       <a href="?nodev" id="exit-dev-link" class="exit-dev" style="display:none;">Exit dev</a>
     </nav>
   </header>
+  <div class="header-row-bottom">
+    <h1 class="page-title">Country Leaderboard</h1>
+  </div>
 
   <main>
     <div class="stats-shell">
@@ -607,6 +607,23 @@ function populateOtherCountries(minor) {
     </tr>
   `).join("");
 }
+</script>
+<script>
+/* Sticky menu: the logo + menu bar stays on screen. On phones it slides away when you scroll down and back when you scroll up. */
+(function(){
+  var h=document.querySelector(".global-header"); if(!h) return;
+  var lastY=window.pageYOffset||0, ticking=false;
+  function onScroll(){
+    var y=window.pageYOffset||0;
+    h.classList.toggle("is-stuck",y>8);
+    if(window.innerWidth<900){
+      if(y>lastY+6&&y>140) h.classList.add("nav-hidden");
+      else if(y<lastY-6||y<60) h.classList.remove("nav-hidden");
+    } else h.classList.remove("nav-hidden");
+    lastY=y; ticking=false;
+  }
+  window.addEventListener("scroll",function(){ if(!ticking){ ticking=true; requestAnimationFrame(onScroll); } },{passive:true});
+})();
 </script>
 </body>
 </html>
