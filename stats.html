@@ -64,7 +64,6 @@
     .lb-name { width: 100%; max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     @media (max-width: 480px) {
       .lb-table th, .lb-table td { padding-left: 6px; padding-right: 6px; }
-      #lb-table th:nth-child(7), #lb-table td:nth-child(7) { display: none; }
       #lb-table th, #lb-table td { padding-left: 4px; padding-right: 4px; }
       #lb-table th { font-size: 0.66rem; letter-spacing: 0.02em; }
       #lb-table td:nth-child(2) { font-size: 1rem !important; }
@@ -264,7 +263,7 @@
         <h2 class="section-heading">Top Scores</h2>
         <div class="table-scroll"><table class="lb-table" id="lb-table">
           <thead>
-            <tr><th>#</th><th>Flag</th><th>Name</th><th>Score</th><th>%</th><th>Finishes</th><th>Date</th></tr>
+            <tr><th>#</th><th>Flag</th><th>Name</th><th>Date</th><th>Score</th><th>%</th><th>Finishes</th></tr>
           </thead>
           <tbody id="lb-body">
             <tr><td colspan="7" class="loading-msg">Select a quiz above</td></tr>
@@ -480,11 +479,11 @@ function lbRowsHtml(from, to) {
       <tr class="${rank <= 2 ? 'lb-top lb-r' + (rank+1) : ''}" style="${rowStyle}">
         <td>${rankDisplay}</td>
         <td style="font-size:1.1rem;">${flag}</td>
-        <td class="lb-name" title="${escapeHtml(r.player_name)}">${escapeHtml(r.player_name)}<span class="lb-date-sub">${new Date(r.submitted_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}</span></td>
+        <td class="lb-name" title="${escapeHtml(r.player_name)}">${escapeHtml(r.player_name)}</td>
+        <td class="lb-nowrap" style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}</td>
         <td class="lb-nowrap">${r.score}/${r.max_score}</td>
         <td class="lb-nowrap">${r.percent}%</td>
         <td class="lb-fin" data-i="${i}"></td>
-        <td class="lb-nowrap" style="opacity:0.5;font-size:0.78rem;">${new Date(r.submitted_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}</td>
       </tr>
     `;
   }
