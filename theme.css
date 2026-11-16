@@ -6,7 +6,8 @@
    To go back to the old look, remove that one <link> line from the pages.
    ========================================================================== */
 :root{
-  --t-bg:#CEF7F5;          /* page */
+  --t-bg:#DDFAF8;          /* page (slightly lighter) */
+  --t-card:#CEF7F5;        /* cards keep the original turquoise tint */
   --t-field:#FFFFFF;       /* inputs */
   --t-solid:#E6FCFB;       /* pop-ups, menus, sticky bar */
   --t-banner:#00B8B4;      /* logo banner, filled highlights */
@@ -18,7 +19,7 @@
   --t-font:"Plus Jakarta Sans","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   /* re-point the old variables so anything that used them changes colour */
   --neon:#00B8B4; --neon-soft:#0A706B; --text:#0B3B42;
-  --bg1:#CEF7F5; --bg2:#E6FCFB; --good:#0B7A43; --bad:#B3261E;
+  --bg1:#DDFAF8; --bg2:#E6FCFB; --good:#0B7A43; --bad:#B3261E;
   color-scheme:light;
 }
 
@@ -372,3 +373,7 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 /* ---- Share image: name sits on the card, tap it to type ---- */
 #sc-block{position:absolute;pointer-events:none;}
 #sc-block .sc-edit{pointer-events:auto;}
+
+/* ---- Cards keep the original tint while the page behind them is a little lighter ---- */
+.card,.question-card,#mailing-list-signup,#feedback-section,.signup-card,.highlight-panel,.stat-card,.q-row,.highlight-card,#bsv-teaser,.leaderboard-section,.venue-card,.score-box{background:var(--t-card)!important;}
+.game-card,.game-card.card,.quiz-shell{background:transparent!important;}
