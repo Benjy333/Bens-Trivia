@@ -296,3 +296,27 @@ main>*{min-width:0;max-width:100%;box-sizing:border-box;}
 @media (max-width:899px){
   .menu-dropdown a[style*="display: block"]{display:block!important;}
 }
+
+/* ---- Countries page: charts + highlight tiles on the light turquoise ground ---- */
+.stats-shell>.card{width:100%;max-width:100%;box-sizing:border-box;min-width:0;}
+.week-chart,.chart-wrap{min-width:0;max-width:100%;}
+.chart-scroll svg text[fill="#bfe3ff"],.chart-scroll svg text[fill="#7fb3d9"]{fill:var(--t-link)!important;opacity:1!important;}
+.chart-axis text[fill="#7fb3d9"]{fill:var(--t-link)!important;opacity:1!important;}
+.chart-scroll svg text[fill="#ffd700"],.chart-axis text[fill="#ffd700"]{fill:#8a6a00!important;opacity:1!important;}
+.chart-scroll svg line[stroke="#ffd700"]{stroke:#c99a00!important;}
+.chart-scroll svg line[stroke="#7fb3d9"]{stroke:var(--t-line)!important;}
+.chart-scroll svg text[fill="#ffb347"]{fill:#b05a00!important;}
+.chart-scroll svg line[stroke="#ffb347"]{stroke:#d9780a!important;}
+.chart-scroll svg [fill="#37a1ff"],.chart-scroll svg [fill="#4aa8ff"]{fill:#1767c9!important;}
+.chart-scroll svg [stroke="#37a1ff"],.chart-scroll svg [stroke="#4aa8ff"]{stroke:#1767c9!important;}
+.chart-scroll svg [fill="#9be26b"]{fill:#238a3e!important;}
+.chart-scroll svg [stroke="#9be26b"]{stroke:#238a3e!important;}
+.chart-scroll svg circle{stroke:#fff!important;}
+.chart-legend{color:var(--t-ink)!important;font-weight:600;}
+.chart-legend i[style*="4aa8ff"]{background:#1767c9!important;}
+.chart-legend i[style*="9be26b"]{background:#238a3e!important;}
+.chart-note{color:var(--t-ink)!important;opacity:1!important;background:rgba(217,120,10,.10)!important;border-left-color:#d9780a!important;}
+.chart-note b{color:#8a4f17!important;}
+.chart-hint,.section-subheading,.month-label{color:var(--t-link)!important;opacity:1!important;}
+.loading-msg{color:var(--t-link);opacity:.8!important;}
+.global-footer{color:var(--t-link)!important;opacity:1!important;}
