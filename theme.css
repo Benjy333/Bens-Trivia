@@ -67,6 +67,7 @@ main{padding-top:6px!important;}
 .hero-facts{color:var(--t-link)!important;font-weight:600;}
 .hero-facts b{color:var(--t-link)!important;font-weight:800;}
 .quiz-meta,.page-subtitle,.hero-note,.quiz-description{color:var(--t-ink);}
+#hero-note,#quiz-description{display:none!important;}   /* hides the weekly description line ("Good luck!"); delete this line to bring it back */
 .bsv-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px!important;background:rgba(255,255,255,.35)!important;border:1px solid var(--t-line)!important;color:var(--t-ink)!important;font-weight:700;font-size:.9rem!important;}
 .bsv-pill b{color:var(--t-ink)!important;}
 .pill-ic{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--t-banner);flex:none;}
