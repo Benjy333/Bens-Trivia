@@ -252,7 +252,7 @@
     #bsv-venues[open] > summary::after { content:" \25B4"; }
   </style>
 
-  <link rel="stylesheet" href="theme.css?v=14" />
+  <link rel="stylesheet" href="theme.css?v=15" />
 </head>
 <body>
   <div id="dev-panel">
@@ -1881,10 +1881,10 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
       var bt=ctx.createLinearGradient(0,H*0.58,0,H); bt.addColorStop(0,"rgba(0,48,50,0)"); bt.addColorStop(1,"rgba(0,48,50,.88)"); ctx.fillStyle=bt; ctx.fillRect(0,H*0.58,W,H*0.42);
     }
     var pad=W*0.07;
-    // logo, top centre (white, transparent PNG)
-    var logoH=W*0.1, logoBottom=pad;
+    // logo, top right (white, transparent PNG)
+    var logoH=W*0.085, logoBottom=pad;
     if(logo.complete&&logo.naturalWidth){
-      var lw=logo.naturalWidth*(logoH/logo.naturalHeight); ctx.drawImage(logo,(W-lw)/2,pad,lw,logoH); logoBottom=pad+logoH;
+      var lw=logo.naturalWidth*(logoH/logo.naturalHeight); ctx.drawImage(logo,W-pad-lw,pad,lw,logoH); logoBottom=pad+logoH;
     }
     ctx.textAlign="center"; ctx.textBaseline="alphabetic";
     var name=nameEl.value.trim(), loc=locEl.value.trim(), si=scoreInfo();
@@ -1892,23 +1892,18 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
     // score block, upper part of the card
     var y=logoBottom+W*0.04;
     ctx.fillStyle="#fff";
-    if(name){ var ns=fitFont(name.toUpperCase(),W*0.86,W*0.06,W*0.034,"800",FONT); y+=ns; ctx.fillText(name.toUpperCase(),W/2,y); y+=W*0.03; }
-    var hero=W*0.15; y+=hero; ctx.font="800 "+hero+"px "+FONT; ctx.fillStyle="#fff"; ctx.fillText(si.earned+"/"+si.max,W/2,y);
+    if(name){ var ns=fitFont(name.toUpperCase(),W*0.86,W*0.055,W*0.034,"800",FONT); y+=ns; ctx.fillText(name.toUpperCase(),W/2,y); y+=W*0.028; }
+    var hero=W*0.07; y+=hero; ctx.font="800 "+hero+"px "+FONT; ctx.fillStyle="#fff"; ctx.fillText(si.earned+"/"+si.max,W/2,y);
     ctx.shadowBlur=0; ctx.shadowColor="transparent";
-    y+=W*0.07; pill(si.pct+"%",W/2,y,W*0.052,"#fff",INK,"800",FONT);
-    // bottom: location, prompt, link
-    var ph=W*0.052*1.9, pillY=H-pad*1.15-ph/2;
-    var askY=pillY-ph/2-W*0.04;
-    if(photo){ ctx.shadowColor="rgba(0,30,32,.55)"; ctx.shadowBlur=W*0.02; }
-    ctx.fillStyle="#fff"; ctx.font="700 "+(W*0.046)+"px "+FONT; ctx.textAlign="center"; ctx.fillText("Think you can beat me?",W/2,askY);
+    // bottom: location
     if(loc){
+      if(photo){ ctx.shadowColor="rgba(0,30,32,.55)"; ctx.shadowBlur=W*0.02; }
       var lf=fitFont(loc,W*0.7,W*0.05,W*0.03,"700",FONT), iconW=lf*1.2;
-      var tw=ctx.measureText(loc).width, x0=(W-(iconW+tw))/2, ly=askY-W*0.085;
+      var tw=ctx.measureText(loc).width, x0=(W-(iconW+tw))/2, ly=H-pad*1.5;
       pin(x0+iconW*0.4,ly-lf*0.35,lf*0.95,"#fff");
       ctx.textAlign="left"; ctx.fillStyle="#fff"; ctx.fillText(loc,x0+iconW,ly); ctx.textAlign="center";
+      ctx.shadowBlur=0; ctx.shadowColor="transparent";
     }
-    ctx.shadowBlur=0; ctx.shadowColor="transparent";
-    pill("benstrivia.com",W/2,pillY,W*0.04,"#fff",INK,"800",FONT);
     cardAdd.style.display=photo?"none":"";
     clearBtn.style.display=photo?"":"none";
     photoBtn.style.display=photo?"":"none";
