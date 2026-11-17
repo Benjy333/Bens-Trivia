@@ -115,7 +115,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--t-banner)!import
 /* ---------- question tiles + answer buttons ---------- */
 .question-card{background:transparent!important;border:1px solid var(--t-line)!important;border-radius:16px!important;box-shadow:none!important;color:var(--t-ink)!important;}
 .question-card.current-q{animation:none!important;box-shadow:none!important;border-color:var(--t-link)!important;}
-.question-card.answered{opacity:.92;}
+.question-card.answered{opacity:.85!important;}
 .question-card.flash-correct{animation:correctFlash .7s ease forwards!important;}
 @keyframes correctFlash{0%{box-shadow:0 0 0 4px rgba(10,79,40,.28);}100%{box-shadow:none;}}
 @keyframes pulseNeon{0%,100%{box-shadow:none;}50%{box-shadow:none;}}
