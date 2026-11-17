@@ -348,7 +348,7 @@ main>*{min-width:0;max-width:100%;box-sizing:border-box;}
 .share-second.native::after{display:none;}
 
 /* ---- Share image popup ---- */
-#sc-card-add{top:var(--sc-tile-top,52%)!important;width:var(--sc-tile-w,52%)!important;border-color:rgba(255,255,255,.75)!important;background:rgba(255,255,255,.14)!important;}
+#sc-card-add{top:var(--sc-tile-top,52%)!important;width:var(--sc-tile-w,52%)!important;border-color:rgba(255,243,221,.75)!important;background:rgba(255,243,221,.14)!important;}
 #sc-canvas{border:1px solid var(--t-line)!important;background:var(--t-banner)!important;border-radius:14px!important;}
 #sc-box .sc-row{margin-bottom:12px;}
 #sc-share{padding:13px 18px;font-size:1rem;font-weight:700;}
@@ -361,14 +361,14 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 .mt-reveal-btn:hover{background:var(--t-ink)!important;border-color:var(--t-ink)!important;color:#FFF3DD!important;}
 
 /* ---- Share image: edit team name + location right on the card ---- */
-.sc-edit{position:absolute;box-sizing:border-box;padding:0 14px;margin:0;border:0!important;background:transparent!important;color:transparent!important;caret-color:#fff;text-align:center;font-family:"Poppins",Inter,Arial,sans-serif;line-height:normal;border-radius:999px!important;outline:none;-webkit-appearance:none;appearance:none;text-shadow:none;}
+.sc-edit{position:absolute;box-sizing:border-box;padding:0 14px;margin:0;border:0!important;background:transparent!important;color:transparent!important;caret-color:#FFF3DD;text-align:center;font-family:"Poppins",Inter,Arial,sans-serif;line-height:normal;border-radius:999px!important;outline:none;-webkit-appearance:none;appearance:none;text-shadow:none;}
 .sc-edit-name{font-weight:800;text-transform:uppercase;}
 .sc-edit-loc{font-weight:700;}
-.sc-edit::placeholder{color:rgba(255,255,255,.9);text-transform:none;font-weight:700;font-size:.82rem;letter-spacing:0;}
-.sc-edit:placeholder-shown{border:1.5px dashed rgba(255,255,255,.75)!important;background:rgba(255,255,255,.14)!important;}
-.sc-edit:focus{outline:1.5px solid rgba(255,255,255,.85)!important;outline-offset:0;background:rgba(255,255,255,.12)!important;}
+.sc-edit::placeholder{color:rgba(255,243,221,.9);text-transform:none;font-weight:700;font-size:.82rem;letter-spacing:0;}
+.sc-edit:placeholder-shown{border:1.5px dashed rgba(255,243,221,.75)!important;background:rgba(255,243,221,.14)!important;}
+.sc-edit:focus{outline:1.5px solid rgba(255,243,221,.85)!important;outline-offset:0;background:rgba(255,243,221,.12)!important;}
 #sc-hint{color:var(--t-link);opacity:1;margin:0 0 12px;}
-.sc-edit::placeholder,.sc-edit::-webkit-input-placeholder{color:rgba(255,255,255,.92)!important;opacity:1!important;}
+.sc-edit::placeholder,.sc-edit::-webkit-input-placeholder{color:rgba(255,243,221,.92)!important;opacity:1!important;}
 #sc-hint{opacity:1!important;font-size:.78rem;}
 
 /* ---- Exit dev mode ---- */
@@ -595,3 +595,9 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
   #mailing-list-signup{padding-left:10px!important;padding-right:10px!important;}
   .signup-card{padding-left:10px!important;padding-right:10px!important;}
 }
+
+/* share-image popup: the typing boxes sit on top of the picture, so match its fonts */
+.sc-edit-name:not(#x):not(#y){font-family:var(--t-display)!important;font-weight:400!important;}
+.sc-edit-loc:not(#x):not(#y){font-family:var(--t-font)!important;font-weight:600!important;}
+
+#sc-card-add,#sc-card-add *{color:#FFF3DD!important;}
