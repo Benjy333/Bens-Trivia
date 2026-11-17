@@ -578,3 +578,20 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 }
 /* answer boxes must never poke past the card on narrow phones */
 .multi-text-input,.question-input,.name-input{box-sizing:border-box!important;max-width:100%!important;}
+
+/* ---------- round 3: softer right/wrong colours, one-line signup text ---------- */
+.option-btn.correct:not(#x){background:#E0F2E7!important;border:1.5px solid #6DB58A!important;color:#17402A!important;}
+.option-btn.wrong:not(#x){background:#FAE4DF!important;border:1.5px solid #DE9087!important;color:#6B2A24!important;}
+.feedback.correct:not(#x){background:#E0F2E7!important;color:#1B5A37!important;border:1px solid #8CC7A2!important;}
+.feedback.incorrect:not(#x){background:#FAE4DF!important;color:#8A2F26!important;border:1px solid #E3A59D!important;}
+.feedback.partial:not(#x){background:#FAF0CE!important;color:#6B5200!important;border:1px solid #DEC273!important;}
+.multi-text-input.mt-correct:not(#x){border:1.5px solid #6DB58A!important;background:#EAF7EF!important;}
+.multi-text-input.mt-wrong:not(#x){border:1.5px solid #DE9087!important;background:#FDEFEC!important;}
+.multi-text-input.mt-empty:not(#x){border:1.5px solid #DEC273!important;}
+@keyframes correctFlash2{0%{box-shadow:0 0 0 4px rgba(109,181,138,.4);}100%{box-shadow:none;}}
+#mailing-list-signup>div:nth-child(2),.signup-card .signup-sub{white-space:nowrap!important;font-weight:500!important;padding:0!important;text-wrap:nowrap;}
+@media (max-width:480px){
+  #mailing-list-signup>div:nth-child(2),.signup-card .signup-sub{font-size:min(.8rem,calc((100vw - 54px)/27))!important;}
+  #mailing-list-signup{padding-left:10px!important;padding-right:10px!important;}
+  .signup-card{padding-left:10px!important;padding-right:10px!important;}
+}
