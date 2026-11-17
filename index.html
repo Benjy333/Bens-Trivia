@@ -252,7 +252,7 @@
     #bsv-venues[open] > summary::after { content:" \25B4"; }
   </style>
 
-  <link rel="stylesheet" href="theme.css?v=48" />
+  <link rel="stylesheet" href="theme.css?v=50" />
 </head>
 <body>
   <div id="dev-panel">
@@ -390,7 +390,7 @@
           </div>
           <div id="bsv-unlocked" style="display:none;">
             <div class="mv-caption">Movement vs last Monday</div>
-            <table class="leaderboard-table">
+            <table class="leaderboard-table lb-table">
               <thead><tr><th>#</th><th>Venue</th><th>Move</th><th>Avg %</th></tr></thead>
               <tbody id="bsv-body">
                 <tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
@@ -413,7 +413,7 @@
             <button class="lb-tab active" id="tab-week" onclick="switchTab('week')">This Week</button>
             <button class="lb-tab" id="tab-all" onclick="switchTab('all')">All Time</button>
           </div>
-          <table class="leaderboard-table">
+          <table class="leaderboard-table lb-table">
             <thead><tr><th>#</th><th>Flag</th><th>Name</th><th>Score</th><th>%</th><th>Finishes</th></tr></thead>
             <tbody id="leaderboard-body">
               <tr><td colspan="6" style="text-align:center;opacity:0.5;padding:16px;">Loading…</td></tr>
@@ -1237,7 +1237,9 @@ async function loadVenueCard() {
     const medals = ["🥇","🥈","🥉"];
     body.innerHTML = venues.map((v, i) => {
       const isMine = mine && slugify(v.venue) === mine;
-      return `<tr${isMine ? ' style="font-weight:700;"' : ""}><td>${medals[i] || (i + 1)}</td><td>${VENUE_LOGOS[slugify(v.venue)] ? `<img src="${VENUE_LOGOS[slugify(v.venue)]}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : ""}${escapeHtml(pretty(v.venue))}${isMine ? " (you)" : ""}</td><td class="mv-cell">${badge(v.move)}</td><td>${Math.round(v.avg)}%</td></tr>`;
+      const logo = VENUE_LOGOS[slugify(v.venue)];
+      const img = logo ? `<img src="${logo}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;flex:none;">` : "";
+      return `<tr class="${i < 3 ? 'lb-top lb-r' + (i+1) : ''}${isMine ? ' lb-you' : ''}"><td>${medals[i] || (i + 1)}</td><td class="venue-cell"><span class="venue-wrap">${img}<span>${escapeHtml(pretty(v.venue))}${isMine ? " (you)" : ""}</span></span></td><td class="mv-cell">${badge(v.move)}</td><td class="lb-nowrap">${Math.round(v.avg)}%</td></tr>`;
     }).join("");
   } catch (err) {
     body.innerHTML = '<tr><td colspan="4" style="text-align:center;opacity:0.5;padding:16px;">Could not load venues.</td></tr>';
@@ -1559,11 +1561,11 @@ async function loadLeaderboard() {
     let hist = {};
     try { hist = await loadPlayerHistory(rows.slice(0, TOP_N).concat(showUser ? [rows[userIdx]] : [])); } catch (e) { hist = null; }
     const fin = (r, extra) => lbFinCell(r, hist, extra);
-    tbody.innerHTML = rows.slice(0, TOP_N).map((r, i) => `<tr><td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td><td style="font-size:1.1rem;">${countryFlag(r.country)}</td><td>${escapeHtml(r.player_name)}</td><td>${r.score} / ${r.max_score}</td><td>${r.percent}%</td>${fin(r)}</tr>`).join("");
-    tbody.innerHTML += `<tr><td colspan="6" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} player${rows.length !== 1 ? "s" : ""} this week</td></tr>`;
+    tbody.innerHTML = rows.slice(0, TOP_N).map((r, i) => `<tr class="${ranks[i] < 3 ? "lb-top lb-r" + (ranks[i]+1) : ""}"><td><span class="rank-medal">${medals[ranks[i]] || (ranks[i]+1)}</span></td><td style="font-size:1.1rem;">${countryFlag(r.country)}</td><td class="lb-name">${escapeHtml(r.player_name)}</td><td class="lb-nowrap">${r.score}/${r.max_score}</td><td class="lb-nowrap">${r.percent}%</td>${fin(r)}</tr>`).join("");
+    tbody.innerHTML += `<tr class="lb-plain"><td colspan="6" style="text-align:center;font-size:0.75rem;opacity:0.5;padding:8px 0;">${rows.length} player${rows.length !== 1 ? "s" : ""} this week</td></tr>`;
     if (showUser) {
       const userRank = ranks[userIdx] + 1; const suffix = userRank === 1 ? "st" : userRank === 2 ? "nd" : userRank === 3 ? "rd" : "th";
-      tbody.innerHTML += `<tr><td colspan="6" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-size:1.1rem;">${countryFlag(rows[userIdx].country)}</td><td style="color:var(--neon-soft);font-weight:600;">${escapeHtml(submittedName)} (you)</td><td style="color:var(--neon-soft);">${rows[userIdx].score} / ${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td>${fin(rows[userIdx], ' style="color:var(--neon-soft);"')}</tr>`;
+      tbody.innerHTML += `<tr class="lb-plain"><td colspan="6" style="text-align:center;opacity:0.4;padding:4px 0;font-size:0.75rem;">···</td></tr><tr class="lb-you"><td style="color:var(--neon-soft);font-weight:600;">${userRank}${suffix}</td><td style="color:var(--neon-soft);font-size:1.1rem;">${countryFlag(rows[userIdx].country)}</td><td class="lb-name" style="color:var(--neon-soft);font-weight:600;">${escapeHtml(submittedName)} (you)</td><td class="lb-nowrap" style="color:var(--neon-soft);">${rows[userIdx].score}/${rows[userIdx].max_score}</td><td style="color:var(--neon-soft);">${rows[userIdx].percent}%</td>${fin(rows[userIdx], ' style="color:var(--neon-soft);"')}</tr>`;
     }
   } catch(err) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.5;padding:16px;">Could not load scores.</td></tr>`; }
 }
