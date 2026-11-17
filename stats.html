@@ -172,7 +172,7 @@
     }
     #stats-signup-status { font-size: 0.8rem; margin-top: 8px; min-height: 18px; }
   </style>
-  <link rel="stylesheet" href="theme.css?v=48" />
+  <link rel="stylesheet" href="theme.css?v=50" />
   <style>
     /* two views on one page: Quiz Stats (default) and Leaderboard (#leaderboard) */
     body.view-lb [data-view="stats"]{display:none!important}
@@ -472,7 +472,7 @@ function lbRowsHtml(from, to) {
     const rank = ranks[i];
     const medal = medals[rank];
     const suffix = (rank+1) === 1 ? "st" : (rank+1) === 2 ? "nd" : (rank+1) === 3 ? "rd" : "th";
-    const rankDisplay = medal || `${rank+1}${suffix}`;
+    const rankDisplay = medal || `${rank+1}`;
     const rowStyle = rank <= 2 ? "" : "opacity:0.8;";
     const flag = countryFlag(r.country);
     html += `
