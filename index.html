@@ -252,7 +252,7 @@
     #bsv-venues[open] > summary::after { content:" \25B4"; }
   </style>
 
-  <link rel="stylesheet" href="theme.css?v=46" />
+  <link rel="stylesheet" href="theme.css?v=48" />
 </head>
 <body>
   <div id="dev-panel">
@@ -1879,13 +1879,20 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
     locEl.style.left="12%"; locEl.style.width="76%"; locEl.style.fontSize=Math.max(16,lf*dispScale(W))+"px";
   }
   window.addEventListener("resize",function(){ if(overlay.classList.contains("open")) draw(); });
+  var tintCache={};
+  function tintLogo(col){
+    if(tintCache[col]&&tintCache[col].w===logo.naturalWidth) return tintCache[col].c;
+    var c=document.createElement("canvas"); c.width=logo.naturalWidth; c.height=logo.naturalHeight;
+    var x=c.getContext("2d"); x.drawImage(logo,0,0); x.globalCompositeOperation="source-in"; x.fillStyle=col; x.fillRect(0,0,c.width,c.height);
+    tintCache[col]={c:c,w:logo.naturalWidth}; return c;
+  }
   function draw(){
     var dims=SIZES[layout], W=dims[0], H=dims[1]; canvas.width=W; canvas.height=H;
     var safeTop=H>1800?200:W*0.07, safeBottom=H>1800?260:W*0.07*1.5;
-    var FONT="'Plus Jakarta Sans', Inter, Arial, sans-serif", INK="#0B3B42";
+    var FONT="'Poppins', Arial, sans-serif", DISP="'Anton', Impact, 'Arial Narrow', sans-serif", FG=photo?"#FFF3DD":"#6F0C0F";
     // turquoise card with a soft ring motif; a photo (if any) covers it untouched, the text gets a soft shadow so it still reads
-    var g=ctx.createLinearGradient(0,0,W*0.6,H); g.addColorStop(0,"#14CBC6"); g.addColorStop(1,"#00706B"); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-    ctx.save(); ctx.strokeStyle="rgba(255,255,255,.14)"; ctx.lineWidth=W*0.03; ctx.beginPath(); ctx.arc(W*0.95,H*0.92,W*0.42,0,Math.PI*2); ctx.stroke();
+    var g=ctx.createLinearGradient(0,0,W*0.6,H); g.addColorStop(0,"#86B3CA"); g.addColorStop(1,"#6A9DB8"); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    ctx.save(); ctx.strokeStyle="rgba(255,243,221,.28)"; ctx.lineWidth=W*0.03; ctx.beginPath(); ctx.arc(W*0.95,H*0.92,W*0.42,0,Math.PI*2); ctx.stroke();
     ctx.lineWidth=W*0.02; ctx.beginPath(); ctx.arc(W*0.02,H*0.1,W*0.2,0,Math.PI*2); ctx.stroke(); ctx.restore();
     if(photo) cover(photo,W,H);
     var pad=W*0.07;
@@ -1893,32 +1900,32 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
     // logo: the white Ben's Trivia logo, top right (transparent PNG)
     var logoH=W*0.085, logoBottom=safeTop;
     if(logo.complete&&logo.naturalWidth){
-      var lw=logo.naturalWidth*(logoH/logo.naturalHeight); shade(true); ctx.drawImage(logo,W-pad-lw,safeTop,lw,logoH); shade(false); logoBottom=safeTop+logoH;
+      var lw=logo.naturalWidth*(logoH/logo.naturalHeight); shade(true); ctx.drawImage(tintLogo(FG),W-pad-lw,safeTop,lw,logoH); shade(false); logoBottom=safeTop+logoH;
     }
     ctx.textAlign="center"; ctx.textBaseline="alphabetic";
     var name=nameEl.value.trim(), loc=locEl.value.trim(), si=scoreInfo();
     // team name + score: one block that can be dragged and pinched (blk = offset + scale)
-    var ns=W*0.055; if(name) ns=fitFont(name.toUpperCase(),W*0.86,W*0.055,W*0.034,"800",FONT);
+    var ns=W*0.085; if(name) ns=fitFont(name.toUpperCase(),W*0.86,W*0.085,W*0.045,"400",DISP);
     var hero=W*0.07, nameBase0=ns*1.2, scoreBase0=nameBase0+W*0.028+hero, blockH0=scoreBase0+hero*0.35;
     var scoreTxt="Score: "+si.earned+"/"+si.max;
-    ctx.font="800 "+ns+"px "+FONT; var nW=name?ctx.measureText(name.toUpperCase()).width:0;
-    ctx.font="800 "+hero+"px "+FONT; var sW=ctx.measureText(scoreTxt).width;
+    ctx.font="400 "+ns+"px "+DISP; var nW=name?ctx.measureText(name.toUpperCase()).width:0;
+    ctx.font="400 "+hero+"px "+DISP; var sW=ctx.measureText(scoreTxt).width;
     var bw0=Math.max(W*0.5,nW,sW)+W*0.04;
     var ax=W/2+blk.x, ay=logoBottom+W*0.03+blk.y;
-    ctx.save(); ctx.translate(ax,ay); ctx.scale(blk.s,blk.s); ctx.fillStyle="#fff"; ctx.textAlign="center";
+    ctx.save(); ctx.translate(ax,ay); ctx.scale(blk.s,blk.s); ctx.fillStyle=FG; ctx.textAlign="center";
     shade(true);
-    if(name){ ctx.font="800 "+ns+"px "+FONT; ctx.fillText(name.toUpperCase(),0,nameBase0); if(photo) ctx.fillText(name.toUpperCase(),0,nameBase0); }
-    ctx.font="800 "+hero+"px "+FONT; ctx.fillText(scoreTxt,0,scoreBase0); if(photo) ctx.fillText(scoreTxt,0,scoreBase0);
+    if(name){ ctx.font="400 "+ns+"px "+DISP; ctx.fillText(name.toUpperCase(),0,nameBase0); if(photo) ctx.fillText(name.toUpperCase(),0,nameBase0); }
+    ctx.font="400 "+hero+"px "+DISP; ctx.fillText(scoreTxt,0,scoreBase0); if(photo) ctx.fillText(scoreTxt,0,scoreBase0);
     shade(false); ctx.restore();
     placeBlock(W,H,ax,ay,bw0,blockH0,ns,nameBase0);
     // bottom: location (space is always reserved so the on-card box has somewhere to sit)
     var lf=W*0.05, ly=H-Math.max(pad*1.5,safeBottom);
     if(loc){
       shade(true);
-      lf=fitFont(loc,W*0.7,W*0.05,W*0.03,"700",FONT); var iconW=lf*1.2;
+      lf=fitFont(loc,W*0.7,W*0.05,W*0.03,"600",FONT); var iconW=lf*1.2;
       var tw=ctx.measureText(loc).width, x0=(W-(iconW+tw))/2;
-      pin(x0+iconW*0.4,ly-lf*0.35,lf*0.95,"#fff");
-      ctx.textAlign="left"; ctx.fillStyle="#fff"; ctx.fillText(loc,x0+iconW,ly); if(photo) ctx.fillText(loc,x0+iconW,ly); ctx.textAlign="center";
+      pin(x0+iconW*0.4,ly-lf*0.35,lf*0.95,FG);
+      ctx.textAlign="left"; ctx.fillStyle=FG; ctx.fillText(loc,x0+iconW,ly); if(photo) ctx.fillText(loc,x0+iconW,ly); ctx.textAlign="center";
       shade(false);
     }
     placeLoc(W,H,ly,lf);
@@ -1929,7 +1936,7 @@ document.getElementById("feedback-submit-btn").addEventListener("click", async (
     photoBtn.textContent="Change photo";
   }
   function render(){
-    var loadFont=(document.fonts&&document.fonts.load)?Promise.all([document.fonts.load("800 40px \"Plus Jakarta Sans\""),document.fonts.load("700 40px \"Plus Jakarta Sans\"")]).catch(function(){}):Promise.resolve();
+    var loadFont=(document.fonts&&document.fonts.load)?Promise.all([document.fonts.load("400 40px \"Anton\""),document.fonts.load("600 40px \"Poppins\"")]).catch(function(){}):Promise.resolve();
     loadFont.then(draw);
   }
   function open(btn){
