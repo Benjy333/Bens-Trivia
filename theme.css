@@ -680,3 +680,10 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 .prize-link{background:none!important;border:0!important;box-shadow:none!important;color:#7B0E10!important;text-decoration:underline;font-weight:600;font-size:.9rem;cursor:pointer;padding:6px;}
 .prize-msg{min-height:1.2em;margin-top:8px;font-size:.85rem;font-weight:700;color:#8A150E;}
 .prize-test{margin:0 36px 10px 0;padding:5px 10px;border-radius:8px;background:#7B0E10;color:#FFF3DD;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+/* free beer log on the venues page */
+#beer-body[hidden]{display:none!important;}
+.beer-msg{color:var(--t-link);font-size:.9rem;min-height:1.2em;}
+.beer-summary{font-weight:700;color:var(--t-ink);margin:0 0 12px;line-height:1.4;}
+.beer-note{margin-top:12px;font-size:.8rem;color:var(--t-link);line-height:1.45;}
+.beer-table td,.beer-table th{text-align:left;vertical-align:top;}
+@media (max-width:480px){.beer-table{font-size:.82rem;}.beer-table td,.beer-table th{padding-left:6px;padding-right:6px;}}
