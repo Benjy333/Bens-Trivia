@@ -85,7 +85,7 @@
     .month-label { text-align: center; font-size: 0.8rem; opacity: 0.6; margin-top: -8px; }
     .global-footer { text-align: center; padding: 12px 8px 20px; font-size: 0.85rem; color: var(--neon-soft); opacity: 0.9; }
   </style>
-  <link rel="stylesheet" href="theme.css?v=53" />
+  <link rel="stylesheet" href="theme.css?v=55" />
 </head>
 <body>
   <header class="global-header">
@@ -155,6 +155,19 @@
             <tr><td colspan="5" class="loading-msg">Select a venue above</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="card" id="beer-card">
+        <h2 class="section-heading">Free Beer Log: XXXX Brewery</h2>
+        <div class="beer-msg" id="beer-msg">Loading…</div>
+        <div id="beer-body" hidden>
+          <div class="beer-summary" id="beer-summary"></div>
+          <table class="lb-table beer-table">
+            <thead><tr><th>Week</th><th>Status</th><th>Name</th><th>Time</th></tr></thead>
+            <tbody id="beer-rows"></tbody>
+          </table>
+          <div class="beer-note">Times are Brisbane time. "No name" means the winner didn't put a name on the leaderboard.</div>
+        </div>
       </div>
 
     </div>
@@ -517,6 +530,45 @@ async function loadVenuePlayers(venue) {
     tbody.innerHTML = '<tr><td colspan="5" class="loading-msg">Could not load players.</td></tr>';
   }
 }
+
+// ---------- Free beer log (XXXX Brewery) ----------
+(function () {
+  const msg = document.getElementById("beer-msg"), body = document.getElementById("beer-body");
+  const fmt = (iso, o) => new Intl.DateTimeFormat("en-AU", Object.assign({ timeZone: "Australia/Brisbane" }, o)).format(new Date(iso));
+  const dayLabel = iso => fmt(iso, { weekday: "short", day: "numeric", month: "short" });
+  const timeLabel = iso => fmt(iso, { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+
+  function row(w) {
+    let status, time = "";
+    if (w.status === "claimed") { status = "Claimed"; time = timeLabel(w.claimed_at); }
+    else if (w.status === "offered") { status = "Won, not claimed yet"; time = "Won " + timeLabel(w.offered_at); }
+    else if (w.status === "expired") { status = "Not claimed in time"; time = "Won " + timeLabel(w.offered_at); }
+    else if (w.pass_count > 0) { status = "Passed on, waiting for the next player"; }
+    else { status = "Not won yet"; }
+    const hasWinner = w.status === "claimed" || w.status === "offered" || w.status === "expired";
+    const name = w.name ? escapeHtml(w.name) : (hasWinner ? "No name" : "");
+    return `<tr class="lb-plain"><td>${escapeHtml(dayLabel(w.week_start))}</td><td>${escapeHtml(status)}</td><td>${name}</td><td>${escapeHtml(time)}</td></tr>`;
+  }
+
+  (async function load() {
+    try {
+      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/venue_prize_history`, {
+        method: "POST",
+        headers: { "apikey": SUPA_KEY, "Authorization": `Bearer ${SUPA_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_venue: "xxxx-brewery" })
+      });
+      if (res.status === 404) { msg.textContent = "The log isn't set up yet. Run venue_prize_admin.sql in Supabase first."; return; }
+      const d = res.ok ? await res.json() : null;
+      if (!d || !d.ok) { msg.textContent = "Couldn't load the log."; return; }
+      msg.textContent = ""; body.hidden = false;
+      document.getElementById("beer-summary").textContent =
+        `This week: ${d.players_this_week} player${d.players_this_week === 1 ? "" : "s"} so far. Player ${d.target} wins; the winner has ${d.hold_hours} hours to claim.`;
+      document.getElementById("beer-rows").innerHTML = d.weeks.length
+        ? d.weeks.map(row).join("")
+        : `<tr><td colspan="4" class="loading-msg">Nobody has won yet.</td></tr>`;
+    } catch (e) { msg.textContent = "Couldn't reach the server."; }
+  })();
+})();
 </script>
 
 <!-- Brisbane's Smartest Venue: rules bubble -->
