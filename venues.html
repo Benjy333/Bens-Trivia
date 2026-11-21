@@ -117,9 +117,18 @@
       <div class="month-label" id="month-label">—</div>
 
       <div class="card">
+        <div class="venue-select-wrap">
+          <label for="week-picker">Showing results for:</label>
+          <select class="venue-picker" id="week-picker">
+            <option value="0">All weeks</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
         <h2 class="section-heading bsv-oneline" style="display:flex;align-items:center;"><img src="data:image/png;base64,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" alt="Ben's Trivia" width="32" height="32" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">Brisbane's Smartest Venue<button type="button" class="bsv-help" aria-label="How Brisbane's Smartest Venue works" aria-haspopup="dialog">?</button></h2>
         <div style="font-size:0.82rem;opacity:0.75;margin:0 0 12px;line-height:1.45;">A 6 week competition running from 18th of October to 28th of November to crown Brisbane's Smartest Venue for 2026. Ranked by average score.</div>
-        <div class="mv-caption">Movement vs last Monday</div>
+        <div class="mv-caption" id="mv-caption">Movement vs last Monday</div>
         <table class="lb-table">
           <thead>
             <tr><th>#</th><th>Venue</th><th>Quizzes</th><th>Avg %</th></tr>
@@ -178,9 +187,37 @@ async function detectDateColumn() {
 // Where the quiz page remembers the venue the player just played at
 const VENUE_STORAGE_KEY = "bens-trivia-venue";
 
-function sinceFilter() {
+// ---- Weeks of the competition ----
+// Week 1 starts Sunday 18 October, 1:00 AM Brisbane time (when that week's quiz goes live); each week runs 7 days.
+const WEEK1_START = new Date("2026-10-17T15:00:00Z");
+const TOTAL_WEEKS = 6;
+const WEEK_MS = 7 * 86400000;
+let selectedWeek = 0;   // 0 = all weeks, otherwise 1..TOTAL_WEEKS
+
+function weekRange(k) {
+  const start = new Date(WEEK1_START.getTime() + (k - 1) * WEEK_MS);
+  return { start, end: new Date(start.getTime() + WEEK_MS) };
+}
+function brisbaneDayMonth(d) {
+  return new Intl.DateTimeFormat("en-AU", { timeZone: "Australia/Brisbane", day: "numeric", month: "short" }).format(d);
+}
+function weekDatesLabel(k) {
+  const r = weekRange(k);
+  const lastDay = new Date(r.end.getTime() - 86400000);   // the Saturday the week ends on
+  return `${brisbaneDayMonth(r.start)} to ${brisbaneDayMonth(lastDay)}`;
+}
+function currentWeekNumber(now = new Date()) {
+  const k = Math.floor((now.getTime() - WEEK1_START.getTime()) / WEEK_MS) + 1;
+  return Math.min(Math.max(k, 1), TOTAL_WEEKS);
+}
+
+// Leaderboard filter for the selected week (or everything since the start)
+function sinceFilter(week = selectedWeek) {
   if (!dateColumn) throw new Error("No date column found on leaderboard table");
-  return `${dateColumn}=gte.${encodeURIComponent(new Date(LEADERBOARD_START).toISOString())}`;
+  const startIso = encodeURIComponent((week ? weekRange(week).start : new Date(LEADERBOARD_START)).toISOString());
+  let f = `${dateColumn}=gte.${startIso}`;
+  if (week) f += `&${dateColumn}=lt.${encodeURIComponent(weekRange(week).end.toISOString())}`;
+  return f;
 }
 
 const DEV_MODE_KEY = "bens-trivia-dev-mode";
@@ -234,7 +271,12 @@ function slugify(str) {
   return String(str || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
-document.getElementById("month-label").textContent = `Results from ${LEADERBOARD_START_LABEL} onwards`;
+function updateMonthLabel() {
+  document.getElementById("month-label").textContent = selectedWeek
+    ? `Week ${selectedWeek} of ${TOTAL_WEEKS}: ${weekDatesLabel(selectedWeek)}`
+    : `Results from ${LEADERBOARD_START_LABEL} onwards`;
+}
+updateMonthLabel();
 
 // The venue the player just played at: ?venue= in this page's link,
 // then whatever the quiz page saved in the browser, else nothing.
@@ -259,11 +301,47 @@ function getPlayedVenue() {
   return "";
 }
 
+let allScoreRows = [];
+
+function buildWeekPicker() {
+  const picker = document.getElementById("week-picker");
+  const now = new Date();
+  const cur = currentWeekNumber(now);
+  let html = '<option value="0">All weeks</option>';
+  for (let k = TOTAL_WEEKS; k >= 1; k--) {
+    if (weekRange(k).start.getTime() > now.getTime()) continue;   // only weeks that have started
+    html += `<option value="${k}">Week ${k} (${weekDatesLabel(k)})${k === cur ? " - this week" : ""}</option>`;
+  }
+  picker.innerHTML = html;
+  const fromUrl = parseInt(new URLSearchParams(location.search).get("week"), 10);
+  if (fromUrl >= 1 && fromUrl <= TOTAL_WEEKS && [...picker.options].some(o => Number(o.value) === fromUrl)) selectedWeek = fromUrl;
+  picker.value = String(selectedWeek);
+  picker.addEventListener("change", () => {
+    selectedWeek = Number(picker.value);
+    try {
+      const u = new URL(location.href);
+      if (selectedWeek) u.searchParams.set("week", selectedWeek); else u.searchParams.delete("week");
+      history.replaceState(null, "", u);
+    } catch {}
+    updateMonthLabel();
+    showWeek();
+    const vp = document.getElementById("venue-picker");
+    if (vp.value) loadVenuePlayers(vp.value);
+  });
+}
+
+function showWeek() {
+  renderVenueLeaderboard(buildVenueLeaderboard(allScoreRows, selectedWeek), selectedWeek);
+}
+
 (async function init() {
   dateColumn = await detectDateColumn();
-  const venues = await fetchVenueLeaderboard();
-  renderVenueLeaderboard(venues);
-  populateVenuePicker(venues);
+  allScoreRows = await fetchVenueScoreRows();
+  buildWeekPicker();
+  updateMonthLabel();
+  const allVenues = buildVenueLeaderboard(allScoreRows, 0);
+  populateVenuePicker(allVenues);   // the venue list always covers every week
+  showWeek();
 })();
 
 async function fetchAllRows(query, table = "leaderboard") {
@@ -296,42 +374,55 @@ function lastMondayBrisbane(now = new Date()) {
   return new Date(Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate() - sinceMonday) - OFFSET);
 }
 
-function movementBadge(move) {
-  if (move === null || move === undefined) return '<span class="mv new" title="New since last Monday">NEW</span>';
-  if (move > 0) return `<span class="mv up" title="Up ${move} since last Monday">&#9650; ${move}</span>`;
-  if (move < 0) return `<span class="mv down" title="Down ${-move} since last Monday">&#9660; ${-move}</span>`;
-  return '<span class="mv same" title="No change since last Monday">&mdash;</span>';
+function movementBadge(move, since = "last Monday") {
+  if (move === null || move === undefined) return `<span class="mv new" title="New since ${since}">NEW</span>`;
+  if (move > 0) return `<span class="mv up" title="Up ${move} since ${since}">&#9650; ${move}</span>`;
+  if (move < 0) return `<span class="mv down" title="Down ${-move} since ${since}">&#9660; ${-move}</span>`;
+  return `<span class="mv same" title="No change since ${since}">&mdash;</span>`;
 }
 
-async function fetchVenueLeaderboard() {
+// Every completed quiz played for a venue (saved when the last question is answered), not just named leaderboard submissions
+async function fetchVenueScoreRows() {
   try {
-    // Every completed quiz played for a venue (saved when the last question is answered), not just named leaderboard submissions
-    const rows = await fetchAllRows(`select=venue,percent,created_at&created_at=gte.${encodeURIComponent(new Date(LEADERBOARD_START).toISOString())}`, "venue_scores");
-    // Rank venues by average score (ties broken by number of quizzes, then name, so the order is stable)
-    function rankVenues(list) {
-      const byVenue = {};
-      list.forEach(r => {
-        if (!r.venue) return;
-        if (!byVenue[r.venue]) byVenue[r.venue] = { total: 0, count: 0 };
-        byVenue[r.venue].total += r.percent;
-        byVenue[r.venue].count += 1;
-      });
-      const out = Object.keys(byVenue).map(venue => ({
-        venue,
-        player_count: byVenue[venue].count,
-        avg_percent: byVenue[venue].total / byVenue[venue].count
-      }));
-      out.sort((a, b) => (b.avg_percent - a.avg_percent) || (b.player_count - a.player_count) || a.venue.localeCompare(b.venue));
-      return out;
-    }
-    const venues = rankVenues(rows);
+    return await fetchAllRows(`select=venue,percent,created_at&created_at=gte.${encodeURIComponent(new Date(LEADERBOARD_START).toISOString())}`, "venue_scores");
+  } catch { return []; }
+}
 
-    // Baseline = the rankings as they stood at 12:00 AM last Monday (Brisbane time).
-    // Worked out from each score's timestamp, so nothing has to be saved and it can never drift.
-    const baseline = rankVenues(rows.filter(r => new Date(r.created_at).getTime() < lastMondayBrisbane().getTime()));
+// Rank venues by average score (ties broken by number of quizzes, then name, so the order is stable)
+function rankVenues(list) {
+  const byVenue = {};
+  list.forEach(r => {
+    if (!r.venue) return;
+    if (!byVenue[r.venue]) byVenue[r.venue] = { total: 0, count: 0 };
+    byVenue[r.venue].total += r.percent;
+    byVenue[r.venue].count += 1;
+  });
+  const out = Object.keys(byVenue).map(venue => ({
+    venue,
+    player_count: byVenue[venue].count,
+    avg_percent: byVenue[venue].total / byVenue[venue].count
+  }));
+  out.sort((a, b) => (b.avg_percent - a.avg_percent) || (b.player_count - a.player_count) || a.venue.localeCompare(b.venue));
+  return out;
+}
+
+function rowsInWeek(rows, k) {
+  const r = weekRange(k);
+  return rows.filter(x => { const t = new Date(x.created_at).getTime(); return t >= r.start.getTime() && t < r.end.getTime(); });
+}
+
+// week 0 = every week together, movement vs 12:00 AM last Monday (Brisbane time).
+// week k  = just that week, movement vs the previous week's ranking (none for week 1).
+function buildVenueLeaderboard(rows, week) {
+  try {
+    const venues = rankVenues(week ? rowsInWeek(rows, week) : rows);
+    let baseline = null;
+    if (week === 0) baseline = rankVenues(rows.filter(r => new Date(r.created_at).getTime() < lastMondayBrisbane().getTime()));
+    else if (week > 1) baseline = rankVenues(rowsInWeek(rows, week - 1));
+    if (!baseline) { venues.forEach(v => { v.move = undefined; }); return venues; }   // week 1: nothing to compare with
     const baseRank = {};
     baseline.forEach((v, i) => { baseRank[v.venue] = i + 1; });
-    // Movement compares venues that were already on the board last Monday, so a brand-new venue
+    // Movement compares venues that were already on the board before, so a brand-new venue
     // entering the table doesn't make everyone below it look like they dropped.
     let liveRank = 0;
     venues.forEach(v => {
@@ -343,16 +434,20 @@ async function fetchVenueLeaderboard() {
   } catch { return []; }
 }
 
-function renderVenueLeaderboard(venues) {
+function renderVenueLeaderboard(venues, week = 0) {
   const tbody = document.getElementById("venue-lb-body");
+  const cap = document.getElementById("mv-caption");
+  const since = week === 0 ? "last Monday" : `week ${week - 1}`;
+  cap.textContent = week === 0 ? "Movement vs last Monday" : `Movement vs week ${week - 1}`;
+  cap.style.display = week === 1 ? "none" : "";
   if (!venues || !venues.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="loading-msg">No venue scores yet</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="4" class="loading-msg">${week ? `No venue scores for week ${week} yet` : "No venue scores yet"}</td></tr>`;
     return;
   }
   const medals = ["🥇","🥈","🥉"];
   tbody.innerHTML = venues.map((v, i) => `
     <tr>
-      <td class="rank-cell"><span class="rk">${medals[i] || (i + 1)}</span>${movementBadge(v.move)}</td>
+      <td class="rank-cell"><span class="rk">${medals[i] || (i + 1)}</span>${week === 1 ? "" : movementBadge(v.move, since)}</td>
       <td>${VENUE_LOGOS[slugify(v.venue)] ? `<img src="${VENUE_LOGOS[slugify(v.venue)]}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : ""}${escapeHtml(prettyVenueName(v.venue))}</td>
       <td>${v.player_count}</td>
       <td>${Math.round(v.avg_percent)}%</td>
@@ -393,7 +488,7 @@ async function loadVenuePlayers(venue) {
     );
 
     if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="loading-msg">No players yet</td></tr>';
+      tbody.innerHTML = `<tr><td colspan="5" class="loading-msg">${selectedWeek ? "No players that week" : "No players yet"}</td></tr>`;
       return;
     }
 
