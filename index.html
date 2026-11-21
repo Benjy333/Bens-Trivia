@@ -1167,6 +1167,14 @@ function prizeTime(iso, withSeconds) {
   if (withSeconds) o.second = "2-digit";
   return new Intl.DateTimeFormat("en-AU", o).format(new Date(iso));
 }
+// "Claim it today" while the deadline is still today (Brisbane time), otherwise the exact time
+function prizeDeadline(iso) {
+  const day = d => new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Brisbane" }).format(d);
+  const t = new Date(iso);
+  if (day(t) === day(new Date())) return "Claim it today,";
+  const tm = new Intl.DateTimeFormat("en-AU", { timeZone: "Australia/Brisbane", hour: "numeric", minute: "2-digit" }).format(t);
+  return day(t) === day(new Date(Date.now() + 864e5)) ? `Claim it by tomorrow at ${tm},` : `Claim it by ${prizeTime(iso, false)},`;
+}
 let prizeSim = false;   // dev-mode "Prize test": everything stays on this screen, nothing is saved
 async function prizeRpc(fn, venue, extra) {
   if (prizeSim) {
@@ -1247,7 +1255,7 @@ function openPrizeModal() {
       <div class="prize-row">
         <div class="prize-col">
           <div class="prize-text"><b>${prizeText.charAt(0).toUpperCase() + prizeText.slice(1)}</b> at ${escapeHtml(PRIZE_VENUES[venue] || venue)}. Pick whichever you like at the bar.</div>
-          <div class="prize-text small">Claim it by ${escapeHtml(prizeTime(data.expires_at, false))}, or it passes to the next player.</div>
+          <div class="prize-text small">${escapeHtml(prizeDeadline(data.expires_at))} or it will pass to the next player.</div>
         </div>
         <img class="prize-glass" src="${PRIZE_GLASS}" alt="" width="132" height="230">
       </div>
@@ -1299,7 +1307,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = 
 // dev mode: open the pop-up with a pretend win, to see the whole flow without touching the database
 function startPrizeTest() {
   stopPrizeClock(); prizeSim = true;
-  prizeNow = { venue: "xxxx-brewery", data: { state: "winner", prize: "a free beer or soft drink", expires_at: new Date(Date.now() + 24 * 3600 * 1000).toISOString() } };
+  prizeNow = { venue: "xxxx-brewery", data: { state: "winner", prize: "a free beer or soft drink", expires_at: new Date(Date.now() + 3 * 3600 * 1000).toISOString() } };
   openPrizeModal();
 }
 (function () {
