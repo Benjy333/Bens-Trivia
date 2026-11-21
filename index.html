@@ -1175,11 +1175,12 @@ function prizeDeadline(iso) {
   const tm = new Intl.DateTimeFormat("en-AU", { timeZone: "Australia/Brisbane", hour: "numeric", minute: "2-digit" }).format(t);
   return day(t) === day(new Date(Date.now() + 864e5)) ? `Claim it by tomorrow at ${tm},` : `Claim it by ${prizeTime(iso, false)},`;
 }
+const PRIZE_TEXT = "a free schooner of beer or a soft drink";   // wording shown to the winner
 let prizeSim = false;   // dev-mode "Prize test": everything stays on this screen, nothing is saved
 async function prizeRpc(fn, venue, extra) {
   if (prizeSim) {
     await new Promise(r => setTimeout(r, 350));
-    if (fn === "venue_prize_claim") return { state: "claimed", prize: "a free beer or soft drink", claimed_at: new Date().toISOString() };
+    if (fn === "venue_prize_claim") return { state: "claimed", prize: "a schooner of beer or a soft drink", claimed_at: new Date().toISOString() };
     if (fn === "venue_prize_pass") return { state: "passed" };
     return { state: "none" };
   }
@@ -1235,7 +1236,7 @@ function openPrizeModal() {
   const m = document.getElementById("prize-modal"), b = document.getElementById("prize-card");
   stopPrizeClock();
   if (b) { b.hidden = true; b.innerHTML = ""; }
-  const prizeText = escapeHtml(data.prize || "a free drink");
+  const prizeText = escapeHtml(PRIZE_TEXT);
   let inner;
   if (data.state === "claimed") {
     inner = `<div class="prize-top">Enjoy your</div>
@@ -1307,7 +1308,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = 
 // dev mode: open the pop-up with a pretend win, to see the whole flow without touching the database
 function startPrizeTest() {
   stopPrizeClock(); prizeSim = true;
-  prizeNow = { venue: "xxxx-brewery", data: { state: "winner", prize: "a free beer or soft drink", expires_at: new Date(Date.now() + 3 * 3600 * 1000).toISOString() } };
+  prizeNow = { venue: "xxxx-brewery", data: { state: "winner", prize: "a schooner of beer or a soft drink", expires_at: new Date(Date.now() + 3 * 3600 * 1000).toISOString() } };
   openPrizeModal();
 }
 (function () {
