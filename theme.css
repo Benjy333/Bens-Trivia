@@ -652,3 +652,31 @@ select.quiz-picker,select.venue-picker{flex:0 1 auto!important;width:auto!import
 
 /* plain blue rows: no striping */
 .lb-table tbody tr:nth-child(even) td,.lb-table tbody tr:nth-child(odd) td{background:none!important;}
+
+/* ---- Venue prize pop-up (gold poster look, shown to the winner only) ---- */
+.prize-card{width:min(640px,100%);box-sizing:border-box;margin:0 auto 14px;}
+.prize-card[hidden],.prize-modal[hidden]{display:none!important;}
+.prize-banner-btn{display:block;width:100%;padding:13px 16px;border-radius:14px;border:2px solid #7B0E10!important;background:#F1A502!important;color:#5E0A0C!important;font-size:1rem;font-weight:700;cursor:pointer;text-align:center;}
+.prize-card.is-claimed .prize-banner-btn{background:#E3F1E8!important;border-color:#0A4F28!important;color:#0A4F28!important;}
+.prize-modal{position:fixed;inset:0;z-index:100001;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:16px;box-sizing:border-box;background:rgba(71,8,10,.72);}
+.prize-modal-card{position:relative;width:100%;max-width:420px;margin:auto;box-sizing:border-box;padding:24px 20px 22px;border-radius:20px;background:radial-gradient(circle at 30% 20%,#F8B413 0,#F1A502 55%,#E39A00 100%);color:#5E0A0C;text-align:center;box-shadow:0 14px 40px rgba(0,0,0,.35);}
+.prize-x{position:absolute;top:8px;right:10px;width:36px;height:36px;border-radius:50%;border:0!important;background:rgba(123,14,16,.12)!important;color:#7B0E10!important;font-size:1.6rem;line-height:1;cursor:pointer;padding:0;}
+.prize-logo{display:block;margin:0 auto 6px;width:136px;height:auto;}
+.prize-modal-card .prize-venue-line:not(#x):not(#y){font-family:var(--t-display)!important;font-weight:400!important;font-size:.95rem;letter-spacing:.2em;text-transform:uppercase;color:#7B0E10;margin:0 0 14px;}
+.prize-modal-card .prize-top:not(#x):not(#y){font-family:var(--t-display)!important;font-weight:400!important;font-size:2.1rem;line-height:1.05;text-transform:uppercase;color:#7B0E10;letter-spacing:.01em;margin:0 0 2px;}
+.prize-modal-card .prize-big:not(#x):not(#y){font-family:var(--t-display)!important;font-weight:400!important;font-size:clamp(3.3rem,17vw,4.7rem);line-height:.95;text-transform:uppercase;color:#FFFFFF;letter-spacing:.01em;margin:0 0 10px;text-shadow:0 2px 0 rgba(123,14,16,.18)!important;}
+.prize-row{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;}
+.prize-col{flex:1;min-width:0;}
+.prize-glass{display:block;width:116px;height:auto;flex:none;filter:drop-shadow(0 8px 10px rgba(94,10,12,.25));}
+.prize-text{font-size:.95rem;line-height:1.45;margin:0 0 10px;color:#5E0A0C;font-weight:500;}
+.prize-text.small{font-size:.8rem;font-weight:600;opacity:.9;}
+.prize-text.center{text-align:center;font-size:1rem;margin:10px 0 16px;}
+.prize-pill{display:inline-block;padding:5px 16px;border-radius:999px;background:#0A4F28;color:#FFF3DD;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.9rem;margin:0 0 8px;}
+.prize-when{font-size:.85rem;font-weight:600;margin:0 0 4px;}
+.prize-modal-card .prize-clock{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums;color:#0A4F28;margin:0 0 10px;}
+.prize-actions{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:14px;}
+.prize-btn{width:100%;max-width:320px;padding:14px 22px;border-radius:999px;border:0!important;background:#7B0E10!important;color:#FFF3DD!important;font-size:1.02rem;font-weight:700;cursor:pointer;box-shadow:0 4px 0 rgba(94,10,12,.35)!important;}
+.prize-btn:disabled{opacity:.5;}
+.prize-link{background:none!important;border:0!important;box-shadow:none!important;color:#7B0E10!important;text-decoration:underline;font-weight:600;font-size:.9rem;cursor:pointer;padding:6px;}
+.prize-msg{min-height:1.2em;margin-top:8px;font-size:.85rem;font-weight:700;color:#8A150E;}
+.prize-test{margin:0 36px 10px 0;padding:5px 10px;border-radius:8px;background:#7B0E10;color:#FFF3DD;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
