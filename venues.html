@@ -463,7 +463,7 @@ function renderVenueLeaderboard(venues, week = 0) {
       <td class="rank-cell"><span class="rk">${medals[i] || (i + 1)}</span>${week === 1 ? "" : movementBadge(v.move, since)}</td>
       <td>${VENUE_LOGOS[slugify(v.venue)] ? `<img src="${VENUE_LOGOS[slugify(v.venue)]}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:8px;">` : ""}${escapeHtml(prettyVenueName(v.venue))}</td>
       <td>${v.player_count}</td>
-      <td>${Math.round(v.avg_percent)}%</td>
+      <td>${v.avg_percent.toFixed(1)}%</td>
     </tr>
   `).join("");
 }
